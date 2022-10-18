@@ -54,6 +54,13 @@ If Maven isn't installed on your system, the Maven Wrapper can be used by using 
 
 [JDK 17](https://adoptium.net/)
 
+## MySQL
+
+To set up passwords for MySQL, navigate to the project directory and open the *.env* file. Then set passwords for:
+
+1. `MYSQLDB_ROOT_PASSWORD=`
+2. `MYSQLDB_PASSWORD=`
+
 ## Security
 
 All requests require HTTP Basic authentication, the users are *paul*, *john*, *george* and *ringo*. 
