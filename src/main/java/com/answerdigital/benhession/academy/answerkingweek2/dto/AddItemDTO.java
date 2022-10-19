@@ -2,15 +2,20 @@ package com.answerdigital.benhession.academy.answerkingweek2.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.Set;
 
 public class AddItemDTO {
     @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Item name must only contain letters and dashes")
     private String name;
     @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
+            message = "Item description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
     @NotBlank
+    @Pattern(regexp = "^[0-9]*.[0-9]{2}", message = "Item price is in invalid format")
     private String price;
     @NotNull
     private Boolean available;
@@ -18,7 +23,6 @@ public class AddItemDTO {
     private Set<Integer> categoryIds;
 
     public AddItemDTO(){
-
     }
 
     public AddItemDTO(String name, String description, String price, Boolean available, Set<Integer> categoryIds) {
@@ -27,12 +31,6 @@ public class AddItemDTO {
         this.available = available;
         this.price = price;
         this.categoryIds = categoryIds;
-    }
-
-    public boolean isNotValid() {
-        return !name.matches("^[a-zA-Z\s-]*") ||
-                !description.matches("^[a-zA-Z\s.,!?0-9-']*") ||
-                !price.matches("^[0-9]*.[0-9]{2}");
     }
 
     public String getName() {

@@ -1,12 +1,16 @@
 package com.answerdigital.benhession.academy.answerkingweek2.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class AddCategoryDTO {
     @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Category name must only contain letters and dashes")
     private String name;
-    @NotBlank
+
+    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
+            message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
     public AddCategoryDTO() {
@@ -16,11 +20,6 @@ public class AddCategoryDTO {
     public AddCategoryDTO(String name, String description) {
         this.name = name;
         this.description = description;
-    }
-
-    public boolean isNotValid() {
-        return !name.matches("^[a-zA-Z\s-]*") ||
-                !description.matches("^[a-zA-Z\s.,!?0-9-']*");
     }
 
     public String getName() {

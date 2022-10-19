@@ -12,11 +12,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "order")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    private Long id;
     @NotNull
     private String address;
 
@@ -33,35 +31,20 @@ public class Order {
     public Order() {
     }
 
-    public Order(AddOrderDTO addOrderDTO) {
-        this.address = addOrderDTO.getAddress();
-        this.orderStatus = new OrderStatus("Created");
-        this.basket = new HashMap<>();
+    public void addItemToBasket(Item item, Integer quantity) {
+        basket.put(item, quantity);
     }
 
-    public boolean addItemToBasket(Item item, int quantity) {
-        boolean successful;
-
-        if(basket.containsKey(item)) {
-            successful = false;
-        } else {
-            basket.put(item, quantity);
-            successful = true;
-        }
-
-        return successful;
-    }
-
-    public boolean basketHasItem(Item item) {
-        return basket.containsKey(item);
+    public void updateItemInBasket(Item item, Integer quantity) {
+        basket.put(item, quantity);
     }
 
     public void removeItemFromBasket(Item item) {
         basket.remove(item);
     }
 
-    public void updateQuantity(Item item, int quantity) {
-        basket.put(item, quantity);
+    public boolean basketHasItem(Item item) {
+        return basket.containsKey(item);
     }
 
     public BigDecimal getTotalValueOfBasket() {
@@ -72,7 +55,7 @@ public class Order {
                 .orElse(BigDecimal.ZERO);
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

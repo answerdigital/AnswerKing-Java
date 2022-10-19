@@ -11,7 +11,7 @@ public interface CategoryRepository extends CrudRepository<Category, Long>
 {
     boolean existsByName(String name);
 
-    boolean existsByNameAndIdIsNot(String name, Long id);
+    boolean existsByNameAndIdIsNot(String name, long id);
 
     Set<Category> findAll();
 
