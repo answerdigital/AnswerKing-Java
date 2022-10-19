@@ -1,11 +1,11 @@
 package com.answerdigital.benhession.academy.answerkingweek2.services;
 
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.UnableToSaveEntityException;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
-import com.answerdigital.benhession.academy.answerkingweek2.model.ItemCategory;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.CategoryRepository;
-import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemCategoryRepository;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +20,12 @@ public class CategoryService {
 
     CategoryRepository categoryRepository;
     ItemRepository itemRepository;
-    ItemCategoryRepository itemCategoryRepository;
     Logger logger = LoggerFactory.getLogger("Category service");
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository,
-                           ItemCategoryRepository itemCategoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository) {
         this.categoryRepository = categoryRepository;
         this.itemRepository = itemRepository;
-        this.itemCategoryRepository = itemCategoryRepository;
     }
 
     public Optional<Category> addCategory(Category category) throws UnableToSaveEntityException {
@@ -39,16 +36,18 @@ public class CategoryService {
         }
     }
 
-    public Optional<Category> updateCategory(Category category) throws UnableToSaveEntityException {
+    public Category updateCategory(Category category, long categoryId) {
+        Optional<Category> catById = categoryRepository.findById(categoryId);
+        if (catById.isEmpty())
+            throw new NotFoundException("Category with id " + categoryId + " does not exist");
 
-        boolean hasNameConflict = categoryRepository.existsByNameAndIdIsNot(category.getName(), category.getId());
+        if (categoryRepository.existsByNameAndIdIsNot(category.getName(), categoryId))
+            throw new ConflictException(String.format("A category named %s already exists", category.getName()));
 
-        if (hasNameConflict) {
-            return Optional.empty();
-        } else {
-            return Optional.of(save(category));
-        }
+        if ((category.getItemsSet() == null || category.getItemsSet().isEmpty()) && !catById.get().getItemsSet().isEmpty())
+            category.getItemsSet().addAll(catById.get().getItemsSet());
 
+        return categoryRepository.save(category);
     }
 
     private Category save(Category category) throws UnableToSaveEntityException {
@@ -60,30 +59,54 @@ public class CategoryService {
         }
     }
 
-    public Optional<Set<Category>> getAll() {
-        Set<Category> currentCategories = categoryRepository.findAll();
-
-        return currentCategories.isEmpty() ? Optional.empty() : Optional.of(currentCategories);
+    public Set<Category> getAll() {
+        return categoryRepository.findAll();
     }
 
-    public Optional<Category> findById(int categoryId) {
-        return categoryRepository.findById(categoryId);
+    public boolean allExist(Set<Long> ids) {
+        return ids.size() == categoryRepository.countByIdIn(ids);
     }
 
-    public Category remove(Category category) {
-        Set<Item> items = category.getItems();
-        Set<ItemCategory> itemCategories = category.getItemCategories();
-        items.forEach(item -> item.remove(category));
-        category.clearItemCategories();
+    public Category addItemToCategory(long categoryId, long itemId) {
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        if (category.isEmpty()) {
+            throw new NotFoundException("Category does not exist}");
+        }
 
-        itemCategoryRepository.deleteAll(itemCategories);
-        itemRepository.saveAll(items);
-        categoryRepository.delete(category);
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            throw new NotFoundException("Item does not exist}");
+        }
+
+        category.get().getItemsSet().add(item.get());
+        return categoryRepository.save(category.get());
+    }
+
+    public Category removeItemFromCategory(Long categoryId, Long itemId) {
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        if (category.isEmpty()) {
+            throw new NotFoundException("Category does not exist");
+        }
+
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            throw new NotFoundException("Item does not exist");
+        }
+
+        category.get().getItemsSet().remove(item.get());
+        categoryRepository.save(category.get());
 
         return category;
     }
 
-    public boolean allExist(Set<Integer> ids) {
-        return ids.size() == categoryRepository.countByIdIn(ids);
+    public Optional<Category> deleteCategoryById(long id) {
+        Optional<Category> deletedCategory = categoryRepository.findById(id);
+        if (deletedCategory.isEmpty()) {
+            throw new NotFoundException("Category does not exist");
+        }
+
+        categoryRepository.deleteById(id);
+        return deletedCategory;
     }
+
 }

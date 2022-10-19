@@ -1,32 +1,29 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "order_status")
 public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotNull
     private String status;
 
-    public OrderStatus() {
-    }
-
+    // Overloaded constructor.
     public OrderStatus(String status) {
         this.status = status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     @Override
@@ -40,13 +37,5 @@ public class OrderStatus {
     @Override
     public int hashCode() {
         return Objects.hash(id, status);
-    }
-
-    @Override
-    public String toString() {
-        return "OrderStatus{" +
-                "id=" + id +
-                ", status='" + status + '\'' +
-                '}';
     }
 }

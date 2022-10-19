@@ -1,6 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.dto;
 
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
+import com.answerdigital.benhession.academy.answerkingweek2.model.ItemCategory;
 
 import java.util.Objects;
 import java.util.Set;
@@ -10,7 +11,7 @@ public class GetCategoryDTO {
     private final int id;
     private final String name;
     private final String description;
-    private final Set<ItemNoCategoriesDTO> items;
+    private final Set<ItemCategory> items;
 
     public GetCategoryDTO(Category category) {
         this.id = category.getId();
