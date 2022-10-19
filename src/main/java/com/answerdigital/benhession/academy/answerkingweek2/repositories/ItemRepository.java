@@ -8,11 +8,11 @@ import java.util.List;
 
 
 @Repository
-public interface ItemRepository extends JpaRepository<Item, Integer> {
-
+public interface ItemRepository extends JpaRepository<Item, Long>
+{
      boolean existsByName(String name);
 
-     boolean existsByNameAndIdIsNot(String name, Integer id);
+     boolean existsByNameAndIdIsNot(String name, Long id);
 
      List<Item> findAll();
 }
