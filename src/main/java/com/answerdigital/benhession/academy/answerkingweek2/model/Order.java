@@ -1,7 +1,5 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
-import com.answerdigital.benhession.academy.answerkingweek2.dto.AddOrderDTO;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -15,11 +13,11 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     private String address;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @NotNull
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @ElementCollection
@@ -29,6 +27,12 @@ public class Order {
     private Map<Item, Integer> basket;
 
     public Order() {
+    }
+
+    public Order(String address) {
+        this.address = address;
+        this.orderStatus = OrderStatus.IN_PROGRESS;
+        this.basket = new HashMap<>();
     }
 
     public void addItemToBasket(Item item, Integer quantity) {
@@ -48,7 +52,6 @@ public class Order {
     }
 
     public BigDecimal getTotalValueOfBasket() {
-
         return basket.keySet().stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(basket.get(item))))
                 .reduce(BigDecimal::add)

@@ -16,8 +16,8 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank()
-    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Category name must only contain letters and dashes")
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Category name must only contain letters, spaces and dashes")
     private String name;
     @NotNull
     @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
@@ -47,27 +47,14 @@ public class Category {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @JsonIgnore
     public Set<Item> getItemsSet() {
         return items;
     }
-
 
     @Override
     public boolean equals(Object o) {

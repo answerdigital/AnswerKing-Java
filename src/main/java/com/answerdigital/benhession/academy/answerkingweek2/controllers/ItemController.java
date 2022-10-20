@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Valid
 @RestController
 @RequestMapping(path = "/item")
 public class ItemController {
@@ -28,17 +30,17 @@ public class ItemController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable long id) {
-        return ResponseEntity(itemService.findById(id));
+    public ResponseEntity<Item> getItemById(@PathVariable @NotNull Long id) {
+        return ResponseEntity.ok(itemService.findById(id));
     }
 
-    @PostMapping()
-    public ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
-        return ResponseEntity(itemService.addNewItem(item));
+    @PostMapping
+    public ResponseEntity<Item> addItem(@RequestBody Item item) {
+        return ResponseEntity.ok(itemService.addNewItem(item));
     }
 
-    @PutMapping("/{itemId}")
-    public ResponseEntity<Item> updateItem(@PathVariable() long itemId, @Valid @RequestBody Item item) {
-        return ResponseEntity(itemService.updateItem(item, itemId));
+    @PutMapping
+    public ResponseEntity<Item> updateItem(@RequestBody Item item) {
+        return ResponseEntity.ok(itemService.updateItem(item));
     }
 }
