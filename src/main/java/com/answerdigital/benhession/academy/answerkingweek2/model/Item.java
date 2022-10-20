@@ -1,11 +1,12 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
-import com.answerdigital.benhession.academy.answerkingweek2.dto.AddItemDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
@@ -17,19 +18,31 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Item name must only contain letters, spaces and dashes")
     private String name;
-    @NotNull
+
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
+            message = "Item description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
-    @NotNull
+
     @Column(precision = 12, scale = 2)
     @Digits(integer = 12, fraction = 2)
+    @NotBlank
+    @Pattern(regexp = "^[0-9]*.[0-9]{2}", message = "Item price is in invalid format")
     private BigDecimal price;
+
     @NotNull
     private Boolean available;
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "items")
     private Set<Category> categories = new HashSet<>();
+
+    public Item() {
+    }
 
     public Item(String name, String description, BigDecimal price, boolean isAvailable) {
         this.name = name;
@@ -39,38 +52,23 @@ public class Item {
         this.available = isAvailable;
     }
 
-    public Item(AddItemDTO addItemDTO) {
-        this.name = addItemDTO.getName();
-        this.description = addItemDTO.getDescription();
-        this.price = new BigDecimal(addItemDTO.getPrice());
-        this.available = addItemDTO.isAvailable();
-        this.categories = new HashSet<>();
-    }
-
-    public Item() {
-
-    }
-
     @PreRemove
     private void removeItemsFromCategories() {
         for (Category category : categories) {
             category.getItemsSet().remove(this);
         }
     }
-    public Set<Category> getCategories() {
-        return categories;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
     public BigDecimal getPrice() {
@@ -83,22 +81,6 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setAvailable(Boolean available) {
-        this.available = available;
     }
 
     @Override
