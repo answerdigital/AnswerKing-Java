@@ -61,6 +61,10 @@ public class Category {
         this.description = description;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     @JsonIgnore
     public Set<Item> getItemsSet() {
         return items;

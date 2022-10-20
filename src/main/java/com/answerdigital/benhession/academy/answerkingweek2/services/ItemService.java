@@ -4,6 +4,8 @@ import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictE
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemRepository;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddItemRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateItemRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,12 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public Item addNewItem(Item item) {
-        if (itemRepository.existsByName(item.getName())) {
-            throw new ConflictException(String.format("An Item named '%s' already exists", item.getName()));
+    public Item addNewItem(AddItemRequest addItemRequest) {
+        if (itemRepository.existsByName(addItemRequest.name())) {
+            throw new ConflictException(String.format("An Item named '%s' already exists", addItemRequest.name()));
         }
-        return itemRepository.save(item);
+        Item newItem = new Item(addItemRequest);
+        return itemRepository.save(newItem);
     }
 
     public Item findById(Long itemId) {
@@ -35,10 +38,12 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item updateItem(Item item) {
-        if (itemRepository.existsByNameAndIdIsNot(item.getName(), item.getId())) {
-            throw new ConflictException(String.format("An Item named '%s' already exists", item.getName()));
+    public Item updateItem(long itemId, AddItemRequest addItemRequest) {
+        if (itemRepository.existsByNameAndIdIsNot(addItemRequest.name(), itemId)) {
+            throw new ConflictException(String.format("An Item named '%s' already exists", addItemRequest.name()));
         }
-        return itemRepository.save(item);
+        Item updatedItem = new Item(addItemRequest);
+
+        return itemRepository.save(updatedItem);
     }
 }

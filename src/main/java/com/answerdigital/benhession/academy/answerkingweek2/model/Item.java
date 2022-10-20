@@ -1,6 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddItemRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -42,6 +43,13 @@ public class Item {
     private Set<Category> categories = new HashSet<>();
 
     public Item() {
+    }
+
+    public Item(AddItemRequest addItemRequest){
+        this.name = addItemRequest.name();
+        this.description = addItemRequest.description();
+        this.price = addItemRequest.price();
+        this.available = addItemRequest.available();
     }
 
     public Item(String name, String description, BigDecimal price, boolean isAvailable) {
