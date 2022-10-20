@@ -18,7 +18,6 @@ import java.util.Set;
 @RestController
 @RequestMapping(path = "/category")
 public class CategoryController {
-
     private final CategoryService categoryService;
 
     @Autowired
@@ -34,7 +33,7 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<Collection<Category>> getAllCategories() {
         Set<Category> categories = categoryService.findAll();
-        return new ResponseEntity<>(categories, categories.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{categoryId}/additem/{itemId}")
@@ -49,9 +48,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.removeItemFromCategory(categoryId, itemId));
     }
 
-    @PutMapping
-    public ResponseEntity<Category> updateCategory(@RequestBody UpdateCategoryRequest updateCategoryRequest) {
-        return ResponseEntity.ok(categoryService.updateCategory(updateCategoryRequest));
+    @PutMapping("/{itemId}")
+    public ResponseEntity<Category> updateCategory(@RequestBody UpdateCategoryRequest updateCategoryRequest,
+                                                   @PathVariable @NotNull Long itemId) {
+        return ResponseEntity.ok(categoryService.updateCategory(updateCategoryRequest, itemId));
     }
 
     @DeleteMapping("/{categoryId}")
