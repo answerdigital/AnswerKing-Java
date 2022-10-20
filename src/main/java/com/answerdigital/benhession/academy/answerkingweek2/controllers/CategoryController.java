@@ -33,7 +33,7 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<Collection<Category>> getAllCategories() {
         Set<Category> categories = categoryService.findAll();
-        return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
     @PutMapping("/{categoryId}/additem/{itemId}")
