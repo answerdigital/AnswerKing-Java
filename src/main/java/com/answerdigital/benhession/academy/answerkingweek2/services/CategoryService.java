@@ -5,6 +5,8 @@ import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundE
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.CategoryRepository;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +24,12 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public Category addCategory(Category category) {
-        if (categoryRepository.existsByName(category.getName())) {
-            throw new ConflictException(String.format("A category named '%s' already exists", category.getName()));
+    public Category addCategory(AddCategoryRequest categoryRequest) {
+        if (categoryRepository.existsByName(categoryRequest.name())) {
+            throw new ConflictException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
+
+        Category category = new Category(categoryRequest);
         return categoryRepository.save(category);
     }
 
@@ -38,22 +42,17 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category updateCategory(Category categoryUpdate) {
+    public Category updateCategory(UpdateCategoryRequest updateCategoryRequest, Long id) {
         // check that the category isn't being renamed to a category name that already exists
-        if (categoryRepository.existsByNameAndIdIsNot(categoryUpdate.getName(), categoryUpdate.getId())) {
-            throw new ConflictException(String.format("A category named %s already exists", categoryUpdate.getName()));
+        if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
+            throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
-        Category existingCategory = findById(categoryUpdate.getId());
-
-        // checks if new category details supplied does not have item list but
-        // existing category has an item list it will keep existing item list in the update
-        if ((categoryUpdate.getItemsSet() == null || categoryUpdate.getItemsSet().isEmpty())
-                && !existingCategory.getItemsSet().isEmpty()) {
-            categoryUpdate.getItemsSet().addAll(existingCategory.getItemsSet());
-        }
-
-        return categoryRepository.save(categoryUpdate);
+        // TODO BENCH-36 REPLACE WITH MODELMAPPER
+        Category existingCategory = findById(id);
+        existingCategory.setName(updateCategoryRequest.name());
+        existingCategory.setDescription(updateCategoryRequest.description());
+        return categoryRepository.save(existingCategory);
     }
 
     public Category addItemToCategory(Long categoryId, Long itemId) {
