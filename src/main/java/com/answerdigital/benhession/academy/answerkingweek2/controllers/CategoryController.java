@@ -1,6 +1,8 @@
 package com.answerdigital.benhession.academy.answerkingweek2.controllers;
 
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,8 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-        return ResponseEntity.ok(categoryService.addCategory(category));
+    public ResponseEntity<Category> addCategory(@RequestBody AddCategoryRequest categoryRequest) {
+        return ResponseEntity.ok(categoryService.addCategory(categoryRequest));
     }
 
     @GetMapping
@@ -48,8 +50,8 @@ public class CategoryController {
     }
 
     @PutMapping
-    public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
-        return ResponseEntity.ok(categoryService.updateCategory(category));
+    public ResponseEntity<Category> updateCategory(@RequestBody UpdateCategoryRequest updateCategoryRequest) {
+        return ResponseEntity.ok(categoryService.updateCategory(updateCategoryRequest));
     }
 
     @DeleteMapping("/{categoryId}")
