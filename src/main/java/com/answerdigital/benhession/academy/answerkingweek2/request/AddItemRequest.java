@@ -1,6 +1,5 @@
 package com.answerdigital.benhession.academy.answerkingweek2.request;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

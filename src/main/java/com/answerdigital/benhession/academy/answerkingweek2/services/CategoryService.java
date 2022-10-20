@@ -14,7 +14,6 @@ import java.util.Set;
 
 @Service
 public class CategoryService {
-
     private final ItemService itemService;
     private final CategoryRepository categoryRepository;
 
