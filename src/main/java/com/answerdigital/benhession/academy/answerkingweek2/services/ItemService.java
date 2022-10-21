@@ -4,8 +4,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictE
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemRepository;
-import com.answerdigital.benhession.academy.answerkingweek2.request.AddItemRequest;
-import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateItemRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +20,11 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public Item addNewItem(AddItemRequest addItemRequest) {
-        if (itemRepository.existsByName(addItemRequest.name())) {
-            throw new ConflictException(String.format("An Item named '%s' already exists", addItemRequest.name()));
+    public Item addNewItem(ItemRequest itemRequest) {
+        if (itemRepository.existsByName(itemRequest.name())) {
+            throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        Item newItem = new Item(addItemRequest);
+        Item newItem = new Item(itemRequest);
         return itemRepository.save(newItem);
     }
 
@@ -38,11 +37,11 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item updateItem(long itemId, AddItemRequest addItemRequest) {
-        if (itemRepository.existsByNameAndIdIsNot(addItemRequest.name(), itemId)) {
-            throw new ConflictException(String.format("An Item named '%s' already exists", addItemRequest.name()));
+    public Item updateItem(long itemId, ItemRequest itemRequest) {
+        if (itemRepository.existsByNameAndIdIsNot(itemRequest.name(), itemId)) {
+            throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        Item updatedItem = new Item(addItemRequest);
+        Item updatedItem = new Item(itemRequest);
 
         return itemRepository.save(updatedItem);
     }
