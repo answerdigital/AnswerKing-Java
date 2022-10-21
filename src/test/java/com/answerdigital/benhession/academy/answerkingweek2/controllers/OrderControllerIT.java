@@ -13,6 +13,7 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +30,7 @@ public class OrderControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
+
     private final Logger logger = LoggerFactory.getLogger(OrderControllerIT.class);
 
     @Test
@@ -44,6 +46,7 @@ public class OrderControllerIT {
     }
 
     @Test
+    @WithMockUser("ringo")
     void addOrder_validDTO_createdOrderReturned() throws Exception  {
 
         AddOrderDTO addOrderDTO = new AddOrderDTO("Union mills");
@@ -73,6 +76,7 @@ public class OrderControllerIT {
     }
 
     @Test
+    @WithMockUser("ringo")
     void addOrder_invalidDTO_httpStatusBadRequest() throws Exception {
         AddOrderDTO addOrderDTO = new AddOrderDTO("");
         try {
@@ -89,4 +93,6 @@ public class OrderControllerIT {
             assert false;
         }
     }
+
+
 }
