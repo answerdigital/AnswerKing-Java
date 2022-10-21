@@ -47,7 +47,6 @@ public class CategoryService {
             throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
-        // TODO BENCH-36 REPLACE WITH MODELMAPPER
         Category existingCategory = findById(id);
         existingCategory.setName(updateCategoryRequest.name());
         existingCategory.setDescription(updateCategoryRequest.description());
@@ -58,6 +57,10 @@ public class CategoryService {
         Category category = findById(categoryId);
         Item item = itemService.findById(itemId);
 
+        if(category.getItemsSet().contains(item)){
+            throw new ConflictException("Category already has this item");
+        }
+
         category.getItemsSet().add(item);
         return categoryRepository.save(category);
     }
@@ -66,6 +69,9 @@ public class CategoryService {
         Category category = findById(categoryId);
         Item item = itemService.findById(itemId);
 
+        if(!category.getItemsSet().contains(item)){
+            throw new NotFoundException("Category does not have this item");
+        }
         category.getItemsSet().remove(item);
         return categoryRepository.save(category);
     }
