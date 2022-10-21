@@ -38,10 +38,13 @@ public class ItemService {
     }
 
     public Item updateItem(long itemId, ItemRequest itemRequest) {
+        itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException(String.format("Item with ID %d does not exist.", itemId)));
         if (itemRepository.existsByNameAndIdIsNot(itemRequest.name(), itemId)) {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
         Item updatedItem = new Item(itemRequest);
+        updatedItem.setId(itemId);
 
         return itemRepository.save(updatedItem);
     }

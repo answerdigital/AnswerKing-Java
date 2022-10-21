@@ -1,46 +1,35 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "item")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Item name must only contain letters, spaces and dashes")
     private String name;
-
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
-            message = "Item description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
-
     @Column(precision = 12, scale = 2)
-    @Digits(integer = 12, fraction = 2)
-    @NotBlank
-    @Pattern(regexp = "^[0-9]*.[0-9]{2}", message = "Item price is in invalid format")
     private BigDecimal price;
-
-    @NotNull
     private Boolean available;
-
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "items")
     private Set<Category> categories = new HashSet<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<OrderItem> orderItems;
 
     public Item() {
     }
@@ -80,7 +69,7 @@ public class Item {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.setScale(2, RoundingMode.DOWN);
     }
 
     public boolean isAvailable() {
@@ -89,6 +78,23 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @JsonIgnore
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     @Override
@@ -102,5 +108,17 @@ public class Item {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", available=" + available +
+                ", categories=" + categories +
+                '}';
     }
 }

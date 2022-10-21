@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> foundOrders = orderService.findAll();
-        return new ResponseEntity<>(foundOrders, foundOrders.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(foundOrders, foundOrders.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(path = "/{orderId}/item/{itemId}/quantity/{quantity}")

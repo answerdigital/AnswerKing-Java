@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.http.HttpStatus;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 public class ErrorResponse {
@@ -17,12 +16,12 @@ public class ErrorResponse {
     @JsonIgnore
     private final HttpStatus httpStatus;
 
-    public ErrorResponse(HttpStatus httpStatus, String message, HttpServletRequest request) {
+    public ErrorResponse(HttpStatus httpStatus, String message, String path) {
         this.timestamp = new Date();
         this.status = httpStatus.value();
         this.error = httpStatus.name();
         this.message = message;
-        this.path = request.getRequestURI();
+        this.path = path;
         this.httpStatus = httpStatus;
     }
 

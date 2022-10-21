@@ -1,11 +1,10 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "order")
@@ -20,11 +19,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @ElementCollection
-    @CollectionTable(name = "order_item", joinColumns = @JoinColumn(name="order_id", referencedColumnName = "id"))
-    @MapKeyJoinColumn(name = "item_id")
-    @Column(name = "quantity")
-    private Map<Item, Integer> basket;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     public Order() {
     }
@@ -32,30 +28,10 @@ public class Order {
     public Order(String address) {
         this.address = address;
         this.orderStatus = OrderStatus.IN_PROGRESS;
-        this.basket = new HashMap<>();
     }
 
-    public void addItemToBasket(Item item, Integer quantity) {
-        basket.put(item, quantity);
-    }
-
-    public void updateItemInBasket(Item item, Integer quantity) {
-        basket.put(item, quantity);
-    }
-
-    public void removeItemFromBasket(Item item) {
-        basket.remove(item);
-    }
-
-    public boolean basketHasItem(Item item) {
-        return basket.containsKey(item);
-    }
-
-    public BigDecimal getTotalValueOfBasket() {
-        return basket.keySet().stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(basket.get(item))))
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public Long getId() {
@@ -78,8 +54,16 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public Map<Item, Integer> getBasket() {
-        return new HashMap<>(basket);
+    public List<OrderItem> getOrderItems() {
+        return orderItems
+                .stream()
+                .sorted(Comparator.comparing(OrderItem::getId))
+                .toList();
+    }
+
+    @JsonIgnore
+    public Set<OrderItem> getOrderItemsSet() {
+        return orderItems;
     }
 
     @Override
@@ -95,12 +79,4 @@ public class Order {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", address='" + address + '\'' +
-                ", orderStatus=" + orderStatus +
-                '}';
-    }
 }

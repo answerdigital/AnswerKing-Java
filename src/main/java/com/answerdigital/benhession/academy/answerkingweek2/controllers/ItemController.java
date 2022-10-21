@@ -26,7 +26,7 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<List<Item>> getAllItems() {
         List<Item> items = itemService.findAll();
-        return new ResponseEntity<>(items, items.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(items, items.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(path = "/{id}")
