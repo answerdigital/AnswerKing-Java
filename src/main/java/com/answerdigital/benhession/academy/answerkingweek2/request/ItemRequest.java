@@ -1,14 +1,12 @@
 package com.answerdigital.benhession.academy.answerkingweek2.request;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 public record ItemRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s-]*",
-                message = "Category name must only contain letters, spaces and dashes")
+                message = "Item name must only contain letters, spaces and dashes")
         String name,
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
@@ -16,8 +14,9 @@ public record ItemRequest(
         String description,
 
         @Digits(integer = 12, fraction = 2, message = "Item price is invalid")
-        @NotBlank
+        @DecimalMin(value = "0.0", inclusive = false, message = "Item price is invalid")
+        @NotNull
         BigDecimal price,
-        @NotBlank
+        @NotNull
         boolean available
 ){}
