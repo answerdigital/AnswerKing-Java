@@ -1,7 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.answerdigital.benhession.academy.answerkingweek2.request.AddItemRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -45,11 +45,11 @@ public class Item {
     public Item() {
     }
 
-    public Item(AddItemRequest addItemRequest){
-        this.name = addItemRequest.name();
-        this.description = addItemRequest.description();
-        this.price = addItemRequest.price();
-        this.available = addItemRequest.available();
+    public Item(ItemRequest itemRequest){
+        this.name = itemRequest.name();
+        this.description = itemRequest.description();
+        this.price = itemRequest.price();
+        this.available = itemRequest.available();
     }
 
     public Item(String name, String description, BigDecimal price, boolean isAvailable) {

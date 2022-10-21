@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
-public record AddItemRequest(
+public record ItemRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s-]*",
                 message = "Category name must only contain letters, spaces and dashes")

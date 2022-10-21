@@ -1,6 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.controllers;
 
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddOrderRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@RequestBody @NotBlank String address) {
-        return new ResponseEntity<>(orderService.addOrder(address), HttpStatus.CREATED);
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody AddOrderRequest addOrderRequest) {
+        return new ResponseEntity<>(orderService.addOrder(addOrderRequest.address()), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{orderId}")

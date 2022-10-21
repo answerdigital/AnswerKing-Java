@@ -1,8 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.controllers;
 
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
-import com.answerdigital.benhession.academy.answerkingweek2.request.AddItemRequest;
-import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateItemRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,12 +35,12 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Item> addItem(@Valid @RequestBody AddItemRequest addItemRequest) {
-        return ResponseEntity.ok(itemService.addNewItem(addItemRequest));
+    public ResponseEntity<Item> addItem(@Valid @RequestBody ItemRequest itemRequest) {
+        return ResponseEntity.ok(itemService.addNewItem(itemRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Item> updateItem(@PathVariable @NotNull long id, @Valid @RequestBody AddItemRequest addItemRequest) {
-        return ResponseEntity.ok(itemService.updateItem(id, addItemRequest));
+    public ResponseEntity<Item> updateItem(@PathVariable @NotNull long id, @Valid @RequestBody ItemRequest itemRequest) {
+        return ResponseEntity.ok(itemService.updateItem(id, itemRequest));
     }
 }
