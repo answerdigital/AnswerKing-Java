@@ -76,8 +76,7 @@ public class OrderService {
             throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", orderId, itemId));
         }
 
-        orderRepository.save(order);
-        return order;
+        return orderRepository.save(order);
     }
 
     public Order deleteItemInBasket(Long orderId, Long itemId) {
@@ -93,8 +92,6 @@ public class OrderService {
             throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", itemId, orderId));
         }
         order.getOrderItemsSet().remove(existingOrderItem.get());
-        orderRepository.save(order);
-
-        return order;
+        return orderRepository.save(order);
     }
 }
