@@ -1,78 +1,40 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
-import com.answerdigital.benhession.academy.answerkingweek2.dto.AddOrderDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "order")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotNull
     private String address;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @NotNull
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @ElementCollection
-    @CollectionTable(name = "order_item", joinColumns = @JoinColumn(name="order_id", referencedColumnName = "id"))
-    @MapKeyJoinColumn(name = "item_id")
-    @Column(name = "quantity")
-    private Map<Item, Integer> basket;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     public Order() {
     }
 
-    public Order(AddOrderDTO addOrderDTO) {
-        this.address = addOrderDTO.getAddress();
-        this.orderStatus = new OrderStatus("Created");
-        this.basket = new HashMap<>();
+    public Order(String address) {
+        this.address = address;
+        this.orderStatus = OrderStatus.IN_PROGRESS;
     }
 
-    public boolean addItemToBasket(Item item, int quantity) {
-        boolean successful;
-
-        if(basket.containsKey(item)) {
-            successful = false;
-        } else {
-            basket.put(item, quantity);
-            successful = true;
-        }
-
-        return successful;
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
-    public boolean basketHasItem(Item item) {
-        return basket.containsKey(item);
-    }
-
-    public void removeItemFromBasket(Item item) {
-        basket.remove(item);
-    }
-
-    public void updateQuantity(Item item, int quantity) {
-        basket.put(item, quantity);
-    }
-
-    public BigDecimal getTotalValueOfBasket() {
-
-        return basket.keySet().stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(basket.get(item))))
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-    }
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -92,8 +54,16 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public Map<Item, Integer> getBasket() {
-        return new HashMap<>(basket);
+    public List<OrderItem> getOrderItems() {
+        return orderItems
+                .stream()
+                .sorted(Comparator.comparing(OrderItem::getId))
+                .toList();
+    }
+
+    @JsonIgnore
+    public Set<OrderItem> getOrderItemsSet() {
+        return orderItems;
     }
 
     @Override
@@ -101,7 +71,7 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id;
+        return id.equals(order.id);
     }
 
     @Override
@@ -109,12 +79,4 @@ public class Order {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", address='" + address + '\'' +
-                ", orderStatus=" + orderStatus +
-                '}';
-    }
 }
