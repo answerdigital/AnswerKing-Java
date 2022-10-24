@@ -1,82 +1,55 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
-import com.answerdigital.benhession.academy.answerkingweek2.dto.AddCategoryDTO;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  int id;
-    @NotNull
+    private Long id;
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Category name must only contain letters, spaces and dashes")
     private String name;
-    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
+            message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
-    @OneToMany(mappedBy = "category")
-    private final Set<ItemCategory> itemCategories = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "item_category",
+            joinColumns = {@JoinColumn(name = "category_id")},
+            inverseJoinColumns = {@JoinColumn(name = "item_id")})
+    private Set<Item> items = new HashSet<>();
+
+    public Category() {
+    }
+
+    public Category(AddCategoryRequest categoryRequest) {
+        this.name = categoryRequest.name();
+        this.description = categoryRequest.description();
+    }
 
     public Category(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Category(AddCategoryDTO addCategoryDTO) {
-        this.name = addCategoryDTO.getName();
-        this.description = addCategoryDTO.getDescription();
-    }
-
-    public Category() {
-
-    }
-
-    void addItemCategory(ItemCategory itemCategory) {
-         itemCategories.add(itemCategory);
-    }
-
-    void removeItem(Item item) {
-
-        Optional<ItemCategory> itemCategory = itemCategories.stream()
-                .filter(ic -> ic.getItem().equals(item))
-                .findFirst();
-
-        itemCategory.map(itemCategories::remove);
-
-    }
-
-    public boolean containsItem(Item item) {
-        return getItems().contains(item);
-    }
-
-    public int getId() {
+    public Long getId() {
         return id;
-    }
-
-    public Set<Item> getItems() {
-        return itemCategories.stream().map(ItemCategory::getItem).collect(Collectors.toSet());
-    }
-
-    public Set<ItemCategory> getItemCategories() {
-        return new HashSet<>(itemCategories);
-    }
-
-    public void clearItemCategories() {
-        itemCategories.clear();
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setName(String name) {
@@ -87,10 +60,14 @@ public class Category {
         this.description = description;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getDescription() {
+        return description;
     }
 
+    @JsonIgnore
+    public Set<Item> getItemsSet() {
+        return items;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -111,7 +88,6 @@ public class Category {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", itemCategories=" + itemCategories +
                 '}';
     }
 }

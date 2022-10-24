@@ -1,13 +1,9 @@
-package com.answerdigital.benhession.academy.answerkingweek2.exceptions;
+package com.answerdigital.benhession.academy.answerkingweek2.exceptions.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 public class ErrorResponse {
@@ -20,20 +16,12 @@ public class ErrorResponse {
     @JsonIgnore
     private final HttpStatus httpStatus;
 
-    public ErrorResponse(HttpStatus httpStatus, String message, HttpServletRequest request) {
+    public ErrorResponse(HttpStatus httpStatus, String message, String path) {
         this.timestamp = new Date();
         this.status = httpStatus.value();
         this.error = httpStatus.name();
         this.message = message;
-        this.path = request.getRequestURI();
-        this.httpStatus = httpStatus;
-    }
-
-    public ErrorResponse(HttpStatus httpStatus, String message) {
-        this.timestamp = new Date();
-        this.status = httpStatus.value();
-        this.error = httpStatus.name();
-        this.message = message;
+        this.path = path;
         this.httpStatus = httpStatus;
     }
 
@@ -60,5 +48,4 @@ public class ErrorResponse {
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }
-
 }
