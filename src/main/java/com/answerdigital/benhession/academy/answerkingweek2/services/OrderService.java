@@ -1,10 +1,10 @@
 package com.answerdigital.benhession.academy.answerkingweek2.services;
 
-import com.answerdigital.benhession.academy.answerkingweek2.exceptions.UnableToSaveEntityException;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.*;
+import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
+import com.answerdigital.benhession.academy.answerkingweek2.model.OrderItem;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.OrderRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,44 +13,85 @@ import java.util.Optional;
 
 @Service
 public class OrderService {
-
     private final OrderRepository orderRepository;
-
-    Logger logger = LoggerFactory.getLogger("Order service");
+    private final ItemService itemService;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository,
+                        ItemService itemService) {
         this.orderRepository = orderRepository;
+        this.itemService = itemService;
     }
 
-    private Order save(Order order) throws UnableToSaveEntityException {
-        try {
-            return orderRepository.save(order);
-        } catch (Exception e) {
-            logger.error("save order: save operation failed:" + e.getMessage());
-            throw new UnableToSaveEntityException("Unable to save order");
+    public Order addOrder(String address) {
+        Order order = new Order(address);
+        return orderRepository.save(order);
+    }
+
+    public Order findById(Long orderId) {
+        return orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
+    }
+
+    public List<Order> findAll() {
+        return this.orderRepository.findAll();
+    }
+
+    public Order addItemToBasket(Long orderId, Long itemId, Integer quantity) {
+        Order order = findById(orderId);
+        Item item = itemService.findById(itemId);
+
+        if (!item.isAvailable()) {
+            throw new ItemUnavailableException(String.format("The item with ID %d is not available.", item.getId()));
         }
-    }
 
-    public Optional<Order> addOrder(Order order) throws UnableToSaveEntityException {
-        return Optional.of(save(order));
-    }
+        Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+                .stream()
+                .filter(orderItem -> orderItem.getItem() == item)
+                .findFirst();
 
-    public Optional<Order> findById(int orderId) {
-        return orderRepository.findById(orderId);
-    }
-
-    public Order update(Order order) throws UnableToSaveEntityException {
-        return save(order);
-    }
-
-    public Optional<List<Order>> getAll() {
-        List<Order> orders = orderRepository.findAll();
-
-        if(orders.isEmpty()) {
-            return Optional.empty();
+        if (existingOrderItem.isPresent()) {
+            throw new ConflictException(String.format("Item id %s is already in the basket", item.getId()));
         } else {
-            return Optional.of(orders);
+            OrderItem orderItem = new OrderItem(order, item, quantity);
+            order.getOrderItemsSet().add(orderItem);
         }
+
+        return orderRepository.save(order);
+    }
+
+    public Order updateItemQuantity(Long orderId, Long itemId, Integer itemQuantity) {
+        Order order = findById(orderId);
+        Item item = itemService.findById(itemId);
+
+        Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+                .stream()
+                .filter(orderItem -> orderItem.getItem() == item)
+                .findFirst();
+
+        if (existingOrderItem.isPresent()) {
+            existingOrderItem.get().setQuantity(itemQuantity);
+        } else {
+            throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", orderId, itemId));
+        }
+
+        return orderRepository.save(order);
+    }
+
+    public Order deleteItemInBasket(Long orderId, Long itemId) {
+        Order order = findById(orderId);
+        Item item = itemService.findById(itemId);
+
+        Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+                .stream()
+                .filter(orderItem -> orderItem.getItem() == item)
+                .findFirst();
+
+        if (existingOrderItem.isEmpty()) {
+            throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", itemId, orderId));
+        }
+        order.getOrderItemsSet().remove(existingOrderItem.get());
+        return orderRepository.save(order);
     }
 }

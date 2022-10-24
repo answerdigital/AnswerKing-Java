@@ -1,89 +1,83 @@
 package com.answerdigital.benhession.academy.answerkingweek2.services;
 
-import com.answerdigital.benhession.academy.answerkingweek2.exceptions.UnableToSaveEntityException;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
-import com.answerdigital.benhession.academy.answerkingweek2.model.ItemCategory;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.CategoryRepository;
-import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemCategoryRepository;
-import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class CategoryService {
-
-    CategoryRepository categoryRepository;
-    ItemRepository itemRepository;
-    ItemCategoryRepository itemCategoryRepository;
-    Logger logger = LoggerFactory.getLogger("Category service");
+    private final ItemService itemService;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository,
-                           ItemCategoryRepository itemCategoryRepository) {
+    public CategoryService(ItemService itemService, CategoryRepository categoryRepository) {
+        this.itemService = itemService;
         this.categoryRepository = categoryRepository;
-        this.itemRepository = itemRepository;
-        this.itemCategoryRepository = itemCategoryRepository;
     }
 
-    public Optional<Category> addCategory(Category category) throws UnableToSaveEntityException {
-        if (categoryRepository.existsByName(category.getName())) {
-            return Optional.empty();
-        } else {
-            return Optional.of(save(category));
-        }
-    }
-
-    public Optional<Category> updateCategory(Category category) throws UnableToSaveEntityException {
-
-        boolean hasNameConflict = categoryRepository.existsByNameAndIdIsNot(category.getName(), category.getId());
-
-        if (hasNameConflict) {
-            return Optional.empty();
-        } else {
-            return Optional.of(save(category));
+    public Category addCategory(AddCategoryRequest categoryRequest) {
+        if (categoryRepository.existsByName(categoryRequest.name())) {
+            throw new ConflictException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
 
+        Category category = new Category(categoryRequest);
+        return categoryRepository.save(category);
     }
 
-    private Category save(Category category) throws UnableToSaveEntityException {
-        try {
-            return categoryRepository.save(category);
-        } catch (Exception e) {
-            logger.error("save category: save operation failed");
-            throw new UnableToSaveEntityException(String.format("Unable to save category = %s", category.getName()));
+    private Category findById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+    }
+
+    public Set<Category> findAll() {
+        return categoryRepository.findAll();
+    }
+
+    public Category updateCategory(UpdateCategoryRequest updateCategoryRequest, Long id) {
+        // check that the category isn't being renamed to a category name that already exists
+        if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
+            throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
+
+        Category existingCategory = findById(id);
+        existingCategory.setName(updateCategoryRequest.name());
+        existingCategory.setDescription(updateCategoryRequest.description());
+        return categoryRepository.save(existingCategory);
     }
 
-    public Optional<Set<Category>> getAll() {
-        Set<Category> currentCategories = categoryRepository.findAll();
+    public Category addItemToCategory(Long categoryId, Long itemId) {
+        Category category = findById(categoryId);
+        Item item = itemService.findById(itemId);
 
-        return currentCategories.isEmpty() ? Optional.empty() : Optional.of(currentCategories);
+        if(category.getItemsSet().contains(item)){
+            throw new ConflictException("Category already has this item");
+        }
+
+        category.getItemsSet().add(item);
+        return categoryRepository.save(category);
     }
 
-    public Optional<Category> findById(int categoryId) {
-        return categoryRepository.findById(categoryId);
+    public Category removeItemFromCategory(Long categoryId, Long itemId) {
+        Category category = findById(categoryId);
+        Item item = itemService.findById(itemId);
+
+        if(!category.getItemsSet().contains(item)){
+            throw new NotFoundException("Category does not have this item");
+        }
+        category.getItemsSet().remove(item);
+        return categoryRepository.save(category);
     }
 
-    public Category remove(Category category) {
-        Set<Item> items = category.getItems();
-        Set<ItemCategory> itemCategories = category.getItemCategories();
-        items.forEach(item -> item.remove(category));
-        category.clearItemCategories();
-
-        itemCategoryRepository.deleteAll(itemCategories);
-        itemRepository.saveAll(items);
-        categoryRepository.delete(category);
-
-        return category;
-    }
-
-    public boolean allExist(Set<Integer> ids) {
-        return ids.size() == categoryRepository.countByIdIn(ids);
+    public void deleteCategoryById(Long categoryId) {
+        findById(categoryId);
+        categoryRepository.deleteById(categoryId);
     }
 }
