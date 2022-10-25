@@ -1,6 +1,8 @@
 package com.answerdigital.benhession.academy.answerkingweek2.services;
 
-import com.answerdigital.benhession.academy.answerkingweek2.exceptions.*;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ItemUnavailableException;
+import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
 import com.answerdigital.benhession.academy.answerkingweek2.model.OrderItem;
@@ -17,18 +19,17 @@ public class OrderService {
     private final ItemService itemService;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository,
-                        ItemService itemService) {
+    public OrderService(final OrderRepository orderRepository, final ItemService itemService) {
         this.orderRepository = orderRepository;
         this.itemService = itemService;
     }
 
-    public Order addOrder(String address) {
-        Order order = new Order(address);
+    public Order addOrder(final String address) {
+        final Order order = new Order(address);
         return orderRepository.save(order);
     }
 
-    public Order findById(Long orderId) {
+    public Order findById(final Long orderId) {
         return orderRepository
                 .findById(orderId)
                 .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
@@ -38,15 +39,15 @@ public class OrderService {
         return this.orderRepository.findAll();
     }
 
-    public Order addItemToBasket(Long orderId, Long itemId, Integer quantity) {
-        Order order = findById(orderId);
-        Item item = itemService.findById(itemId);
+    public Order addItemToBasket(final Long orderId, final Long itemId, final Integer quantity) {
+       final  Order order = findById(orderId);
+        final Item item = itemService.findById(itemId);
 
         if (!item.isAvailable()) {
             throw new ItemUnavailableException(String.format("The item with ID %d is not available.", item.getId()));
         }
 
-        Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -54,18 +55,18 @@ public class OrderService {
         if (existingOrderItem.isPresent()) {
             throw new ConflictException(String.format("Item id %s is already in the basket", item.getId()));
         } else {
-            OrderItem orderItem = new OrderItem(order, item, quantity);
+            final OrderItem orderItem = new OrderItem(order, item, quantity);
             order.getOrderItemsSet().add(orderItem);
         }
 
         return orderRepository.save(order);
     }
 
-    public Order updateItemQuantity(Long orderId, Long itemId, Integer itemQuantity) {
-        Order order = findById(orderId);
-        Item item = itemService.findById(itemId);
+    public Order updateItemQuantity(final Long orderId, final Long itemId, final Integer itemQuantity) {
+        final Order order = findById(orderId);
+        final Item item = itemService.findById(itemId);
 
-        Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -79,11 +80,11 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order deleteItemInBasket(Long orderId, Long itemId) {
-        Order order = findById(orderId);
-        Item item = itemService.findById(itemId);
+    public Order deleteItemInBasket(final Long orderId, final Long itemId) {
+        final Order order = findById(orderId);
+        final Item item = itemService.findById(itemId);
 
-        Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();

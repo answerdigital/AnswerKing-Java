@@ -16,7 +16,7 @@ public class ErrorResponse {
     @JsonIgnore
     private final HttpStatus httpStatus;
 
-    public ErrorResponse(HttpStatus httpStatus, String message, String path) {
+    public ErrorResponse(final HttpStatus httpStatus, final String message, final String path) {
         this.timestamp = new Date();
         this.status = httpStatus.value();
         this.error = httpStatus.name();

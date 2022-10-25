@@ -1,9 +1,17 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 @Entity
@@ -30,7 +38,7 @@ public class OrderItem {
     @Transient
     private BigDecimal itemTotalPrice;
 
-    public OrderItem(Order order, Item item, int quantity) {
+    public OrderItem(final Order order, final Item item, final int quantity) {
         this.order = order;
         this.item = item;
         this.quantity = quantity;
@@ -43,7 +51,7 @@ public class OrderItem {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -52,7 +60,7 @@ public class OrderItem {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(final Order order) {
         this.order = order;
     }
 
@@ -60,11 +68,11 @@ public class OrderItem {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(final Item item) {
         this.item = item;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(final Integer quantity) {
         this.quantity = quantity;
     }
 

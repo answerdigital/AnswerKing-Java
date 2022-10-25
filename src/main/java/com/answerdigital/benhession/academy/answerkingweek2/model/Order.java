@@ -2,9 +2,21 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Objects;
 
 @Entity
 @Table(name = "order")
@@ -25,12 +37,12 @@ public class Order {
     public Order() {
     }
 
-    public Order(String address) {
+    public Order(final String address) {
         this.address = address;
         this.orderStatus = OrderStatus.IN_PROGRESS;
     }
 
-    public void setOrderItems(Set<OrderItem> orderItems) {
+    public void setOrderItems(final Set<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
 
@@ -46,11 +58,11 @@ public class Order {
         return orderStatus;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -67,10 +79,10 @@ public class Order {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
+        final Order order = (Order) o;
         return id.equals(order.id);
     }
 
