@@ -3,7 +3,14 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.HashSet;
@@ -34,12 +41,12 @@ public class Category {
     public Category() {
     }
 
-    public Category(AddCategoryRequest categoryRequest) {
+    public Category(final AddCategoryRequest categoryRequest) {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
     }
 
-    public Category(String name, String description) {
+    public Category(final String name, final String description) {
         this.name = name;
         this.description = description;
     }
@@ -52,11 +59,11 @@ public class Category {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -70,10 +77,10 @@ public class Category {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
+        final Category category = (Category) o;
         return name.equals(category.name);
     }
 

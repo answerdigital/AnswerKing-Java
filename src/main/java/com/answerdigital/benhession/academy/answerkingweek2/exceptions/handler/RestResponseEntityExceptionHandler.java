@@ -25,7 +25,9 @@ import java.util.Objects;
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            final MethodArgumentNotValidException ex, final HttpHeaders headers,
+            final HttpStatus status, final WebRequest request) {
         String error;
         try {
             error = Objects.requireNonNull(ex.getFieldError()).getDefaultMessage();
@@ -33,43 +35,47 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             error = "Unknown error";
         }
 
-        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, error, ((ServletWebRequest)request).getRequest().getRequestURI());
+        final ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, error, (
+                (ServletWebRequest)request).getRequest().getRequestURI());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception,
-                                                                            HttpServletRequest request) {
-        List<String> errorMessages = exception.getConstraintViolations().stream()
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(final ConstraintViolationException exception,
+                                                                            final HttpServletRequest request) {
+        final List<String> errorMessages = exception.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .toList();
 
-        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, errorMessages.toString(), request.getRequestURI());
+        final ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST, errorMessages.toString(), request.getRequestURI());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(RuntimeException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request.getRequestURI());
+    public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException e, final HttpServletRequest request) {
+        final ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request.getRequestURI());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflictException(RuntimeException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.CONFLICT, e.getMessage(), request.getRequestURI());
+    public ResponseEntity<ErrorResponse> handleConflictException(final RuntimeException e, final HttpServletRequest request) {
+        final ErrorResponse response = new ErrorResponse(HttpStatus.CONFLICT, e.getMessage(), request.getRequestURI());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
     @ExceptionHandler(ItemUnavailableException.class)
-    public ResponseEntity<ErrorResponse> handleItemUnavailableException(RuntimeException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage(), request.getRequestURI());
+    public ResponseEntity<ErrorResponse> handleItemUnavailableException(
+            final RuntimeException e, final HttpServletRequest request) {
+        final ErrorResponse response = new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage(), request.getRequestURI());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
     // if an uncaught exception arrives here, default to a 500 Internal Server Error
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
-    public ResponseEntity<ErrorResponse> defaultExceptionHandler(Exception e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), request.getRequestURI());
+    public ResponseEntity<ErrorResponse> defaultExceptionHandler(final Exception e, final HttpServletRequest request) {
+        final ErrorResponse response = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), request.getRequestURI());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 }
