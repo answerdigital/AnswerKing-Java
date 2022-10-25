@@ -4,5 +4,28 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
+    <module name="TreeWalker">
+        <module name="AvoidStarImport"/>
+        <module name="ConstantName"/>
+        <module name="EmptyBlock"/>
+        <module name="FinalClass"/>
+        <module name="MutableException"/>
+        <module name="FinalLocalVariable"/>
+        <module name="NoFinalizer"/>
+        <module name="FinalParameters" />
+        <module name="IllegalImport"/>
+        <module name="UnusedImports"/>
+        <module name="ConstantName"/>
+    </module>
+    <module name="FileLength">
+        <property name="max" value="1000"/>
+    </module>
+    <module name="LineLength">
+        <property name="fileExtensions" value="java"/>
+        <property name="max" value="130"/>
+        <property name="ignorePattern"
+                  value="^( *\* *([^ ]+|\{@code .*|&lt;a href=&quot;[^&quot;]+&quot;&gt;)|(package|import) .*)$"/>
+    </module>
+    <module name="NewlineAtEndOfFile"/>
 
 </module>

@@ -18,21 +18,21 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CategoryService(ItemService itemService, CategoryRepository categoryRepository) {
+    public CategoryService(final ItemService itemService, final CategoryRepository categoryRepository) {
         this.itemService = itemService;
         this.categoryRepository = categoryRepository;
     }
 
-    public Category addCategory(AddCategoryRequest categoryRequest) {
+    public Category addCategory(final AddCategoryRequest categoryRequest) {
         if (categoryRepository.existsByName(categoryRequest.name())) {
             throw new ConflictException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
 
-        Category category = new Category(categoryRequest);
+        final Category category = new Category(categoryRequest);
         return categoryRepository.save(category);
     }
 
-    private Category findById(Long categoryId) {
+    private Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
     }
@@ -41,21 +41,21 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category updateCategory(UpdateCategoryRequest updateCategoryRequest, Long id) {
+    public Category updateCategory(final UpdateCategoryRequest updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
             throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
-        Category existingCategory = findById(id);
+        final Category existingCategory = findById(id);
         existingCategory.setName(updateCategoryRequest.name());
         existingCategory.setDescription(updateCategoryRequest.description());
         return categoryRepository.save(existingCategory);
     }
 
-    public Category addItemToCategory(Long categoryId, Long itemId) {
-        Category category = findById(categoryId);
-        Item item = itemService.findById(itemId);
+    public Category addItemToCategory(final Long categoryId, final Long itemId) {
+        final Category category = findById(categoryId);
+        final Item item = itemService.findById(itemId);
 
         if(category.getItemsSet().contains(item)){
             throw new ConflictException("Category already has this item");
@@ -65,9 +65,9 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category removeItemFromCategory(Long categoryId, Long itemId) {
-        Category category = findById(categoryId);
-        Item item = itemService.findById(itemId);
+    public Category removeItemFromCategory(final Long categoryId, final Long itemId) {
+        final Category category = findById(categoryId);
+        final Item item = itemService.findById(itemId);
 
         if(!category.getItemsSet().contains(item)){
             throw new NotFoundException("Category does not have this item");
@@ -76,7 +76,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public void deleteCategoryById(Long categoryId) {
+    public void deleteCategoryById(final Long categoryId) {
         findById(categoryId);
         categoryRepository.deleteById(categoryId);
     }
