@@ -4,7 +4,17 @@ import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.PreRemove;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
@@ -34,14 +44,14 @@ public class Item {
     public Item() {
     }
 
-    public Item(ItemRequest itemRequest){
+    public Item(final ItemRequest itemRequest){
         this.name = itemRequest.name();
         this.description = itemRequest.description();
         this.price = itemRequest.price();
         this.available = itemRequest.available();
     }
 
-    public Item(String name, String description, BigDecimal price, boolean isAvailable) {
+    public Item(final String name, final String description, final BigDecimal price, final boolean isAvailable) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -60,7 +70,7 @@ public class Item {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -76,7 +86,7 @@ public class Item {
         return available;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -84,7 +94,7 @@ public class Item {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -93,15 +103,15 @@ public class Item {
         return orderItems;
     }
 
-    public void setOrderItems(Set<OrderItem> orderItems) {
+    public void setOrderItems(final Set<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
+        final Item item = (Item) o;
         return id == item.id;
     }
 

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Answerkingweek2Application {
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(Answerkingweek2Application.class, args);
 	}
 }
