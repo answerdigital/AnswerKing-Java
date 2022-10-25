@@ -16,19 +16,19 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(final ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
-    public Item addNewItem(ItemRequest itemRequest) {
+    public Item addNewItem(final ItemRequest itemRequest) {
         if (itemRepository.existsByName(itemRequest.name())) {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        Item newItem = new Item(itemRequest);
+        final Item newItem = new Item(itemRequest);
         return itemRepository.save(newItem);
     }
 
-    public Item findById(Long itemId) {
+    public Item findById(final Long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with ID %d does not exist.", itemId)));
     }
@@ -37,13 +37,13 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item updateItem(long itemId, ItemRequest itemRequest) {
+    public Item updateItem(final long itemId, final ItemRequest itemRequest) {
         itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with ID %d does not exist.", itemId)));
         if (itemRepository.existsByNameAndIdIsNot(itemRequest.name(), itemId)) {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        Item updatedItem = new Item(itemRequest);
+        final Item updatedItem = new Item(itemRequest);
         updatedItem.setId(itemId);
 
         return itemRepository.save(updatedItem);
