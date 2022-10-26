@@ -32,7 +32,7 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<List<Item>> getAllItems() {
         final List<Item> items = itemService.findAll();
-        return new ResponseEntity<>(items, items.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(items, items.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
