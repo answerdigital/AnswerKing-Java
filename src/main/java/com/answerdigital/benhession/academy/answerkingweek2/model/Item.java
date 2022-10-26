@@ -75,7 +75,7 @@ public class Item {
     @PreRemove
     private void removeItemsFromCategories() {
         for (Category category : categories) {
-            category.getItemsSet().remove(this);
+            category.getItems().remove(this);
         }
     }
 

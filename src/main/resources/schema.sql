@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS category (
 
 CREATE TABLE IF NOT EXISTS item_category (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    item_id INT NOT NULL,
-    category_id INT NOT NULL,
+    item_id BIGINT NOT NULL,
+    category_id BIGINT NOT NULL,
 
-    PRIMARY KEY (Id),
+    PRIMARY KEY (id),
     FOREIGN KEY (item_id) REFERENCES item(id),
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
@@ -36,13 +36,11 @@ CREATE TABLE IF NOT EXISTS `order` (
 
 CREATE TABLE IF NOT EXISTS order_item (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    order_id INT NOT NULL,
-    item_id INT NOT NULL,
+    order_id BIGINT NOT NULL,
+    item_id BIGINT NOT NULL,
     quantity INT NOT NULL,
-    PRIMARY KEY (ID),
 
+    PRIMARY KEY (id),
     FOREIGN KEY (order_id) REFERENCES `order`(id),
     FOREIGN KEY (item_id) REFERENCES item(id)
 );
-
-
