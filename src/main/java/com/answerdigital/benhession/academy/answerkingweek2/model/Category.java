@@ -53,8 +53,20 @@ public class Category {
         this.description = description;
     }
 
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -73,8 +85,11 @@ public class Category {
         return description;
     }
 
-    @JsonIgnore
-    public Set<Item> getItemsSet() {
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<Item> getItems() {
         return items;
     }
 

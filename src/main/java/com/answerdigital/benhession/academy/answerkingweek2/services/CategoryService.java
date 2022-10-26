@@ -62,10 +62,11 @@ public class CategoryService {
         final Category category = findById(categoryId);
         final Item item = itemService.findById(itemId);
 
-        if(category.getItemsSet().contains(item)){
+        if (category.getItems().contains(item)) {
             throw new ConflictException("Category already has this item");
         }
-        category.getItemsSet().add(item);
+
+        category.addItem(item);
         return categoryRepository.save(category);
     }
 
@@ -73,10 +74,11 @@ public class CategoryService {
         final Category category = findById(categoryId);
         final Item item = itemService.findById(itemId);
 
-        if(!category.getItemsSet().contains(item)){
+        if (!category.getItems().contains(item)) {
             throw new NotFoundException("Category does not have this item");
         }
-        category.getItemsSet().remove(item);
+
+        category.removeItem(item);
         return categoryRepository.save(category);
     }
 
