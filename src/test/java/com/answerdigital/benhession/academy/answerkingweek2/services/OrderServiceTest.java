@@ -138,7 +138,6 @@ public class OrderServiceTest {
 
         // Then (assertions)
         assertEquals(expectedResponse, response);
-        assertNotNull(response);
         assertFalse(response.getOrderItems().isEmpty());
         verify(orderRepository).save(any(Order.class));
         verify(orderRepository).findById(anyLong());
