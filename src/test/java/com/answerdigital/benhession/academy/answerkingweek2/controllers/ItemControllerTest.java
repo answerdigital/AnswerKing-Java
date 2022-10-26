@@ -18,23 +18,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -70,7 +66,7 @@ class ItemControllerTest {
         MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 
         //then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertFalse(response.getContentAsString().isEmpty());
         ObjectMapper mapper = new ObjectMapper();
         assertEquals(item.getId(), mapper.readTree(response.getContentAsString()).get(0).get("id").asLong());
@@ -80,12 +76,8 @@ class ItemControllerTest {
     @Test
     void getAllItemsReturnNoContentIfEmpty() throws Exception {
         //when
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/item");
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(itemController)
-                .build()
-                .perform(requestBuilder);
-        //then
-        actualPerformResult.andExpect(status().isNoContent());
+        mvc.perform(get("/item"))
+                .andExpect(status().isNoContent());
     }
 
     @WithMockUser("paul")
@@ -93,15 +85,10 @@ class ItemControllerTest {
     void getItemByIdReturnsOkStatusIfExist() throws Exception {
         //given
         when(itemService.findById(55L)).thenReturn(item);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/item/{id}", 55L);
         //when
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(itemController)
-                .build()
-                .perform(requestBuilder);
-        //then
-        actualPerformResult.andExpect(status().isOk());
-
+        ResultActions actualPerformResult = mvc.perform(get("/item/{id}", 55L)).andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
+        //then
         assertEquals(item.getId(), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("id").asLong());
     }
@@ -109,14 +96,7 @@ class ItemControllerTest {
     @WithMockUser("paul")
     @Test
     void getItemByIdReturnsNotFoundExceptionIfIdDoesNotExist() throws Exception {
-        //given
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/{id}", 55L);
-        //when
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(itemController)
-                .build()
-                .perform(requestBuilder);
-        //then
-        actualPerformResult.andExpect(status().isNotFound());
+        mvc.perform(get("/{id}", 55L)).andExpect(status().isNotFound());
     }
 
     @WithMockUser("paul")
