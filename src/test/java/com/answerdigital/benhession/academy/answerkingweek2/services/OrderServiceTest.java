@@ -45,12 +45,12 @@ public class OrderServiceTest {
         Order order = new Order("42 Main St");
 
         // When
-        when(orderRepository.save(any()))
+        when(orderRepository.save(any(Order.class)))
                 .thenReturn(order);
 
         // Then
         assertSame(order, orderService.addOrder("42 Main St"));
-        verify(orderRepository).save(any());
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
@@ -70,10 +70,12 @@ public class OrderServiceTest {
     @Test
     void testFindByIdThrowsNotFoundException() {
         // When
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
 
         // Then
-        assertThrows(NotFoundException.class, () -> orderService.findById(123L));
+        assertThrows(NotFoundException.class,
+                () -> orderService.findById(123L));
         verify(orderRepository).findById(anyLong());
     }
 
@@ -128,7 +130,7 @@ public class OrderServiceTest {
                 .thenReturn(Optional.of(order));
         when(itemService.findById(anyLong()))
                 .thenReturn(item);
-        when(orderRepository.save(any()))
+        when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
         Order response =
@@ -138,8 +140,8 @@ public class OrderServiceTest {
         assertEquals(expectedResponse, response);
         assertNotNull(response);
         assertFalse(response.getOrderItems().isEmpty());
-        verify(orderRepository).save(any());
-        verify(orderRepository).findById(any());
+        verify(orderRepository).save(any(Order.class));
+        verify(orderRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
     }
 
@@ -188,7 +190,7 @@ public class OrderServiceTest {
         // Then
         assertThrows(ItemUnavailableException.class,
                 () -> orderService.addItemToBasket(123L, 123L, 1));
-        verify(orderRepository).findById(any());
+        verify(orderRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
     }
 
@@ -208,7 +210,7 @@ public class OrderServiceTest {
         // Then
         assertThrows(ConflictException.class,
                 () -> orderService.addItemToBasket(12L, 12L, 1));
-        verify(orderRepository).findById(any());
+        verify(orderRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
     }
 
@@ -235,7 +237,7 @@ public class OrderServiceTest {
                 .thenReturn(Optional.of(order));
         when(itemService.findById(anyLong()))
                 .thenReturn(item);
-        when(orderRepository.save(any()))
+        when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResult);
 
         Order actualResult =
@@ -243,7 +245,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(expectedResult, actualResult);
-        verify(orderRepository).save(any());
+        verify(orderRepository).save(any(Order.class));
         verify(orderRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
     }
@@ -316,13 +318,16 @@ public class OrderServiceTest {
                 .thenReturn(Optional.of(order));
         when(itemService.findById(anyLong()))
                 .thenReturn(item);
-        when(orderRepository.save(any()))
+        when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
         Order response = orderService.deleteItemInBasket(12L, 12L);
 
         // Then
         assertEquals(expectedResponse, response);
+        verify(orderRepository).findById(anyLong());
+        verify(itemService).findById(anyLong());
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
