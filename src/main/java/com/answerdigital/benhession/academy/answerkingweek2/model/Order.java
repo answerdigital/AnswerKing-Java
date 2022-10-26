@@ -78,6 +78,10 @@ public class Order {
         return orderItems;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
