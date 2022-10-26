@@ -173,8 +173,6 @@ class CategoryServiceTest {
         verify(categoryRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
         verify(categoryRepository).save(any());
-
-        // TODO BENCH-57 work out why this isn't returning items... it may be fixed now I added addItem() but we need to double check=====================================================
     }
 
     @Test
@@ -235,6 +233,9 @@ class CategoryServiceTest {
 
         // then
         assertEquals(0, response.getItems().size());
+        verify(categoryRepository).findById(anyLong());
+        verify(itemService).findById(anyLong());
+        verify(categoryRepository).save(any());
     }
 
     @Test
@@ -253,6 +254,8 @@ class CategoryServiceTest {
 
         // then
         assertFalse(exception.getMessage().isEmpty());
+        verify(categoryRepository).findById(anyLong());
+        verify(itemService).findById(anyLong());
     }
 
     @Test
@@ -267,6 +270,7 @@ class CategoryServiceTest {
 
         // then
         assertFalse(exception.getMessage().isEmpty());
+        verify(categoryRepository).findById(anyLong());
     }
 
     @Test
@@ -280,6 +284,7 @@ class CategoryServiceTest {
 
         // then
         assertDoesNotThrow(() -> categoryService.deleteCategoryById(categoryId));
+        verify(categoryRepository).findById(anyLong());
     }
 
     @Test
@@ -294,10 +299,6 @@ class CategoryServiceTest {
 
         // then
         assertFalse(exception.getMessage().isEmpty());
+        verify(categoryRepository).findById(anyLong());
     }
-
-
-    // TODO BENCH-57 ADD VERIFICATION
-    //  verify(itemService).findById((Long) any());
-    //  etc
 }
