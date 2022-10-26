@@ -4,28 +4,27 @@ import com.answerdigital.benhession.academy.answerkingweek2.request.AddOrderRequ
 import com.answerdigital.benhession.academy.answerkingweek2.services.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-
-@ContextConfiguration(classes = {OrderController.class})
-@ExtendWith(SpringExtension.class)
+@WebMvcTest(OrderController.class)
 public class OrderControllerTest {
-
     @Autowired
     private OrderController orderController;
 
     @MockBean
     private OrderService orderService;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     /**
      * Method under test: {@link OrderController#addItemToBasket(Long, Long, Integer)}
@@ -37,6 +36,7 @@ public class OrderControllerTest {
         ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(orderController)
                 .build()
                 .perform(requestBuilder);
+
         actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
