@@ -16,6 +16,13 @@
         <module name="IllegalImport"/>
         <module name="UnusedImports"/>
         <module name="ConstantName"/>
+        <module name="EmptyBlock"/>
+        <module name="EmptyCatchBlock"/>
+        <module name="EmptyLineSeparator">
+            <property name="allowMultipleEmptyLines" value="false"/>
+            <property name="allowNoEmptyLineBetweenFields" value="false"/>
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+        </module>
     </module>
     <module name="FileLength">
         <property name="max" value="1000"/>
