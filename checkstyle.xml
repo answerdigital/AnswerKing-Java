@@ -25,6 +25,12 @@
         </module>
         <module name="EmptyStatement"/>
         <module name="Indentation"/>
+        <module name="TodoComment"/>
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="MethodName"/>
+        <module name="ConstantName"/>
+        <module name="LeftCurly"/>
     </module>
     <module name="FileLength">
         <property name="max" value="1000"/>
