@@ -307,7 +307,7 @@ public class OrderServiceTest {
         Order order = new Order("12 Brown Street");
         order.setId(12L);
         OrderItem orderItem = new OrderItem(order, item, 5);
-        order.getOrderItemsSet().add(orderItem);
+        order.getOrderItems().add(orderItem);
 
         Order expectedResponse = new Order();
         expectedResponse.setId(12L);

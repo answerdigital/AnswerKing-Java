@@ -3,27 +3,32 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
 import javax.persistence.ManyToMany;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 import javax.persistence.PreRemove;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "item")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
+@NoArgsConstructor
+@Getter
+@Setter
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,9 +45,6 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<OrderItem> orderItems;
-
-    public Item() {
-    }
 
     public Item(final ItemRequest itemRequest){
         this.name = itemRequest.name();
@@ -62,73 +64,10 @@ public class Item {
     @PreRemove
     private void removeItemsFromCategories() {
         for (Category category : categories) {
-            category.getItemsSet().remove(this);
+            category.getItems().remove(this);
         }
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public BigDecimal getPrice() {
         return price.setScale(2, RoundingMode.DOWN);
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    @JsonIgnore
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(final Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Item item = (Item) o;
-        return id == item.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", available=" + available +
-                ", categories=" + categories +
-                '}';
     }
 }
