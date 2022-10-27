@@ -2,13 +2,11 @@ package com.answerdigital.benhession.academy.answerkingweek2.controllers;
 
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
-import com.answerdigital.benhession.academy.answerkingweek2.services.CategoryService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -20,11 +18,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class CategoryControllerTest {
-    @Autowired
-    private CategoryController categoryController;
-
-    @Mock
-    private CategoryService categoryService;
 
     private Validator validator;
 
@@ -32,6 +25,11 @@ class CategoryControllerTest {
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
+    }
+
+    @AfterEach
+    void tearDown() {
+        validator = null;
     }
 
     private static Stream<Arguments> provideInvalidStringsForAddCategory() {
