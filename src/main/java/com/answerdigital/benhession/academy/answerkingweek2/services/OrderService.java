@@ -7,6 +7,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
 import com.answerdigital.benhession.academy.answerkingweek2.model.OrderItem;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.OrderRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
 
@@ -33,7 +35,11 @@ public class OrderService {
     public Order findById(final Long orderId) {
         return orderRepository
                 .findById(orderId)
-                .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
+                .orElseThrow(() -> {
+                    final var exceptionMessage = String.format("The order with ID %d does not exist.", orderId);
+                    log.error(exceptionMessage);
+                    return new NotFoundException(String.format("The order with ID %d does not exist.", orderId));
+                });
     }
 
     public List<Order> findAll() {
@@ -45,7 +51,9 @@ public class OrderService {
         final Item item = itemService.findById(itemId);
 
         if (!item.isAvailable()) {
-            throw new ItemUnavailableException(String.format("The item with ID %d is not available.", item.getId()));
+            final var exceptionMessage = String.format("The item with ID %d is not available.", item.getId());
+            log.error(exceptionMessage);
+            throw new ItemUnavailableException(exceptionMessage);
         }
 
         final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
@@ -54,7 +62,9 @@ public class OrderService {
                 .findFirst();
 
         if (existingOrderItem.isPresent()) {
-            throw new ConflictException(String.format("Item id %s is already in the basket", item.getId()));
+            final var exceptionMessage = String.format("Item id %s is already in the basket", item.getId());
+            log.error(exceptionMessage);
+            throw new ConflictException(exceptionMessage);
         } else {
             final OrderItem orderItem = new OrderItem(order, item, quantity);
             order.getOrderItemsSet().add(orderItem);
@@ -75,7 +85,9 @@ public class OrderService {
         if (existingOrderItem.isPresent()) {
             existingOrderItem.get().setQuantity(itemQuantity);
         } else {
-            throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", orderId, itemId));
+            final var exceptionMessage = String.format("Item id = %s is not in the basket of order id = %s", orderId, itemId);
+            log.error(exceptionMessage);
+            throw new NotFoundException(exceptionMessage);
         }
 
         return orderRepository.save(order);
@@ -91,7 +103,9 @@ public class OrderService {
                 .findFirst();
 
         if (existingOrderItem.isEmpty()) {
-            throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", itemId, orderId));
+            final var exceptionMessage = String.format("Item id = %s is not in the basket of order id = %s", itemId, orderId);
+            log.error(exceptionMessage);
+            throw new NotFoundException(exceptionMessage);
         }
         order.getOrderItemsSet().remove(existingOrderItem.get());
         return orderRepository.save(order);
