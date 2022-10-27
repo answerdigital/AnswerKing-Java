@@ -23,6 +23,8 @@
             <property name="allowNoEmptyLineBetweenFields" value="false"/>
             <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
         </module>
+        <module name="EmptyStatement"/>
+        <module name="Indentation"/>
     </module>
     <module name="FileLength">
         <property name="max" value="1000"/>
