@@ -16,6 +16,21 @@
         <module name="IllegalImport"/>
         <module name="UnusedImports"/>
         <module name="ConstantName"/>
+        <module name="EmptyBlock"/>
+        <module name="EmptyCatchBlock"/>
+        <module name="EmptyLineSeparator">
+            <property name="allowMultipleEmptyLines" value="false"/>
+            <property name="allowNoEmptyLineBetweenFields" value="false"/>
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+        </module>
+        <module name="EmptyStatement"/>
+        <module name="Indentation"/>
+        <module name="TodoComment"/>
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="MethodName"/>
+        <module name="ConstantName"/>
+        <module name="LeftCurly"/>
     </module>
     <module name="FileLength">
         <property name="max" value="1000"/>

@@ -20,7 +20,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 
-
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
