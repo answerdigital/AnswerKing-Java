@@ -3,10 +3,13 @@ package com.answerdigital.benhession.academy.answerkingweek2.services;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ItemUnavailableException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
+import com.answerdigital.benhession.academy.answerkingweek2.mappers.OrderMapper;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
 import com.answerdigital.benhession.academy.answerkingweek2.model.OrderItem;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.OrderRepository;
+import com.answerdigital.benhession.academy.answerkingweek2.request.OrderRequest;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +22,17 @@ public class OrderService {
 
     private final ItemService itemService;
 
+    private final OrderMapper orderMapper =
+            Mappers.getMapper(OrderMapper.class);
+
     @Autowired
     public OrderService(final OrderRepository orderRepository, final ItemService itemService) {
         this.orderRepository = orderRepository;
         this.itemService = itemService;
     }
 
-    public Order addOrder(final String address) {
-        final Order order = new Order(address);
-        return orderRepository.save(order);
+    public Order addOrder(final OrderRequest orderRequest) {
+        return orderRepository.save(orderMapper.addRequestToOrder(orderRequest));
     }
 
     public Order findById(final Long orderId) {
@@ -38,6 +43,12 @@ public class OrderService {
 
     public List<Order> findAll() {
         return this.orderRepository.findAll();
+    }
+
+    public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
+        return orderRepository.save(
+                orderMapper.updateOrderRequest(findById(orderId), orderRequest)
+        );
     }
 
     public Order addItemToBasket(final Long orderId, final Long itemId, final Integer quantity) {
