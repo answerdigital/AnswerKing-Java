@@ -2,9 +2,11 @@ package com.answerdigital.benhession.academy.answerkingweek2.services;
 
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
+import com.answerdigital.benhession.academy.answerkingweek2.mappers.ItemMapper;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.ItemRepository;
 import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +14,10 @@ import java.util.List;
 
 @Service
 public class ItemService {
-
     private final ItemRepository itemRepository;
+
+    private final ItemMapper itemMapper =
+            Mappers.getMapper(ItemMapper.class);
 
     @Autowired
     public ItemService(final ItemRepository itemRepository) {
@@ -24,8 +28,8 @@ public class ItemService {
         if (itemRepository.existsByName(itemRequest.name())) {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        final Item newItem = new Item(itemRequest);
-        return itemRepository.save(newItem);
+
+        return itemRepository.save(itemMapper.addRequestToItem(itemRequest));
     }
 
     public Item findById(final Long itemId) {
@@ -43,9 +47,8 @@ public class ItemService {
         if (itemRepository.existsByNameAndIdIsNot(itemRequest.name(), itemId)) {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        final Item updatedItem = new Item(itemRequest);
-        updatedItem.setId(itemId);
-
-        return itemRepository.save(updatedItem);
+        return itemRepository.save(
+                itemMapper.updateRequestToItem(findById(itemId), itemRequest)
+        );
     }
 }

@@ -2,11 +2,13 @@ package com.answerdigital.benhession.academy.answerkingweek2.services;
 
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
+import com.answerdigital.benhession.academy.answerkingweek2.mappers.CategoryMapper;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.CategoryRepository;
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,12 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    private final CategoryMapper categoryMapper =
+            Mappers.getMapper(CategoryMapper.class);
+
     @Autowired
-    public CategoryService(final ItemService itemService, final CategoryRepository categoryRepository) {
+    public CategoryService(final ItemService itemService,
+                           final CategoryRepository categoryRepository) {
         this.itemService = itemService;
         this.categoryRepository = categoryRepository;
     }
@@ -29,8 +35,7 @@ public class CategoryService {
             throw new ConflictException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
 
-        final Category category = new Category(categoryRequest);
-        return categoryRepository.save(category);
+        return categoryRepository.save(categoryMapper.addRequestToCategory(categoryRequest));
     }
 
     private Category findById(final Long categoryId) {
@@ -48,10 +53,9 @@ public class CategoryService {
             throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
-        final Category existingCategory = findById(id);
-        existingCategory.setName(updateCategoryRequest.name());
-        existingCategory.setDescription(updateCategoryRequest.description());
-        return categoryRepository.save(existingCategory);
+        return categoryRepository.save(
+                categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest)
+        );
     }
 
     public Category addItemToCategory(final Long categoryId, final Long itemId) {
@@ -61,7 +65,6 @@ public class CategoryService {
         if(category.getItemsSet().contains(item)){
             throw new ConflictException("Category already has this item");
         }
-
         category.getItemsSet().add(item);
         return categoryRepository.save(category);
     }
