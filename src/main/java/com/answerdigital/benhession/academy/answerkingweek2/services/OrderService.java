@@ -16,6 +16,7 @@ import java.util.Optional;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+
     private final ItemService itemService;
 
     @Autowired
@@ -40,7 +41,7 @@ public class OrderService {
     }
 
     public Order addItemToBasket(final Long orderId, final Long itemId, final Integer quantity) {
-       final  Order order = findById(orderId);
+        final  Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
         if (!item.isAvailable()) {

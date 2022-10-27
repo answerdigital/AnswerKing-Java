@@ -9,10 +9,15 @@ import java.util.Date;
 public class ErrorResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final Date timestamp;
+
     private final int status;
+
     private final String error;
+
     private final String message;
+
     private String path;
+
     @JsonIgnore
     private final HttpStatus httpStatus;
 

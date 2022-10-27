@@ -23,9 +23,11 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z\s-]*", message = "Category name must only contain letters, spaces and dashes")
     private String name;
+
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
             message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
