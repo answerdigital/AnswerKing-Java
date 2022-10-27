@@ -43,11 +43,11 @@ public class OrderService {
        final  Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
-        if (!item.isAvailable()) {
+        if (!item.getAvailable()) {
             throw new ItemUnavailableException(String.format("The item with ID %d is not available.", item.getId()));
         }
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -56,7 +56,7 @@ public class OrderService {
             throw new ConflictException(String.format("Item id %s is already in the basket", item.getId()));
         } else {
             final OrderItem orderItem = new OrderItem(order, item, quantity);
-            order.getOrderItemsSet().add(orderItem);
+            order.getOrderItems().add(orderItem);
         }
 
         return orderRepository.save(order);
@@ -66,7 +66,7 @@ public class OrderService {
         final Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -84,7 +84,7 @@ public class OrderService {
         final Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -92,7 +92,7 @@ public class OrderService {
         if (existingOrderItem.isEmpty()) {
             throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", itemId, orderId));
         }
-        order.getOrderItemsSet().remove(existingOrderItem.get());
+        order.getOrderItems().remove(existingOrderItem.get());
         return orderRepository.save(order);
     }
 }
