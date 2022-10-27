@@ -12,6 +12,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCatego
 import java.math.BigDecimal;
 import java.util.HashSet;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,6 +54,11 @@ class CategoryServiceTest {
         categoryService = new CategoryService(itemService, categoryRepository);
     }
 
+    @AfterEach
+    void tearDown() {
+        categoryService = null;
+    }
+
     @Test
     void testAddCategory() {
         // given
@@ -61,13 +67,13 @@ class CategoryServiceTest {
 
         // when
         doReturn(false).when(categoryRepository).existsByName(anyString());
-        doReturn(expectedResponse).when(categoryRepository).save(any());
+        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
         Category response = categoryService.addCategory(addCategoryRequest);
 
         // then
         assertEquals(expectedResponse, response);
         verify(categoryRepository).existsByName(anyString());
-        verify(categoryRepository).save(any());
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
@@ -100,7 +106,7 @@ class CategoryServiceTest {
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         doReturn(Optional.of(existingCategory)).when(categoryRepository).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any());
+        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
         Category response = categoryService.updateCategory(updateCategoryRequest, categoryId);
 
@@ -108,7 +114,7 @@ class CategoryServiceTest {
         assertEquals(expectedResponse, response);
         verify(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         verify(categoryRepository).findById(anyLong());
-        verify(categoryRepository).save(any());
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
@@ -164,7 +170,7 @@ class CategoryServiceTest {
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
         doReturn(item).when(itemService).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any());
+        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
         Category response = categoryService.addItemToCategory(categoryId, itemId);
 
@@ -172,7 +178,7 @@ class CategoryServiceTest {
         assertEquals(expectedResponse.getItems(), response.getItems());
         verify(categoryRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
-        verify(categoryRepository).save(any());
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
@@ -227,7 +233,7 @@ class CategoryServiceTest {
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
         doReturn(item).when(itemService).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any());
+        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
         Category response = categoryService.removeItemFromCategory(categoryId, itemId);
 
@@ -235,7 +241,7 @@ class CategoryServiceTest {
         assertEquals(0, response.getItems().size());
         verify(categoryRepository).findById(anyLong());
         verify(itemService).findById(anyLong());
-        verify(categoryRepository).save(any());
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
