@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @Entity
@@ -53,6 +54,10 @@ public class OrderItem {
         this.order = order;
         this.item = item;
         this.quantity = quantity;
+    }
+
+    public BigDecimal getItemTotalPrice() {
+        return itemTotalPrice.setScale(2, RoundingMode.DOWN);
     }
 
     @Override

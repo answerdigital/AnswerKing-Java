@@ -1,5 +1,6 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -50,12 +52,14 @@ public class Order {
         this.orderStatus = OrderStatus.IN_PROGRESS;
     }
 
+    @JsonInclude
     public BigDecimal getTotalPrice() {
         return orderItems.stream()
                 .map(orderItem -> orderItem.getItem().getPrice()
                         .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+                .orElse(BigDecimal.ZERO)
+                .setScale(2, RoundingMode.DOWN);
     }
 
     @Override
