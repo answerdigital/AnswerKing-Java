@@ -3,13 +3,13 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +22,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "order")
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder

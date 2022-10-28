@@ -25,6 +25,8 @@ public record ItemRequest(
         BigDecimal price,
         @NotNull
         boolean available
-){
-        @Builder public ItemRequest {}
+) {
+    @Builder
+    public ItemRequest {
+    }
 }
