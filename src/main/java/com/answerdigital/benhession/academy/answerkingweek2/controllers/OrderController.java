@@ -34,20 +34,28 @@ public class OrderController {
     }
 
     @PostMapping
+<<<<<<< HEAD
     public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest, final Errors errors) {
         return new ResponseEntity<>(orderService.addOrder(orderRequest),
+=======
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody final AddOrderRequest addOrderRequest, final Errors errors) {
+        return new ResponseEntity<>(orderService.addOrder(addOrderRequest.address()),
+>>>>>>> f6fd8e9 (standardizing API code)
                                             errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{orderId}")
     public ResponseEntity<Order> getOrder(@PathVariable @NotNull final Long orderId) {
         return new ResponseEntity<>(orderService.findById(orderId), HttpStatus.CREATED);
+<<<<<<< HEAD
     }
 
     @PutMapping("/{orderId}")
     public ResponseEntity<Order> updateOrder(@PathVariable @NotNull final Long orderId,
                                              @Valid @RequestBody final OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
+=======
+>>>>>>> f6fd8e9 (standardizing API code)
     }
 
     @GetMapping
