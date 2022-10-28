@@ -1,7 +1,8 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,11 +18,14 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Category {
 
@@ -41,7 +45,6 @@ public class Category {
             name = "item_category",
             joinColumns = {@JoinColumn(name = "category_id")},
             inverseJoinColumns = {@JoinColumn(name = "item_id")})
-    @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
     public Category(final AddCategoryRequest categoryRequest) {
@@ -52,5 +55,27 @@ public class Category {
     public Category(final String name, final String description) {
         this.name = name;
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Category category = (Category) o;
+        return id.equals(category.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
