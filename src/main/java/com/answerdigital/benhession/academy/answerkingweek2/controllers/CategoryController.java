@@ -25,7 +25,7 @@ import java.util.Set;
 
 @Validated
 @RestController
-@RequestMapping(path = "/category")
+@RequestMapping(path = "/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
