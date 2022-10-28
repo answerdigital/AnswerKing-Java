@@ -109,7 +109,7 @@ class ItemControllerTest {
         //given
         String newItem = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
         //when
-        mvc.perform(post("/item")
+        mvc.perform(post("/items")
                         .content(newItem)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
