@@ -19,7 +19,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceTest {
@@ -29,11 +32,23 @@ class ItemServiceTest {
     @InjectMocks
     private ItemService itemService;
     private Item item;
+    private ItemRequest itemRequest;
 
     @BeforeEach
     public void generateItem() {
-        item = new Item("test", "testDes", new BigDecimal("2.99"), true);
-        item.setId(55L);
+        item = Item.builder()
+                .id(55L)
+                .name("test")
+                .description("testDes")
+                .price(BigDecimal.valueOf(2.99))
+                .available(true)
+                .build();
+        itemRequest = ItemRequest.builder()
+                .name("test")
+                .description("testD")
+                .price(BigDecimal.valueOf(1.99))
+                .available(true)
+                .build();
     }
 
     @Test
@@ -43,7 +58,7 @@ class ItemServiceTest {
         when(itemRepository.existsByName(any())).thenReturn(false);
         //when
         Item actualAddNewItemResult = itemService.addNewItem(
-                new ItemRequest("test", "testD", BigDecimal.valueOf(1.99), true));
+                itemRequest);
         //then
         assertEquals(item.getName(), actualAddNewItemResult.getName());
         assertEquals(item.getPrice().toString(), actualAddNewItemResult.getPrice().toString());
@@ -55,7 +70,6 @@ class ItemServiceTest {
         //given
         when(itemRepository.existsByName(any())).thenReturn(true);
         //when
-        ItemRequest itemRequest = new ItemRequest("test", "testD", BigDecimal.valueOf(1.99), true);
         assertThatThrownBy(() -> itemService.addNewItem(itemRequest))
                 //then
                 .isInstanceOf(ConflictException.class)
@@ -104,7 +118,7 @@ class ItemServiceTest {
 
         //when
         Item actualAddNewItemResult = itemService.updateItem(12L,
-                new ItemRequest("test", "testD", BigDecimal.valueOf(1.99), true));
+                itemRequest);
 
         //then
         assertEquals(item.getName(), actualAddNewItemResult.getName());
@@ -114,8 +128,6 @@ class ItemServiceTest {
 
     @Test
     void updateItemThrowsExceptionIfItemIdDoesNotExist() {
-        //given
-        ItemRequest itemRequest = new ItemRequest("test", "testD", BigDecimal.valueOf(1.99), true);
         //when
         assertThatThrownBy(() -> itemService.updateItem(12L, itemRequest))
                 //then
@@ -128,7 +140,6 @@ class ItemServiceTest {
         //given
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(itemRepository.existsByNameAndIdIsNot(any(), anyLong())).thenReturn(true);
-        ItemRequest itemRequest = new ItemRequest("test", "testD", BigDecimal.valueOf(1.99), true);
         //when
         assertThatThrownBy(() -> itemService.updateItem(12L, itemRequest))
                 //then
