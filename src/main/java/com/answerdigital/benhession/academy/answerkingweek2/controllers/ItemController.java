@@ -22,7 +22,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping(path = "/item")
+@RequestMapping(path = "/items")
 public class ItemController {
     private final ItemService itemService;
 
