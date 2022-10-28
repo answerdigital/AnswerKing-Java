@@ -120,6 +120,27 @@ public class OrderServiceTest {
     }
 
     @Test
+    void testUpdateOrder() {
+        // Given
+        Order originalOrder = new Order("14 Main St");
+        OrderRequest updateOrderRequest = new OrderRequest("14 Green Street");
+        Order expectedOrder = new Order("14 Green Street");
+
+        // When
+        when(orderRepository.findById(anyLong()))
+                .thenReturn(Optional.of(originalOrder));
+        when(orderRepository.save(any(Order.class)))
+                .thenReturn(expectedOrder);
+
+        Order reponse = orderService.updateOrder(1L, updateOrderRequest);
+
+        // Then
+        assertEquals(expectedOrder, reponse);
+        verify(orderRepository).findById(anyLong());
+        verify(orderRepository).save(any(Order.class));
+    }
+
+    @Test
     void testUpdateOrderWhenOrderNotExistsThrowsNotFoundException() {
         // Given
         OrderRequest orderRequest = new OrderRequest("14 High St");
