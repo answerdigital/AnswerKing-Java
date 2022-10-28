@@ -1,40 +1,24 @@
 package com.answerdigital.benhession.academy.answerkingweek2.controllers;
 
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
-import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
-import com.answerdigital.benhession.academy.answerkingweek2.repositories.CategoryRepository;
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.services.CategoryService;
-import com.answerdigital.benhession.academy.answerkingweek2.services.ItemService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -58,7 +42,6 @@ class CategoryControllerTest {
 
         mvc.perform(put("/category/{categoryId}/additem/{itemId}", categoryId, itemId))
            .andExpect(status().isOk());
-
     }
 
     @Test
