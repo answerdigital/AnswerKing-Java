@@ -22,8 +22,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    private final CategoryMapper categoryMapper =
-            Mappers.getMapper(CategoryMapper.class);
+    private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
 
     @Autowired
     public CategoryService(final ItemService itemService,
