@@ -71,7 +71,7 @@ public class CategoryService {
             throw new ConflictException(exceptionMessage);
         }
 
-        category.getItems().add(item);
+        category.addItem(item);
         return categoryRepository.save(category);
     }
 
@@ -83,7 +83,7 @@ public class CategoryService {
             throw new NotFoundException("Category does not have this item");
         }
 
-        category.getItems().remove(item);
+        category.removeItem(item);
         return categoryRepository.save(category);
     }
 

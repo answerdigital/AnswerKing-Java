@@ -1,6 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,11 +48,19 @@ public class Category {
             name = "item_category",
             joinColumns = {@JoinColumn(name = "category_id")},
             inverseJoinColumns = {@JoinColumn(name = "item_id")})
+    @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
     public Category(final AddCategoryRequest categoryRequest) {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
+    }
+    public void addItem(final Item item) {
+        items.add(item);
+    }
+
+    public void removeItem(final Item item) {
+        items.remove(item);
     }
 
     public Category(final String name, final String description) {
