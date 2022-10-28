@@ -1,7 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.controllers;
 
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
-import com.answerdigital.benhession.academy.answerkingweek2.request.AddOrderRequest;
+import com.answerdigital.benhession.academy.answerkingweek2.request.OrderRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Valid
 @RestController
 @RequestMapping(path = "/order")
 public class OrderController {
@@ -32,8 +31,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@Valid @RequestBody final AddOrderRequest addOrderRequest) {
-        return new ResponseEntity<>(orderService.addOrder(addOrderRequest.address()), HttpStatus.CREATED);
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+        return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{orderId}")
@@ -41,10 +40,16 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findById(orderId));
     }
 
+    @PutMapping("/{orderId}")
+    public ResponseEntity<Order> updateOrder(@PathVariable @NotNull final Long orderId,
+                                             @Valid @RequestBody final OrderRequest orderRequest) {
+        return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         final List<Order> foundOrders = orderService.findAll();
-        return new ResponseEntity<>(foundOrders, foundOrders.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(foundOrders, foundOrders.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
     @PostMapping(path = "/{orderId}/item/{itemId}/quantity/{quantity}")
