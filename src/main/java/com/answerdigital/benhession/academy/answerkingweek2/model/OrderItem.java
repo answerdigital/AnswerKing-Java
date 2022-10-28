@@ -1,6 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,18 +47,15 @@ public class OrderItem {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @JsonIgnore
-    @Transient
-    private BigDecimal itemTotalPrice;
-
     public OrderItem(final Order order, final Item item, final int quantity) {
         this.order = order;
         this.item = item;
         this.quantity = quantity;
     }
 
+    @JsonInclude
     public BigDecimal getItemTotalPrice() {
-        return itemTotalPrice.setScale(2, RoundingMode.DOWN);
+        return new BigDecimal(quantity).multiply(item.getPrice()).setScale(2, RoundingMode.DOWN);
     }
 
     @Override
