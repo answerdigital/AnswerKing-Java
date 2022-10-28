@@ -61,7 +61,7 @@ class ItemControllerTest {
         given(itemService.findAll()).willReturn(List.of(item));
 
         //when
-        RequestBuilder request = MockMvcRequestBuilders.get("/item");
+        RequestBuilder request = MockMvcRequestBuilders.get("/items");
 
         MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 
@@ -76,7 +76,7 @@ class ItemControllerTest {
     @Test
     void getAllItemsReturnNoContentIfEmpty() throws Exception {
         //when
-        mvc.perform(get("/item"))
+        mvc.perform(get("/items"))
                 .andExpect(status().isNoContent());
     }
 
@@ -86,7 +86,7 @@ class ItemControllerTest {
         //given
         when(itemService.findById(55L)).thenReturn(item);
         //when
-        ResultActions actualPerformResult = mvc.perform(get("/item/{id}", 55L)).andExpect(status().isOk());
+        ResultActions actualPerformResult = mvc.perform(get("/items/{id}", 55L)).andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
         //then
         assertEquals(item.getId(), mapper.readTree(actualPerformResult.andReturn()
@@ -105,7 +105,7 @@ class ItemControllerTest {
         //given
         String newItem = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
         //when
-        mvc.perform(post("/item")
+        mvc.perform(post("/items")
                         .content(newItem)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
@@ -123,7 +123,7 @@ class ItemControllerTest {
         given(itemService.addNewItem(any())).willReturn(item);
 
         //when
-        ResultActions actualPerformResult = mvc.perform(post("/item")
+        ResultActions actualPerformResult = mvc.perform(post("/items")
                 .content(newItem)
                 .contentType(MediaType.APPLICATION_JSON));
         //then
@@ -139,7 +139,7 @@ class ItemControllerTest {
         //given
         String newItem = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\",\"available\": \"true\"}";
         //when
-        mvc.perform(MockMvcRequestBuilders.put("/item/{id}", 55L)
+        mvc.perform(MockMvcRequestBuilders.put("/items/{id}", 55L)
                         .content(newItem)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
@@ -157,7 +157,7 @@ class ItemControllerTest {
         given(itemService.updateItem(eq(55L), any())).willReturn(item);
         //when
 
-        ResultActions actualPerformResult = mvc.perform(put("/item/{id}", 55L)
+        ResultActions actualPerformResult = mvc.perform(put("/items/{id}", 55L)
                 .content(newItem)
                 .contentType(MediaType.APPLICATION_JSON));
 
