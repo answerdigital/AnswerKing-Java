@@ -116,7 +116,7 @@ class CategoryControllerTest {
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
         doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
-        final var response = mvc.perform(put("/category/{categoryId}", categoryId)
+        final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
                                                      .content(updateCategoryRequestJson)
                                                      .contentType(MediaType.APPLICATION_JSON))
                                                      .andExpect(status().isOk())
