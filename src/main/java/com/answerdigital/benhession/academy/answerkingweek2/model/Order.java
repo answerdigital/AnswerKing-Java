@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -47,6 +48,14 @@ public class Order {
     public Order(final String address) {
         this.address = address;
         this.orderStatus = OrderStatus.IN_PROGRESS;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return orderItems.stream()
+                .map(orderItem -> orderItem.getItem().getPrice()
+                        .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
     @Override
