@@ -85,6 +85,7 @@ public class Item {
             category.getItems().remove(this);
         }
     }
+
     public BigDecimal getPrice() {
         return price.setScale(2, RoundingMode.DOWN);
     }
