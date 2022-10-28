@@ -4,13 +4,11 @@ import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictE
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Category;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
-import com.answerdigital.benhession.academy.answerkingweek2.model.OrderItem;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.CategoryRepository;
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,20 +18,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
