@@ -73,7 +73,7 @@ public class Category {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Category category = (Category) o;
-        return id.equals(category.id);
+        return name.equals(category.name);
     }
 
     @Override
