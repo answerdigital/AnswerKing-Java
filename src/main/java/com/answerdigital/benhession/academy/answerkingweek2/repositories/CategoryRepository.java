@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Set;
 
 @Repository
-public interface CategoryRepository extends PagingAndSortingRepository<Category, Long>
-{
+public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
     boolean existsByName(String name);
 
     boolean existsByNameAndIdIsNot(String name, Long id);

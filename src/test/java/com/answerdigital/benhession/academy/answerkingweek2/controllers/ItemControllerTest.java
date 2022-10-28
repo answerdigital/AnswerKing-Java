@@ -119,7 +119,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("Item name must only contain letters, spaces and dashes")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("[Item name must only contain letters, spaces and dashes]")))
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
     }
@@ -153,7 +153,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("Item price is invalid")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("[Item price is invalid]")))
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
     }
