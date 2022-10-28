@@ -26,7 +26,7 @@ and execute the following commands:
 
 [Docker Compose](https://docs.docker.com/compose/install/)
 
-[JDK 17](https://adoptium.net/)
+[AMAZON CORRETTO 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html/)
 
 ## Maven 
 
@@ -52,7 +52,7 @@ If Maven isn't installed on your system, the Maven Wrapper can be used by using 
 
 ### Prerequisites
 
-[JDK 17](https://adoptium.net/)
+[AMAZON CORRETTO 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html/)
 
 ## MySQL
 
