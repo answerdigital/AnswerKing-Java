@@ -29,10 +29,10 @@ import java.util.Set;
 @Entity
 @Table(name = "item")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Item {
     @Id
@@ -82,7 +82,7 @@ public class Item {
     @PreRemove
     private void removeItemsFromCategories() {
         for (Category category : categories) {
-            category.getItems().remove(this);
+            category.removeItem(this);
         }
     }
 
