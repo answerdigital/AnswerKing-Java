@@ -48,7 +48,8 @@ public class OrderService {
     }
 
     public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        final Order updatedOrder = orderMapper.updateOrderRequest(findById(orderId), orderRequest);
+        final Order orderToUpdate = findById(orderId);
+        final Order updatedOrder = orderMapper.updateOrderRequest(orderToUpdate, orderRequest);
 
         return orderRepository.save(updatedOrder);
     }
