@@ -29,7 +29,8 @@ public class ItemService {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
 
-        return itemRepository.save(itemMapper.addRequestToItem(itemRequest));
+        final Item newItem = itemMapper.addRequestToItem(itemRequest);
+        return itemRepository.save(newItem);
     }
 
     public Item findById(final Long itemId) {
@@ -47,8 +48,8 @@ public class ItemService {
         if (itemRepository.existsByNameAndIdIsNot(itemRequest.name(), itemId)) {
             throw new ConflictException(String.format("An Item named '%s' already exists", itemRequest.name()));
         }
-        return itemRepository.save(
-                itemMapper.updateRequestToItem(findById(itemId), itemRequest)
-        );
+
+        final Item updatedItem = itemMapper.updateRequestToItem(findById(itemId), itemRequest);
+        return itemRepository.save(updatedItem);
     }
 }
