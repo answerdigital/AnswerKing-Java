@@ -6,6 +6,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.services.ItemService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,18 +38,21 @@ public class ItemController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable @NotNull final Long id) {
-        return ResponseEntity.ok(itemService.findById(id));
+    public ResponseEntity<Item> getItemById(@Valid @PathVariable @NotNull final Long id) {
+        return new ResponseEntity<>(itemService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Item> addItem(@Valid @RequestBody final ItemRequest itemRequest) {
-        return ResponseEntity.ok(itemService.addNewItem(itemRequest));
+    public ResponseEntity<Item> addItem(@Valid @RequestBody final ItemRequest itemRequest, final Errors errors) {
+        return new ResponseEntity<>(itemService.addNewItem(itemRequest),
+                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Item> updateItem(@PathVariable @NotNull final long id,
-                                           @Valid @RequestBody final ItemRequest itemRequest) {
-        return ResponseEntity.ok(itemService.updateItem(id, itemRequest));
+                                           @Valid @RequestBody final ItemRequest itemRequest,
+                                           final Errors errors) {
+        return new ResponseEntity<>(itemService.updateItem(id, itemRequest),
+                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 }

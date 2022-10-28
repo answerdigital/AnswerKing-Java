@@ -30,8 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -86,7 +88,7 @@ class ItemControllerTest {
     @Test
     void getItemByIdReturnsOkStatusIfExist() throws Exception {
         //given
-        when(itemService.findById(55L)).thenReturn(item);
+        doReturn(item).when(itemService).findById(55L);// when(itemService.findById(55L)).thenReturn(item);
         //when
         ResultActions actualPerformResult = mvc.perform(get("/item/{id}", 55L)).andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
@@ -112,7 +114,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("Item name must only contain letters, spaces and dashes")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("[Item name must only contain letters, spaces and dashes]")))
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
     }
@@ -146,7 +148,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("Item price is invalid")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Is.is("[Item price is invalid]")))
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
     }

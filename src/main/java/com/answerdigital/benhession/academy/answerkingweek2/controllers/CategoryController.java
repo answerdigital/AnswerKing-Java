@@ -7,6 +7,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.services.CategorySer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +35,10 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest) {
-        return ResponseEntity.ok(categoryService.addCategory(categoryRequest));
+    public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest,
+                                                final Errors errors) {
+        return new ResponseEntity<>(categoryService.addCategory(categoryRequest),
+                                                        errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 
     @GetMapping
@@ -47,19 +50,21 @@ public class CategoryController {
     @PutMapping("/{categoryId}/additem/{itemId}")
     public ResponseEntity<Category> addItemToCategory(@PathVariable @NotNull final Long categoryId,
                                                       @PathVariable @NotNull final Long itemId) {
-        return ResponseEntity.ok(categoryService.addItemToCategory(categoryId, itemId));
+        return new ResponseEntity<>(categoryService.addItemToCategory(categoryId, itemId), HttpStatus.OK);
     }
 
     @PutMapping("/{categoryId}/removeitem/{itemId}")
     public ResponseEntity<Category> removeItemFromCategory(@PathVariable @NotNull final Long categoryId,
                                                            @PathVariable @NotNull final Long itemId) {
-        return ResponseEntity.ok(categoryService.removeItemFromCategory(categoryId, itemId));
+        return new ResponseEntity<>(categoryService.removeItemFromCategory(categoryId, itemId), HttpStatus.OK);
     }
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@Valid @RequestBody final UpdateCategoryRequest updateCategoryRequest,
-                                                   @PathVariable @NotNull final Long categoryId) {
-        return ResponseEntity.ok(categoryService.updateCategory(updateCategoryRequest, categoryId));
+                                                   @PathVariable @NotNull final Long categoryId,
+                                                   final Errors errors) {
+        return new ResponseEntity<>(categoryService.updateCategory(updateCategoryRequest, categoryId),
+                                                    errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 
     @DeleteMapping("/{categoryId}")
