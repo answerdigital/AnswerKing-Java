@@ -21,7 +21,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
-@Valid
 @RestController
 @RequestMapping(path = "/category")
 public class CategoryController {
@@ -33,7 +32,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> addCategory(@RequestBody final AddCategoryRequest categoryRequest) {
+    public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest) {
         return ResponseEntity.ok(categoryService.addCategory(categoryRequest));
     }
 
@@ -56,7 +55,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<Category> updateCategory(@RequestBody final UpdateCategoryRequest updateCategoryRequest,
+    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final UpdateCategoryRequest updateCategoryRequest,
                                                    @PathVariable @NotNull final Long categoryId) {
         return ResponseEntity.ok(categoryService.updateCategory(updateCategoryRequest, categoryId));
     }
