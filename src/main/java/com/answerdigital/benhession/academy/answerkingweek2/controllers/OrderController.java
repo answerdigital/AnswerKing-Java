@@ -6,6 +6,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.services.OrderServic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,13 +34,14 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest) {
-        return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest, final Errors errors) {
+        return new ResponseEntity<>(orderService.addOrder(orderRequest),
+                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{orderId}")
     public ResponseEntity<Order> getOrder(@PathVariable @NotNull final Long orderId) {
-        return ResponseEntity.ok(orderService.findById(orderId));
+        return new ResponseEntity<>(orderService.findById(orderId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{orderId}")
@@ -58,19 +60,19 @@ public class OrderController {
     public ResponseEntity<Order> addItemToBasket(@PathVariable @NotNull final Long orderId,
                                                  @PathVariable @NotNull final Long itemId,
                                                  @PathVariable @NotNull final Integer quantity) {
-        return ResponseEntity.ok(orderService.addItemToBasket(orderId, itemId, quantity));
+        return new ResponseEntity<>(orderService.addItemToBasket(orderId, itemId, quantity), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{orderId}/item/{itemId}")
     public ResponseEntity<Order> deleteItemInBasket(@PathVariable @NotNull final Long orderId,
                                                     @PathVariable @NotNull final Long itemId) {
-        return ResponseEntity.ok(orderService.deleteItemInBasket(orderId, itemId));
+        return new ResponseEntity<>(orderService.deleteItemInBasket(orderId, itemId), HttpStatus.OK);
     }
 
     @PutMapping(path = "/{orderId}/item/{itemId}/quantity/{quantity}")
     public ResponseEntity<Order> updateItemQuantity(@PathVariable @NotNull final Long orderId,
                                                     @PathVariable @NotNull final Long itemId,
                                                     @PathVariable @NotNull final Integer quantity) {
-        return ResponseEntity.ok(orderService.updateItemQuantity(orderId, itemId, quantity));
+        return new ResponseEntity<>(orderService.updateItemQuantity(orderId, itemId, quantity), HttpStatus.OK);
     }
 }
