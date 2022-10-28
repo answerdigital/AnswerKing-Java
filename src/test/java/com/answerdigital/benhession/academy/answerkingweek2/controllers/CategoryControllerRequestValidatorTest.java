@@ -17,9 +17,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class CategoryControllerTest {
+class CategoryControllerRequestValidatorTest {
 
     private Validator validator;
+
+    private static final String DEFAULT_NAME = "Drinks";
+    private static final String DEFAULT_DESCRIPTION = "Our selection of drinks";
 
     @BeforeEach
     void setUp() {
@@ -35,12 +38,12 @@ class CategoryControllerTest {
     private static Stream<Arguments> provideInvalidStringsForAddCategory() {
         // null, blank and invalid format for both name & description
         return Stream.of(
-                Arguments.of(null, "Our selection of drinks"),
-                Arguments.of("", "Our selection of drinks"),
-                Arguments.of("$^&*$%^", "Our selection of drinks"),
-                Arguments.of("Drinks", null),
-                Arguments.of("Drinks", ""),
-                Arguments.of("Drinks", "$^&*$%^")
+                Arguments.of(null, DEFAULT_DESCRIPTION),
+                Arguments.of("", DEFAULT_DESCRIPTION),
+                Arguments.of("$^&*$%^", DEFAULT_DESCRIPTION),
+                Arguments.of(DEFAULT_NAME, null),
+                Arguments.of(DEFAULT_NAME, ""),
+                Arguments.of(DEFAULT_NAME, "$^&*$%^")
         );
     }
 
@@ -60,12 +63,12 @@ class CategoryControllerTest {
     private static Stream<Arguments> provideInvalidStringsForUpdateCategory() {
         // null, blank and invalid format for both name & description
         return Stream.of(
-                Arguments.of(null, "Our selection of drinks"),
-                Arguments.of("", "Our selection of drinks"),
-                Arguments.of("$^&*$%^", "Our selection of drinks"),
-                Arguments.of("Drinks", null),
-                Arguments.of("Drinks", ""),
-                Arguments.of("Drinks", "$^&*$%^")
+                Arguments.of(null, DEFAULT_DESCRIPTION),
+                Arguments.of("", DEFAULT_DESCRIPTION),
+                Arguments.of("$^&*$%^", DEFAULT_DESCRIPTION),
+                Arguments.of(DEFAULT_NAME, null),
+                Arguments.of(DEFAULT_NAME, ""),
+                Arguments.of(DEFAULT_NAME, "$^&*$%^")
         );
     }
 
