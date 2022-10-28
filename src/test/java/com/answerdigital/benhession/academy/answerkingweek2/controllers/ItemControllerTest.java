@@ -29,7 +29,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -50,8 +52,13 @@ class ItemControllerTest {
 
     @BeforeEach
     public void generateItem() {
-        item = new Item("test", "testDes", new BigDecimal("2.99"), true);
-        item.setId(55L);
+        item = Item.builder()
+                .id(55L)
+                .name("test")
+                .description("testDes")
+                .price(BigDecimal.valueOf(2.99))
+                .available(true)
+                .build();
     }
 
     @WithMockUser("paul")
