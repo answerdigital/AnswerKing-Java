@@ -32,7 +32,9 @@ public class OrderService {
     }
 
     public Order addOrder(final OrderRequest orderRequest) {
-        return orderRepository.save(orderMapper.addRequestToOrder(orderRequest));
+        final Order newOrder = orderMapper.addRequestToOrder(orderRequest);
+
+        return orderRepository.save(newOrder);
     }
 
     public Order findById(final Long orderId) {
@@ -46,9 +48,9 @@ public class OrderService {
     }
 
     public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        return orderRepository.save(
-                orderMapper.updateOrderRequest(findById(orderId), orderRequest)
-        );
+        final Order updatedOrder = orderMapper.updateOrderRequest(findById(orderId), orderRequest);
+
+        return orderRepository.save(updatedOrder);
     }
 
     public Order addItemToBasket(final Long orderId, final Long itemId, final Integer quantity) {
