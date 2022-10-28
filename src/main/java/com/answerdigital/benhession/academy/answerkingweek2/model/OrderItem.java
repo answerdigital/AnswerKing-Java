@@ -22,10 +22,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "order_item")
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
     @Id

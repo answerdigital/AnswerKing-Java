@@ -159,7 +159,7 @@ class CategoryServiceTest {
 
         Category expectedResponse = new Category("Drinks", "Our selection of drinks");
         expectedResponse.setId(categoryId);
-        expectedResponse.getItems().add(item);
+        expectedResponse.addItem(item);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
@@ -183,7 +183,7 @@ class CategoryServiceTest {
 
         Category category = new Category("Drinks", "Our selection of drinks");
         category.setId(categoryId);
-        category.getItems().add(item);
+        category.addItem(item);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
@@ -219,7 +219,7 @@ class CategoryServiceTest {
 
         Category category = new Category("Drinks", "Our selection of drinks");
         category.setId(categoryId);
-        category.getItems().add(item);
+        category.addItem(item);
 
         Category expectedResponse = new Category("Drinks", "Our selection of drinks");
         expectedResponse.setId(categoryId);
