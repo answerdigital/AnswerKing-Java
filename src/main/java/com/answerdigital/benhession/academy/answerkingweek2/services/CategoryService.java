@@ -35,7 +35,8 @@ public class CategoryService {
             throw new ConflictException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
 
-        return categoryRepository.save(categoryMapper.addRequestToCategory(categoryRequest));
+        final Category newCategory = categoryMapper.addRequestToCategory(categoryRequest);
+        return categoryRepository.save(newCategory);
     }
 
     private Category findById(final Long categoryId) {
@@ -53,9 +54,8 @@ public class CategoryService {
             throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
-        return categoryRepository.save(
-                categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest)
-        );
+        final Category updatedCategory = categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest);
+        return categoryRepository.save(updatedCategory);
     }
 
     public Category addItemToCategory(final Long categoryId, final Long itemId) {
