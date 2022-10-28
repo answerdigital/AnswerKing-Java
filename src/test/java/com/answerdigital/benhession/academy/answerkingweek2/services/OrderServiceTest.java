@@ -136,6 +136,8 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(expectedOrder, reponse);
+        verify(orderRepository).findById(anyLong());
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
