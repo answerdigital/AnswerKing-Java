@@ -38,18 +38,31 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String description;
+
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
+
     private Boolean available;
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "items")
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<OrderItem> orderItems;
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    public void setPrice(final BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setAvailable(final Boolean available) {
+        this.available = available;
+    }
 
     public Item(final ItemRequest itemRequest){
         this.name = itemRequest.name();

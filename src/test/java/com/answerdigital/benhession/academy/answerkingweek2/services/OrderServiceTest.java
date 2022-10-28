@@ -7,6 +7,14 @@ import com.answerdigital.benhession.academy.answerkingweek2.model.Item;
 import com.answerdigital.benhession.academy.answerkingweek2.model.Order;
 import com.answerdigital.benhession.academy.answerkingweek2.model.OrderItem;
 import com.answerdigital.benhession.academy.answerkingweek2.repositories.OrderRepository;
+
+import java.math.BigDecimal;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import com.answerdigital.benhession.academy.answerkingweek2.request.OrderRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,16 +53,17 @@ public class OrderServiceTest {
     @Test
     void testAddOrderReturnsSavedOrder() {
         // Given
-        Order order = Order.builder()
+        OrderRequest orderRequest = new OrderRequest("42 Main St");
+        Order expectedResult = Order.builder()
                 .address("42 Main Street")
                 .build();
 
         // When
         when(orderRepository.save(any(Order.class)))
-                .thenReturn(order);
+                .thenReturn(expectedResult);
 
         // Then
-        assertSame(order, orderService.addOrder("42 Main St"));
+        assertSame(expectedResult, orderService.addOrder(orderRequest));
         verify(orderRepository).save(any(Order.class));
     }
 
@@ -122,6 +131,37 @@ public class OrderServiceTest {
         assertSame(orders, actualFindAllResult);
         assertFalse(actualFindAllResult.isEmpty());
         verify(orderRepository).findAll();
+    }
+
+    @Test
+    void testUpdateOrder() {
+        // Given
+        Order originalOrder = new Order("14 Main St");
+        OrderRequest updateOrderRequest = new OrderRequest("14 Green Street");
+        Order expectedOrder = new Order("14 Green Street");
+
+        // When
+        when(orderRepository.findById(anyLong()))
+                .thenReturn(Optional.of(originalOrder));
+        when(orderRepository.save(any(Order.class)))
+                .thenReturn(expectedOrder);
+
+        Order reponse = orderService.updateOrder(1L, updateOrderRequest);
+
+        // Then
+        assertEquals(expectedOrder, reponse);
+        verify(orderRepository).findById(anyLong());
+        verify(orderRepository).save(any(Order.class));
+    }
+
+    @Test
+    void testUpdateOrderWhenOrderNotExistsThrowsNotFoundException() {
+        // Given
+        OrderRequest orderRequest = new OrderRequest("14 High St");
+
+        // Then
+        assertThrows(NotFoundException.class, () ->
+                orderService.updateOrder(10L, orderRequest));
     }
 
     @Test
