@@ -19,7 +19,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Valid
 @RestController
 @RequestMapping(path = "/order")
 public class OrderController {
@@ -32,7 +31,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@RequestBody final OrderRequest orderRequest) {
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
     }
 
@@ -43,7 +42,7 @@ public class OrderController {
 
     @PutMapping("/{orderId}")
     public ResponseEntity<Order> updateOrder(@PathVariable @NotNull final Long orderId,
-                                             @RequestBody final OrderRequest orderRequest) {
+                                             @Valid @RequestBody final OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
     }
 
