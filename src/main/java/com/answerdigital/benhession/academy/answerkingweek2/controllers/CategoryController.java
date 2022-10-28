@@ -7,6 +7,7 @@ import com.answerdigital.benhession.academy.answerkingweek2.services.CategorySer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
+@Validated
 @RestController
 @RequestMapping(path = "/category")
 public class CategoryController {
