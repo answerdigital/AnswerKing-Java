@@ -44,7 +44,15 @@ public class Item {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<OrderItem> orderItems;
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    public void setPrice(final BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setAvailable(final Boolean available) {
+        this.available = available;
+    }
 
     public Item() {
     }

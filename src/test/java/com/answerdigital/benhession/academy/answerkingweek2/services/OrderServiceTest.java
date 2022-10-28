@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.answerdigital.benhession.academy.answerkingweek2.request.OrderRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,14 +43,15 @@ public class OrderServiceTest {
     @Test
     void testAddOrderReturnsSavedOrder() {
         // Given
-        Order order = new Order("42 Main St");
+        OrderRequest orderRequest = new OrderRequest("42 Main St");
+        Order expectedResult = new Order("42 Main St");
 
         // When
         when(orderRepository.save(any(Order.class)))
-                .thenReturn(order);
+                .thenReturn(expectedResult);
 
         // Then
-        assertSame(order, orderService.addOrder("42 Main St"));
+        assertSame(expectedResult, orderService.addOrder(orderRequest));
         verify(orderRepository).save(any(Order.class));
     }
 
@@ -115,6 +117,16 @@ public class OrderServiceTest {
         assertSame(orders, actualFindAllResult);
         assertFalse(actualFindAllResult.isEmpty());
         verify(orderRepository).findAll();
+    }
+
+    @Test
+    void testUpdateOrderWhenOrderNotExistsThrowsNotFoundException() {
+        // Given
+        OrderRequest orderRequest = new OrderRequest("14 High St");
+
+        // Then
+        assertThrows(NotFoundException.class, () ->
+                orderService.updateOrder(10L, orderRequest));
     }
 
     @Test
