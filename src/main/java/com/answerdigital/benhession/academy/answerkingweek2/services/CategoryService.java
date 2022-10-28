@@ -9,12 +9,14 @@ import com.answerdigital.benhession.academy.answerkingweek2.repositories.Categor
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
 import com.answerdigital.benhession.academy.answerkingweek2.request.UpdateCategoryRequest;
 import org.mapstruct.factory.Mappers;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
+@Slf4j
 public class CategoryService {
     private final ItemService itemService;
 
@@ -51,6 +53,8 @@ public class CategoryService {
     public Category updateCategory(final UpdateCategoryRequest updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
+            final var exceptionMessage = String.format("A category named %s already exists", updateCategoryRequest.name());
+            log.error(exceptionMessage);
             throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
@@ -63,7 +67,9 @@ public class CategoryService {
         final Item item = itemService.findById(itemId);
 
         if(category.getItemsSet().contains(item)){
-            throw new ConflictException("Category already has this item");
+            final var exceptionMessage = "Category already has this item";
+            log.error(exceptionMessage);
+            throw new ConflictException(exceptionMessage);
         }
         category.getItemsSet().add(item);
         return categoryRepository.save(category);
