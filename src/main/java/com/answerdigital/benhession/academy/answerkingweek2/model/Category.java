@@ -1,15 +1,21 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.HashSet;
@@ -17,6 +23,11 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -37,21 +48,13 @@ public class Category {
             name = "item_category",
             joinColumns = {@JoinColumn(name = "category_id")},
             inverseJoinColumns = {@JoinColumn(name = "item_id")})
+    @JsonIgnore
     private Set<Item> items = new HashSet<>();
-
-    public Category() {
-    }
 
     public Category(final AddCategoryRequest categoryRequest) {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
     }
-
-    public Category(final String name, final String description) {
-        this.name = name;
-        this.description = description;
-    }
-
     public void addItem(final Item item) {
         items.add(item);
     }
@@ -60,32 +63,9 @@ public class Category {
         items.remove(item);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
+    public Category(final String name, final String description) {
         this.name = name;
-    }
-
-    public void setDescription(final String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Set<Item> getItems() {
-        return items;
     }
 
     @Override
@@ -98,7 +78,7 @@ public class Category {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     @Override

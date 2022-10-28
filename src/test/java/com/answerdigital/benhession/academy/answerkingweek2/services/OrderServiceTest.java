@@ -1,11 +1,5 @@
 package com.answerdigital.benhession.academy.answerkingweek2.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ConflictException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.ItemUnavailableException;
 import com.answerdigital.benhession.academy.answerkingweek2.exceptions.NotFoundException;
@@ -28,6 +22,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ContextConfiguration(classes = {OrderService.class})
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -44,7 +54,9 @@ public class OrderServiceTest {
     void testAddOrderReturnsSavedOrder() {
         // Given
         OrderRequest orderRequest = new OrderRequest("42 Main St");
-        Order expectedResult = new Order("42 Main St");
+        Order expectedResult = Order.builder()
+                .address("42 Main Street")
+                .build();
 
         // When
         when(orderRepository.save(any(Order.class)))
@@ -58,7 +70,9 @@ public class OrderServiceTest {
     @Test
     void testFindByIdReturnsFoundOrder() {
         // Given
-        Order order = new Order("42 Main St");
+        Order order = Order.builder()
+                .address("42 Main Street")
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -153,10 +167,21 @@ public class OrderServiceTest {
     @Test
     void testAddItemToBasketIsSuccessful() {
         // Given (Setup)
-        Order order = new Order();
-        Item item = new Item("King Burger", "A burger fit for a king.", new BigDecimal("12.99"), true);
-        Order expectedResponse = new Order("42 Main St");
-        expectedResponse.setOrderItems(Set.of(new OrderItem(order, item, 1)));
+        Order order = Order.builder()
+                .orderItems(new HashSet<>())
+                .build();
+
+        Item item = Item.builder()
+                .name("King Burger")
+                .description("A burger fit for a king")
+                .price(new BigDecimal("12.99"))
+                .available(true)
+                .build();
+
+        Order expectedResponse = Order.builder()
+                .address("42 Main Street")
+                .orderItems(Set.of(new OrderItem(order, item, 1)))
+                .build();
 
         // When (Mocking, sending requests)
         when(orderRepository.findById(anyLong()))
@@ -180,7 +205,9 @@ public class OrderServiceTest {
     @Test
     void testAddItemToBasketWhenItemDoesNotExistThrowsNotFoundException() {
         // Given
-        Order order = new Order("42 Main St");
+        Order order = Order.builder()
+                .address("42 Main Street")
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -210,8 +237,15 @@ public class OrderServiceTest {
     @Test
     void testAddItemToBasketWhenItemIsUnavailableThrowsItemUnavailableException() {
         // Given
-        Order order = new Order();
-        Item item = new Item("King Burger", "A burger fit for a king.", new BigDecimal("12.99"), false);
+        Order order = Order.builder()
+                .orderItems(new HashSet<>())
+                .build();
+        Item item = Item.builder()
+                .name("King Burger")
+                .description("A burger fit for a king")
+                .price(new BigDecimal("12.99"))
+                .available(false)
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -229,8 +263,15 @@ public class OrderServiceTest {
     @Test
     void testAddItemToBasketWhenItemAlreadyExistsInBasketThrowsConflictException() {
         // Given
-        Order order = new Order("42 Main St");
-        Item item = new Item("King Burger", "A burger fit for a king.", new BigDecimal("12.99"), true);
+        Order order = Order.builder()
+                .address("42 Main Street")
+                .build();
+        Item item = Item.builder()
+                .name("King Burger")
+                .description("A burger fit for a king")
+                .price(new BigDecimal("12.99"))
+                .available(true)
+                .build();
         order.setOrderItems(Set.of(new OrderItem(order, item, 1)));
 
         // When
@@ -249,17 +290,27 @@ public class OrderServiceTest {
     @Test
     void testUpdateItemQuantity() {
         // Given
-        Item item = new Item("King Burger", "A burger fit for a king", new BigDecimal("12.99"), true);
-        item.setId(12L);
+        Item item = Item.builder()
+                .id(12L)
+                .name("King Burger")
+                .description("A burger fit for a king")
+                .price(new BigDecimal("12.99"))
+                .available(true)
+                .build();
 
-        Order order = new Order("42 Main St");
-        order.setId(12L);
+        Order order = Order.builder()
+                .id(12L)
+                .address("42 Main Street")
+                .build();
+
         order.setOrderItems(Set.of(
                 new OrderItem(order, item, 1)
         ));
 
-        Order expectedResult = new Order("42 Main St");
-        expectedResult.setId(12L);
+        Order expectedResult = Order.builder()
+                .id(12L)
+                .address("42 Main Street")
+                .build();
         expectedResult.setOrderItems(Set.of(
                 new OrderItem(expectedResult, item, 2)
         ));
@@ -285,7 +336,9 @@ public class OrderServiceTest {
     @Test
     void testUpdateItemQuantityItemNotFoundThrowsNotFoundException() {
         // Given
-        Order order = new Order();
+        Order order = Order.builder()
+                .orderItems(new HashSet<>())
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -315,8 +368,16 @@ public class OrderServiceTest {
     @Test
     void testUpdateItemQuantityExistingOrderItemNotPresentThrowsNotFoundException() {
         // Given
-        Item item = new Item("King Burger", "A burger fit for a king", new BigDecimal("12.99"), true);
-        Order order = new Order();
+        Item item = Item.builder()
+                .id(12L)
+                .name("King Burger")
+                .description("A burger fit for a king")
+                .price(new BigDecimal("12.99"))
+                .available(true)
+                .build();
+        Order order = Order.builder()
+                .orderItems(new HashSet<>())
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -334,16 +395,25 @@ public class OrderServiceTest {
     @Test
     void testDeleteItemInBasket() {
         // Given
-        Item item = new Item();
-        item.setId(12L);
+        Item item = Item.builder()
+                .id(12L)
+                .build();
 
-        Order order = new Order("12 Brown Street");
-        order.setId(12L);
-        OrderItem orderItem = new OrderItem(order, item, 5);
-        order.getOrderItemsSet().add(orderItem);
+        Order order = Order.builder()
+                .id(12L)
+                .address("42 Main Street")
+                .orderItems(new HashSet<>())
+                .build();
+        OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .item(item)
+                .quantity(5)
+                .build();
+        order.getOrderItems().add(orderItem);
 
-        Order expectedResponse = new Order();
-        expectedResponse.setId(12L);
+        Order expectedResponse = Order.builder()
+                .id(12L)
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -377,7 +447,9 @@ public class OrderServiceTest {
     @Test
     void testDeleteItemInBasketWhenItemNotFoundThrowsNotFoundException() {
         // Given
-        Order order = new Order();
+        Order order = Order.builder()
+                .orderItems(new HashSet<>())
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -395,8 +467,10 @@ public class OrderServiceTest {
     @Test
     void testDeleteItemInBasketWhenExistingOrderItemIsEmptyThrowNotFoundException() {
         // Given
-        Item item = new Item();
-        Order order = new Order();
+        Item item = Item.builder().build();
+        Order order = Order.builder()
+                .orderItems(new HashSet<>())
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
