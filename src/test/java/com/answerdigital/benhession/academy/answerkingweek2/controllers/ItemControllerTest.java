@@ -88,7 +88,7 @@ class ItemControllerTest {
     @Test
     void getItemByIdReturnsOkStatusIfExist() throws Exception {
         //given
-        doReturn(item).when(itemService).findById(55L);// when(itemService.findById(55L)).thenReturn(item);
+        when(itemService.findById(55L)).thenReturn(item);
         //when
         ResultActions actualPerformResult = mvc.perform(get("/item/{id}", 55L)).andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
