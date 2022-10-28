@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Valid
 @RestController
 @RequestMapping(path = "/item")
 public class ItemController {
