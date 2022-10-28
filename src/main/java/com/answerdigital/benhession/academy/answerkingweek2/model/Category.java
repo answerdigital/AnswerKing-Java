@@ -1,7 +1,6 @@
 package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.answerdigital.benhession.academy.answerkingweek2.request.AddCategoryRequest;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,8 +52,20 @@ public class Category {
         this.description = description;
     }
 
+    public void addItem(final Item item) {
+        items.add(item);
+    }
+
+    public void removeItem(final Item item) {
+        items.remove(item);
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -73,8 +84,7 @@ public class Category {
         return description;
     }
 
-    @JsonIgnore
-    public Set<Item> getItemsSet() {
+    public Set<Item> getItems() {
         return items;
     }
 
