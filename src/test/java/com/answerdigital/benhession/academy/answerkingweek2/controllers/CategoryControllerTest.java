@@ -56,7 +56,7 @@ class CategoryControllerTest {
 
         doReturn(category).when(categoryService).addItemToCategory(categoryId, itemId);
 
-        mvc.perform(put("/category/{categoryId}/additem/{itemId}", categoryId, itemId))
+        mvc.perform(put("/categories/{categoryId}/additem/{itemId}", categoryId, itemId))
            .andExpect(status().isOk());
 
     }
@@ -69,7 +69,7 @@ class CategoryControllerTest {
 
         doReturn(category).when(categoryService).removeItemFromCategory(categoryId, itemId);
 
-        mvc.perform(put("/category/{categoryId}/removeitem/{itemId}", categoryId, itemId))
+        mvc.perform(put("/categories/{categoryId}/removeitem/{itemId}", categoryId, itemId))
            .andExpect(status().isOk());
     }
 
@@ -82,7 +82,7 @@ class CategoryControllerTest {
         final var  categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
         doReturn(category).when(categoryService).addCategory(addCategoryRequest);
-        final var response = mvc.perform(post("/category")
+        final var response = mvc.perform(post("/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
@@ -100,7 +100,7 @@ class CategoryControllerTest {
 
         final var  categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        mvc.perform(post("/category")
+        mvc.perform(post("/categories")
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
@@ -113,7 +113,7 @@ class CategoryControllerTest {
 
         final var  categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        mvc.perform(post("/category")
+        mvc.perform(post("/categories")
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
@@ -151,7 +151,7 @@ class CategoryControllerTest {
 
         final var  categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        mvc.perform(put("/category/{categoryId}", 112L)
+        mvc.perform(put("/categories/{categoryId}", 112L)
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
@@ -164,7 +164,7 @@ class CategoryControllerTest {
 
         final var  categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        mvc.perform(put("/category/{categoryId}", 112L)
+        mvc.perform(put("/categories/{categoryId}", 112L)
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
