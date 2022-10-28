@@ -64,13 +64,13 @@ public class OrderService {
         final  Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
-        if (!item.isAvailable()) {
+        if (!item.getAvailable()) {
             final var exceptionMessage = String.format("The item with ID %d is not available.", item.getId());
             log.error(exceptionMessage);
             throw new ItemUnavailableException(exceptionMessage);
         }
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -81,7 +81,7 @@ public class OrderService {
             throw new ConflictException(exceptionMessage);
         } else {
             final OrderItem orderItem = new OrderItem(order, item, quantity);
-            order.getOrderItemsSet().add(orderItem);
+            order.getOrderItems().add(orderItem);
         }
 
         return orderRepository.save(order);
@@ -91,7 +91,7 @@ public class OrderService {
         final Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -111,7 +111,7 @@ public class OrderService {
         final Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItemsSet()
+        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
                 .stream()
                 .filter(orderItem -> orderItem.getItem() == item)
                 .findFirst();
@@ -121,7 +121,7 @@ public class OrderService {
             log.error(exceptionMessage);
             throw new NotFoundException(exceptionMessage);
         }
-        order.getOrderItemsSet().remove(existingOrderItem.get());
+        order.getOrderItems().remove(existingOrderItem.get());
         return orderRepository.save(order);
     }
 }

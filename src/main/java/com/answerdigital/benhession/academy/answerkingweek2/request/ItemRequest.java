@@ -1,5 +1,7 @@
 package com.answerdigital.benhession.academy.answerkingweek2.request;
 
+import lombok.Builder;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
@@ -23,4 +25,8 @@ public record ItemRequest(
         BigDecimal price,
         @NotNull
         boolean available
-){}
+) {
+    @Builder
+    public ItemRequest {
+    }
+}

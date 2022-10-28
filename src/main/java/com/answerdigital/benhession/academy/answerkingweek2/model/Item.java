@@ -3,18 +3,23 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
 import javax.persistence.ManyToMany;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 import javax.persistence.PreRemove;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
@@ -24,6 +29,11 @@ import java.util.Set;
 @Entity
 @Table(name = "item")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,9 +64,6 @@ public class Item {
         this.available = available;
     }
 
-    public Item() {
-    }
-
     public Item(final ItemRequest itemRequest){
         this.name = itemRequest.name();
         this.description = itemRequest.description();
@@ -75,49 +82,12 @@ public class Item {
     @PreRemove
     private void removeItemsFromCategories() {
         for (Category category : categories) {
-            category.getItems().remove(this);
+            category.removeItem(this);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public BigDecimal getPrice() {
         return price.setScale(2, RoundingMode.DOWN);
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    @JsonIgnore
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(final Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
     }
 
     @Override
@@ -125,7 +95,7 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Item item = (Item) o;
-        return id == item.id;
+        return Objects.equals(id, item.id);
     }
 
     @Override
@@ -141,7 +111,6 @@ public class Item {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", available=" + available +
-                ", categories=" + categories +
                 '}';
     }
 }
