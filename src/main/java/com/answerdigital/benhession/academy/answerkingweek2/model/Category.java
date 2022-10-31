@@ -55,6 +55,7 @@ public class Category {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
     }
+
     public void addItem(final Item item) {
         items.add(item);
     }

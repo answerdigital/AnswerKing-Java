@@ -12,6 +12,8 @@ import org.mapstruct.factory.Mappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -61,6 +63,7 @@ public class CategoryService {
         return categoryRepository.save(updatedCategory);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public Category addItemToCategory(final Long categoryId, final Long itemId) {
         final Category category = findById(categoryId);
         final Item item = itemService.findById(itemId);
