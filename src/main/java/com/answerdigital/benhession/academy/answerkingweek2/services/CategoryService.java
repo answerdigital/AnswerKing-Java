@@ -63,7 +63,7 @@ public class CategoryService {
         return categoryRepository.save(updatedCategory);
     }
 
-    @Transactional(propagation= Propagation.REQUIRED, readOnly=true, noRollbackFor=Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Category addItemToCategory(final Long categoryId, final Long itemId) {
         final Category category = findById(categoryId);
         final Item item = itemService.findById(itemId);
