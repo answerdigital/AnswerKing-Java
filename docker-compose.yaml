@@ -24,8 +24,10 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+      - "5005:5005"
     environment:
       - "SPRING_PROFILES_ACTIVE=docker"
+      - "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     volumes:
       - .m2:/root/.m2
 volumes:

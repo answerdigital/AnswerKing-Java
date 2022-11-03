@@ -13,6 +13,7 @@ import org.mapstruct.factory.Mappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,7 @@ public class OrderService {
                 });
     }
 
+    @Transactional
     public List<Order> findAll() {
         return this.orderRepository.findAll();
     }
@@ -60,6 +62,7 @@ public class OrderService {
         return orderRepository.save(updatedOrder);
     }
 
+    @Transactional
     public Order addItemToBasket(final Long orderId, final Long itemId, final Integer quantity) {
         final  Order order = findById(orderId);
         final Item item = itemService.findById(itemId);
