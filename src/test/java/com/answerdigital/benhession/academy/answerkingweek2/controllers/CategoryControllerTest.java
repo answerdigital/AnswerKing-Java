@@ -34,7 +34,7 @@ class CategoryControllerTest {
 
     @Test
     void addItemToCategoryTest() throws Exception {
-        final var category = new Category();
+        final var category = Category.builder().build();
         final var itemId = 10L;
         final var categoryId = 20L;
 
@@ -46,7 +46,7 @@ class CategoryControllerTest {
 
     @Test
     void removeItemFromCategoryTest() throws Exception {
-        final var category = new Category();
+        final var category = Category.builder().build();
         final var itemId = 10L;
         final var categoryId = 20L;
 
