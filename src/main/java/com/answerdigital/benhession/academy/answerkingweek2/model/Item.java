@@ -3,11 +3,12 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 import com.answerdigital.benhession.academy.answerkingweek2.request.ItemRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,7 +33,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @AllArgsConstructor
 public class Item {
     @Id
