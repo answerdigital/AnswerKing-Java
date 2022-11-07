@@ -2,11 +2,12 @@ package com.answerdigital.benhession.academy.answerkingweek2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @AllArgsConstructor
 public class OrderItem {
     @Id

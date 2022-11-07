@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +28,7 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Category {
 
     @Id
