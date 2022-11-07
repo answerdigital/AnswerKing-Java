@@ -1,5 +1,4 @@
-name: Java CI
-
+name: Answer King build and test pipeline
 on:
   push:
     branches:
