@@ -1,7 +1,7 @@
 package com.answerdigital.academy.answerking.service;
 
-import com.answerdigital.academy.answerking.exception.ConflictException;
-import com.answerdigital.academy.answerking.exception.NotFoundException;
+import com.answerdigital.academy.answerking.exception.generic.ConflictException;
+import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.mapper.CategoryMapper;
 import com.answerdigital.academy.answerking.model.Category;
 import com.answerdigital.academy.answerking.model.Item;
@@ -9,7 +9,6 @@ import com.answerdigital.academy.answerking.repository.CategoryRepository;
 import com.answerdigital.academy.answerking.request.AddCategoryRequest;
 import com.answerdigital.academy.answerking.request.UpdateCategoryRequest;
 import org.mapstruct.factory.Mappers;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 @Service
-@Slf4j
 public class CategoryService {
     private final ItemService itemService;
 
@@ -54,8 +52,6 @@ public class CategoryService {
     public Category updateCategory(final UpdateCategoryRequest updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
-            final var exceptionMessage = String.format("A category named %s already exists", updateCategoryRequest.name());
-            log.error(exceptionMessage);
             throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
@@ -69,9 +65,7 @@ public class CategoryService {
         final Item item = itemService.findById(itemId);
 
         if (category.getItems().contains(item)) {
-            final var exceptionMessage = "Category already has this item";
-            log.error(exceptionMessage);
-            throw new ConflictException(exceptionMessage);
+            throw new ConflictException("Category already has this item");
         }
 
         category.addItem(item);

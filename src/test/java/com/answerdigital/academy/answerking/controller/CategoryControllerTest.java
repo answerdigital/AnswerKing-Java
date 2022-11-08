@@ -87,7 +87,7 @@ class CategoryControllerTest {
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.message", is("[Category name must only contain letters, spaces and dashes]")))
+           .andExpect(jsonPath("$.detail", is("[Category name must only contain letters, spaces and dashes]")))
            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -100,7 +100,7 @@ class CategoryControllerTest {
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.message", is("[Category description can only contain letters, numbers, spaces and !?-.,' punctuation]")))
+           .andExpect(jsonPath("$.detail", is("[Category description can only contain letters, numbers, spaces and !?-.,' punctuation]")))
            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -138,7 +138,7 @@ class CategoryControllerTest {
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.message", is("Category name must only contain letters, spaces and dashes")))
+           .andExpect(jsonPath("$.detail", is("[Category name must only contain letters, spaces and dashes]")))
            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -151,7 +151,7 @@ class CategoryControllerTest {
            .content(categoryRequest)
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.message", is("Category description can only contain letters, numbers, spaces and !?-.,' punctuation")))
+           .andExpect(jsonPath("$.detail", is("[Category description can only contain letters, numbers, spaces and !?-.,' punctuation]")))
            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
