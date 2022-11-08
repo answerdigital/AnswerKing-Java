@@ -18,12 +18,12 @@ import java.util.Objects;
 public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Object> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         String detail;
         try {
             detail = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
         } catch (NullPointerException nullPointerException) {
-            detail = "Unknown error";
+            detail = "Unknown error - MethodArgumentNotValidException was thrown with no default message";
         }
 
         final ErrorResponse response = new ErrorResponse(new BadRequestException(detail));
