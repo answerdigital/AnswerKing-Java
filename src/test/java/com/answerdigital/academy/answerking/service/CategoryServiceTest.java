@@ -1,7 +1,7 @@
 package com.answerdigital.academy.answerking.service;
 
-import com.answerdigital.academy.answerking.exception.ConflictException;
-import com.answerdigital.academy.answerking.exception.NotFoundException;
+import com.answerdigital.academy.answerking.exception.generic.ConflictException;
+import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.model.Category;
 import com.answerdigital.academy.answerking.model.Item;
 import com.answerdigital.academy.answerking.repository.CategoryRepository;
