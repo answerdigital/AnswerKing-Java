@@ -2,7 +2,7 @@ name: Docker Image Pipeline
 on:
   workflow_run:
     workflows: ["Answer King build and test pipeline"]
-    branches: [main]
+    branches: [BENCH-108]
     types:
       - completed
 
@@ -45,3 +45,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Build using docker-compose template
+        run: docker-compose build
+
+      - name: List Docker images
+        run: docker images
+
+      - name: Push images
+        run: docker-compose push --ignore-push-failures
