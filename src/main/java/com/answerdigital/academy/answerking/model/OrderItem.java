@@ -27,7 +27,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @AllArgsConstructor
 public class OrderItem {
     @Id

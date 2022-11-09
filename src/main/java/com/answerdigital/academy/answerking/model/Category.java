@@ -28,7 +28,7 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Category {
 
     @Id
