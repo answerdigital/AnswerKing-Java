@@ -2,7 +2,7 @@ name: Docker Image Pipeline
 on:
   workflow_run:
     workflows: ["Answer King build and test pipeline"]
-    branches: [BENCH-108-push-images]
+    branches: [main]
     types:
       - completed
 
