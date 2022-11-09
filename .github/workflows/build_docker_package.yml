@@ -13,7 +13,7 @@ env:
 jobs:
   on-success:
     runs-on: ubuntu-latest
-    permissions:
+    # permissions:
     #  contents: read
     #  packages: write
 
