@@ -56,3 +56,6 @@ jobs:
 
       - name: Push images
         run: docker-compose push #--ignore-push-failures
+
+      - name: Push images 2
+          run: docker push ghcr.io/OWNER/answer-king-rest-api_app:latest
