@@ -14,11 +14,13 @@ public class ItemUnavailableException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
 
-    public ItemUnavailableException(final Collection<String> detail) {
-        super(TYPE, TITLE, STATUS, detail);
+    private static final String DETAIL = null;
+
+    public ItemUnavailableException(final Collection<String> errors) {
+        super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public ItemUnavailableException(final String detail) {
-        this(List.of(detail));
+    public ItemUnavailableException(final String error) {
+        this(List.of(error));
     }
 }

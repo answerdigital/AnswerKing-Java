@@ -14,11 +14,13 @@ public class InternalServerErrorException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    public InternalServerErrorException(final Collection<String> detail) {
-        super(TYPE, TITLE, STATUS, detail);
+    private static final String DETAIL = null;
+
+    public InternalServerErrorException(final Collection<String> errors) {
+        super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public InternalServerErrorException(final String detail) {
-        this(List.of(detail));
+    public InternalServerErrorException(final String error) {
+        this(List.of(error));
     }
 }
