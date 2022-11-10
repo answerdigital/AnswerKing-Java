@@ -7,7 +7,7 @@ on:
       - completed
 
 env:
-  REGISTRY: ghcr.io/answerconsulting
+  REGISTRY: ghcr.io/answerconsulting/answerking-java
   IMAGE_NAME: answer-king-rest-api_app #${{ github.repository }}
 
 jobs:
@@ -54,8 +54,8 @@ jobs:
       - name: List Docker images
         run: docker images
 
-      - name: Push images
-        run: docker-compose push #--ignore-push-failures
+      # - name: Push images
+      #  run: docker-compose push #--ignore-push-failures
 
       - name: Push images 2
-        run: docker push ghcr.io/answerconsulting/answer-king-rest-api_app:latest
+        run: docker push ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
