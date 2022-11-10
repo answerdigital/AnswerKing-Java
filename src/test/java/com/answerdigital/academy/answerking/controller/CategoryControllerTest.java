@@ -14,10 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
-import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,11 +59,10 @@ class CategoryControllerTest {
 
     @Test
     void addCategoryTest() throws Exception {
-
         ObjectMapper mapper = new ObjectMapper();
         final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
         final var category = new Category(addCategoryRequest);
-        final var  categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
+        final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
         doReturn(category).when(categoryService).addCategory(addCategoryRequest);
         final var response = mvc.perform(post("/categories")
@@ -80,33 +80,34 @@ class CategoryControllerTest {
 
     @Test
     void addCategoryWithInvalidCategoryRequestNameTest() throws Exception {
+        final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final var  categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
+        final String error = mvc.perform(post("/categories")
+                        .content(categoryRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResolvedException().getMessage();
 
-        mvc.perform(post("/categories")
-           .content(categoryRequest)
-           .contentType(MediaType.APPLICATION_JSON))
-           .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.detail", is("[Category name must only contain letters, spaces and dashes]")))
-           .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
     }
 
     @Test
     void addCategoryWithInvalidCategoryRequestDescTest() throws Exception {
+        final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final var  categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
+        final String error = mvc.perform(post("/categories")
+                        .content(categoryRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResolvedException().getMessage();
 
-        mvc.perform(post("/categories")
-           .content(categoryRequest)
-           .contentType(MediaType.APPLICATION_JSON))
-           .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.detail", is("[Category description can only contain letters, numbers, spaces and !?-.,' punctuation]")))
-           .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
     }
 
     @Test
     void updateCategoryTest() throws Exception {
-
         ObjectMapper mapper = new ObjectMapper();
         final var updateCategoryRequest =  new UpdateCategoryRequest("random name", "random description");
         final var newRandomName = "new random name";
@@ -131,28 +132,30 @@ class CategoryControllerTest {
 
     @Test
     void updateCategoryWithInvalidCategoryRequestNameTest() throws Exception {
+        final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final var  categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
+        final String error = mvc.perform(put("/categories/{categoryId}", 112L)
+                        .content(categoryRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResolvedException().getMessage();
 
-        mvc.perform(put("/categories/{categoryId}", 112L)
-           .content(categoryRequest)
-           .contentType(MediaType.APPLICATION_JSON))
-           .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.detail", is("[Category name must only contain letters, spaces and dashes]")))
-           .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
     }
 
     @Test
     void updateCategoryWithInvalidCategoryRequestDescTest() throws Exception {
+        final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final var  categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
+        final String error = mvc.perform(put("/categories/{categoryId}", 112L)
+                        .content(categoryRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResolvedException().getMessage();
 
-        mvc.perform(put("/categories/{categoryId}", 112L)
-           .content(categoryRequest)
-           .contentType(MediaType.APPLICATION_JSON))
-           .andExpect(status().isBadRequest())
-           .andExpect(jsonPath("$.detail", is("[Category description can only contain letters, numbers, spaces and !?-.,' punctuation]")))
-           .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
     }
 
 }
