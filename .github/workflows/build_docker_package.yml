@@ -7,15 +7,15 @@ on:
       - completed
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: ghcr.io/answerconsulting
   IMAGE_NAME: answer-king-rest-api_app #${{ github.repository }}
 
 jobs:
   on-success:
     runs-on: ubuntu-latest
-    # permissions:
-    #  contents: read
-    #  packages: write
+    permissions:
+      contents: read
+      packages: write
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
@@ -42,11 +42,11 @@ jobs:
       # - name: Log into registry
       #  run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      # - name: Extract metadata (tags, labels) for Docker
-      #  id: meta
-      #  uses: docker/metadata-action@v4
-      #  with:
-      #    images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build using docker-compose template
         run: docker-compose build

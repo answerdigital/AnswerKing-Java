@@ -18,6 +18,8 @@ services:
 
   app:
     container_name: rest-api
+    image: answer-king-rest-api_app
+    env_file: ./.env
     depends_on:
       - mysqldb
     build: ./.
