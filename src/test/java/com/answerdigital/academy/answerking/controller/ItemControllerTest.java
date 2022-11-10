@@ -3,7 +3,6 @@ package com.answerdigital.academy.answerking.controller;
 import com.answerdigital.academy.answerking.model.Item;
 import com.answerdigital.academy.answerking.service.ItemService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -112,14 +113,15 @@ class ItemControllerTest {
         //given
         String newItem = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
         //when
-        mvc.perform(post("/items")
+        final String error = mvc.perform(post("/items")
                         .content(newItem)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.detail", Is.is("[Item name must only contain letters, spaces and dashes]")))
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentType(MediaType.APPLICATION_JSON));
+                        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResolvedException().getMessage();
+
+        assertTrue(error.contains("Item name must only contain letters, spaces and dashes"));
     }
 
     @WithMockUser("paul")
@@ -146,14 +148,16 @@ class ItemControllerTest {
         //given
         String newItem = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\",\"available\": \"true\"}";
         //when
-        mvc.perform(MockMvcRequestBuilders.put("/items/{id}", 55L)
+        final String error = mvc.perform(MockMvcRequestBuilders.put("/items/{id}", 55L)
                         .content(newItem)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.detail", Is.is("[Item price is invalid]")))
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentType(MediaType.APPLICATION_JSON));
+                        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                        .andExpect(MockMvcResultMatchers.content()
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResolvedException().getMessage();
+
+        assertTrue(error.contains("Item price is invalid"));
     }
 
     @WithMockUser("paul")

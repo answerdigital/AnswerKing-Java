@@ -14,11 +14,13 @@ public class ConflictException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.CONFLICT;
 
-    public ConflictException(final Collection<String> detail) {
-        super(TYPE, TITLE, STATUS, detail);
+    private static final String DETAIL = null;
+
+    public ConflictException(final Collection<String> errors) {
+        super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public ConflictException(final String detail) {
-        this(List.of(detail));
+    public ConflictException(final String error) {
+        this(List.of(error));
     }
 }
