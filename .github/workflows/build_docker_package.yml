@@ -2,7 +2,7 @@ name: Docker Image Pipeline
 on:
   workflow_run:
     workflows: ["Answer King build and test pipeline"]
-    branches: [main]
+    branches: [develop]
     types:
       - completed
 
@@ -58,4 +58,4 @@ jobs:
         run: docker-compose push #--ignore-push-failures
 
       - name: Push images 2
-        run: docker push ghcr.io/${{ github.repository_owner }}/answer-king-rest-api_app:latest
+        run: docker push ghcr.io/answerconsulting/answer-king-rest-api_app:latest
