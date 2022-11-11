@@ -23,7 +23,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping(path = "/api/orders")
+@RequestMapping(path = "/orders")
 public class OrderController {
 
     private final OrderService orderService;
