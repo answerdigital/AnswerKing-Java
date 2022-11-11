@@ -25,7 +25,7 @@ public class ProductService {
 
     public Product addNewProduct(final ProductRequest productRequest) {
         if (productRepository.existsByName(productRequest.name())) {
-            throw new ConflictException(String.format("An Product named '%s' already exists", productRequest.name()));
+            throw new ConflictException(String.format("A Product named '%s' already exists", productRequest.name()));
         }
 
         final Product newProduct = productMapper.addRequestToProduct(productRequest);
@@ -46,7 +46,7 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
 
         if (productRepository.existsByNameAndIdIsNot(productRequest.name(), productId)) {
-            throw new ConflictException(String.format("An Product named '%s' already exists", productRequest.name()));
+            throw new ConflictException(String.format("A Product named '%s' already exists", productRequest.name()));
         }
 
         final Product updatedProduct = productMapper.updateRequestToProduct(findById(productId), productRequest);
