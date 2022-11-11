@@ -46,23 +46,23 @@ public class Category {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "item_category",
+            name = "product_category",
             joinColumns = {@JoinColumn(name = "category_id")},
-            inverseJoinColumns = {@JoinColumn(name = "item_id")})
+            inverseJoinColumns = {@JoinColumn(name = "product_id")})
     @JsonIgnore
-    private Set<Item> items = new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 
     public Category(final AddCategoryRequest categoryRequest) {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
     }
 
-    public void addItem(final Item item) {
-        items.add(item);
+    public void addProduct(final Product product) {
+        products.add(product);
     }
 
-    public void removeItem(final Item item) {
-        items.remove(item);
+    public void removeProduct(final Product product) {
+        products.remove(product);
     }
 
     public Category(final String name, final String description) {
