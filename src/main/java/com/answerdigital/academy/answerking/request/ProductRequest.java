@@ -22,9 +22,7 @@ public record ProductRequest(
         @Digits(integer = 12, fraction = 2, message = "Product price is invalid")
         @DecimalMin(value = "0.0", inclusive = false, message = "Product price is invalid")
         @NotNull
-        BigDecimal price,
-        @NotNull
-        boolean available
+        BigDecimal price
 ) {
     @Builder
     public ProductRequest {
