@@ -50,6 +50,8 @@ public class SecurityConfig {
                 .build();
 
         return new InMemoryUserDetailsManager(paul, john, ringo, george);
+
+        // Testing workflow
     }
 
     @Bean
