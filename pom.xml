@@ -10,7 +10,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.answerdigital.academy</groupId>
+	<groupId>com.answerdigital</groupId>
 	<artifactId>answer-king-rest-api</artifactId>
 	<version>0.0.1</version>
 	<name>answer-king-rest-api</name>
