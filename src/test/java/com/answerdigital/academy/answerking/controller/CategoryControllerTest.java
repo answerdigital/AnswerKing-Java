@@ -41,7 +41,7 @@ class CategoryControllerTest {
 
         doReturn(category).when(categoryService).addItemToCategory(categoryId, itemId);
 
-        mvc.perform(put("/categories/{categoryId}/additem/{itemId}", categoryId, itemId))
+        mvc.perform(put("/api/categories/{categoryId}/additem/{itemId}", categoryId, itemId))
            .andExpect(status().isOk());
     }
 
@@ -53,7 +53,7 @@ class CategoryControllerTest {
 
         doReturn(category).when(categoryService).removeItemFromCategory(categoryId, itemId);
 
-        mvc.perform(put("/categories/{categoryId}/removeitem/{itemId}", categoryId, itemId))
+        mvc.perform(put("/api/categories/{categoryId}/removeitem/{itemId}", categoryId, itemId))
            .andExpect(status().isOk());
     }
 
@@ -65,7 +65,7 @@ class CategoryControllerTest {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
         doReturn(category).when(categoryService).addCategory(addCategoryRequest);
-        final var response = mvc.perform(post("/categories")
+        final var response = mvc.perform(post("/api/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
@@ -82,7 +82,7 @@ class CategoryControllerTest {
     void addCategoryWithInvalidCategoryRequestNameTest() throws Exception {
         final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final String error = mvc.perform(post("/categories")
+        final String error = mvc.perform(post("/api/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
@@ -96,7 +96,7 @@ class CategoryControllerTest {
     void addCategoryWithInvalidCategoryRequestDescTest() throws Exception {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final String error = mvc.perform(post("/categories")
+        final String error = mvc.perform(post("/api/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
@@ -117,7 +117,7 @@ class CategoryControllerTest {
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
         doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
-        final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
+        final var response = mvc.perform(put("/api/categories/{categoryId}", categoryId)
                                                      .content(updateCategoryRequestJson)
                                                      .contentType(MediaType.APPLICATION_JSON))
                                                      .andExpect(status().isOk())
@@ -134,7 +134,7 @@ class CategoryControllerTest {
     void updateCategoryWithInvalidCategoryRequestNameTest() throws Exception {
         final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final String error = mvc.perform(put("/categories/{categoryId}", 112L)
+        final String error = mvc.perform(put("/api/categories/{categoryId}", 112L)
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
@@ -148,7 +148,7 @@ class CategoryControllerTest {
     void updateCategoryWithInvalidCategoryRequestDescTest() throws Exception {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final String error = mvc.perform(put("/categories/{categoryId}", 112L)
+        final String error = mvc.perform(put("/api/categories/{categoryId}", 112L)
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
