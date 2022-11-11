@@ -44,6 +44,8 @@ public class Category {
             message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
+    private boolean retired;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "product_category",
@@ -55,6 +57,7 @@ public class Category {
     public Category(final AddCategoryRequest categoryRequest) {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
+        this.retired = false;
     }
 
     public void addProduct(final Product product) {
@@ -68,6 +71,7 @@ public class Category {
     public Category(final String name, final String description) {
         this.name = name;
         this.description = description;
+        this.retired = false;
     }
 
     @Override
