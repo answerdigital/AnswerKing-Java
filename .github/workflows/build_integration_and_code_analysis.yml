@@ -44,6 +44,9 @@ jobs:
   Build-Test:
     name: Integration Test
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+
     steps:
       - uses: actions/checkout@v3
 
@@ -67,6 +70,7 @@ jobs:
         run: mvn clean verify
 
       - name: Publish test coverage results
+        id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v4.6
         with:
           coverage_results_path: 'target/site/jacoco/jacoco.xml'
