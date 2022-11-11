@@ -64,12 +64,12 @@ public class OrderService {
             throw new ProductUnavailableException(String.format("The product with ID %d is not available.", product.getId()));
         }
 
-        final Optional<LineItem> existingOrderProduct = order.getLineItems()
+        final Optional<LineItem> existingLineItem = order.getLineItems()
                 .stream()
                 .filter(lineItem -> lineItem.getProduct() == product)
                 .findFirst();
 
-        if (existingOrderProduct.isPresent()) {
+        if (existingLineItem.isPresent()) {
             throw new ConflictException(String.format("Product id %s is already in the basket", product.getId()));
         }
 
@@ -102,18 +102,18 @@ public class OrderService {
         final Order order = findById(orderId);
         final Product product = productService.findById(productId);
 
-        final Optional<LineItem> existingOrderProduct = order.getLineItems()
+        final Optional<LineItem> existingLineItem = order.getLineItems()
                 .stream()
                 .filter(lineItem -> lineItem.getProduct() == product)
                 .findFirst();
 
-        if (existingOrderProduct.isEmpty()) {
+        if (existingLineItem.isEmpty()) {
             throw new NotFoundException(
                     String.format("Product id = %s is not in the basket of order id = %s", productId, orderId)
             );
         }
 
-        order.getLineItems().remove(existingOrderProduct.get());
+        order.getLineItems().remove(existingLineItem.get());
         return orderRepository.save(order);
     }
 }
