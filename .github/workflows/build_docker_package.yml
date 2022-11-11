@@ -1,7 +1,7 @@
 name: Docker Image Pipeline
 on:
   workflow_run:
-    workflows: ["Answer King build and test pipeline"]
+    workflows: ["Integration and code analysis"]
     branches: [main]
     types:
       - completed
