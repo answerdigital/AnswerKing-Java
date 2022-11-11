@@ -58,7 +58,7 @@ class ProductControllerTest {
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
-                .available(true)
+                .retired(false)
                 .build();
     }
 

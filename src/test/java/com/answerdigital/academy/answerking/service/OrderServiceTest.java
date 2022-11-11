@@ -171,7 +171,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
 
         Order expectedResponse = Order.builder()
@@ -240,7 +240,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(false)
+                .retired(false)
                 .build();
 
         // When
@@ -266,7 +266,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
         order.setLineItems(Set.of(new LineItem(order, product, 1)));
 
@@ -291,7 +291,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
 
         Order order = Order.builder()
@@ -369,7 +369,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
         Order order = Order.builder()
                 .lineItems(new HashSet<>())
