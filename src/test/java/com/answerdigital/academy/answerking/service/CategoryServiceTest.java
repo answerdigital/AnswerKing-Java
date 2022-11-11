@@ -276,12 +276,17 @@ class CategoryServiceTest {
     @Test
     void testRetireCategory() {
         // given
-        Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(CATEGORY_ID);
+        Category category = Category.builder()
+                .name("Drinks")
+                .description("Our selection of drinks")
+                .id(CATEGORY_ID).build();
 
-        Category expectedCategory = new Category("Drinks", "Our selection of drinks");
-        expectedCategory.setId(CATEGORY_ID);
-        expectedCategory.setRetired(true);
+        Category expectedCategory = Category.builder()
+                .name("Drinks")
+                .description("Our selection of drinks")
+                .id(CATEGORY_ID)
+                .retired(true)
+                .build();
 
         // when
         doReturn(Optional.of(category))
