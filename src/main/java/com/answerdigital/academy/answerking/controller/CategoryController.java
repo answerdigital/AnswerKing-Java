@@ -4,6 +4,11 @@ import com.answerdigital.academy.answerking.model.Category;
 import com.answerdigital.academy.answerking.request.AddCategoryRequest;
 import com.answerdigital.academy.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.academy.answerking.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +46,11 @@ public class CategoryController {
                                                         errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 
+    @Operation(summary = "Get all categories.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found the the list of categories",
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) })
+    })
     @GetMapping
     public ResponseEntity<Collection<Category>> getAllCategories() {
         final Set<Category> categories = categoryService.findAll();
