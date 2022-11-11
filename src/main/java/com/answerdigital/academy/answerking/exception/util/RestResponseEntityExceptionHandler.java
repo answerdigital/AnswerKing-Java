@@ -21,8 +21,8 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
             final MethodArgumentNotValidException exception,
-            final HttpServletRequest request
-    ) {
+            final HttpServletRequest request) {
+
         String detail;
         try {
             detail = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
@@ -37,8 +37,8 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(
             final ConstraintViolationException exception,
-            final HttpServletRequest request
-    ) {
+            final HttpServletRequest request ) {
+
         final List<String> errorMessages = exception.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .toList();
@@ -50,8 +50,8 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(AnswerKingException.class)
     public ResponseEntity<ErrorResponse> handleAnswerKingException(
             final AnswerKingException exception,
-            final HttpServletRequest request
-    ) {
+            final HttpServletRequest request) {
+
         final ErrorResponse response = new ErrorResponse(exception, request);
         return new ResponseEntity<>(response, exception.getStatus());
     }
@@ -60,9 +60,10 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public ResponseEntity<ErrorResponse> defaultExceptionHandler(
             final Exception exception,
-            final HttpServletRequest request
-    ) {
+            final HttpServletRequest request) {
+
         final ErrorResponse response = new ErrorResponse(new InternalServerErrorException(exception.getMessage()), request);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }
