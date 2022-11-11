@@ -86,11 +86,11 @@ public class CategoryService {
     }
 
     public Category retireCategory(final Long categoryId) {
-        final Category foundCategory = findById(categoryId);
-        if(foundCategory.isRetired()) {
+        final Category category = findById(categoryId);
+        if(category.isRetired()) {
             throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
         }
-        foundCategory.setRetired(true);
-        return categoryRepository.save(foundCategory);
+        category.setRetired(true);
+        return categoryRepository.save(category);
     }
 }
