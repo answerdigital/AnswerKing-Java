@@ -1,7 +1,7 @@
 # Answer King REST API
 
 The Answer King REST API is the backend for a fast food business. It allows products and categories to be created and 
-orders to be placed. An product can be included in multiple categories.
+orders to be placed. A product can be included in multiple categories.
 
 ## Docker
 
@@ -26,7 +26,7 @@ and execute the following commands:
 
 [Docker Compose](https://docs.docker.com/compose/install/)
 
-[AMAZON CORRETTO 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html/)
+[AMAZON CORRETTO 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html)
 
 ## Maven 
 
@@ -52,7 +52,7 @@ If Maven isn't installed on your system, the Maven Wrapper can be used by using 
 
 ### Prerequisites
 
-[AMAZON CORRETTO 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html/)
+[AMAZON CORRETTO 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html)
 
 ## MySQL
 
