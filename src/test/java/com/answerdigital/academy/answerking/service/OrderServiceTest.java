@@ -1,5 +1,6 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.custom.ProductUnavailableException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
@@ -250,8 +251,8 @@ public class OrderServiceTest {
                 .thenReturn(product);
 
         // Then
-        assertThrows(ProductUnavailableException.class,
-                () -> orderService.addProductToBasket(123L, 123L, 1));
+        assertThrows(RetirementException.class,
+                () -> orderService.addItemToBasket(123L, 123L, 1));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
