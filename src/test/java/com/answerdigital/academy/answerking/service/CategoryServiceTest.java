@@ -283,7 +283,7 @@ class CategoryServiceTest {
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
 
         // then
-        assertDoesNotThrow(() -> categoryService.deleteCategoryById(CATEGORY_ID));
+        assertDoesNotThrow(() -> categoryService.retireCategory(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
     }
 
@@ -295,7 +295,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.deleteCategoryById(CATEGORY_ID));
+        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.retireCategory(CATEGORY_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());

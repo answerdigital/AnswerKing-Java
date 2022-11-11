@@ -47,7 +47,7 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
-    private Boolean available;
+    private boolean retired;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "products")
@@ -61,23 +61,23 @@ public class Product {
         this.price = price;
     }
 
-    public void setAvailable(final Boolean available) {
-        this.available = available;
+    public void setRetired(final Boolean retired) {
+        this.retired = retired;
     }
 
     public Product(final ProductRequest productRequest){
         this.name = productRequest.name();
         this.description = productRequest.description();
         this.price = productRequest.price();
-        this.available = productRequest.available();
+        this.retired = productRequest.available();
     }
 
-    public Product(final String name, final String description, final BigDecimal price, final boolean isAvailable) {
+    public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.categories = new HashSet<>();
-        this.available = isAvailable;
+        this.retired = isRetired;
     }
 
     @PreRemove
@@ -111,7 +111,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", available=" + available +
+                ", retired=" + retired +
                 '}';
     }
 }
