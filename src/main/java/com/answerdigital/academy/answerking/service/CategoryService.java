@@ -4,7 +4,7 @@ import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.mapper.CategoryMapper;
 import com.answerdigital.academy.answerking.model.Category;
-import com.answerdigital.academy.answerking.model.Item;
+import com.answerdigital.academy.answerking.model.Product;
 import com.answerdigital.academy.answerking.repository.CategoryRepository;
 import com.answerdigital.academy.answerking.request.AddCategoryRequest;
 import com.answerdigital.academy.answerking.request.UpdateCategoryRequest;
@@ -18,16 +18,16 @@ import java.util.Set;
 
 @Service
 public class CategoryService {
-    private final ItemService itemService;
+    private final ProductService productService;
 
     private final CategoryRepository categoryRepository;
 
     private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
 
     @Autowired
-    public CategoryService(final ItemService itemService,
+    public CategoryService(final ProductService productService,
                            final CategoryRepository categoryRepository) {
-        this.itemService = itemService;
+        this.productService = productService;
         this.categoryRepository = categoryRepository;
     }
 
@@ -60,27 +60,27 @@ public class CategoryService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Category addItemToCategory(final Long categoryId, final Long itemId) {
+    public Category addProductToCategory(final Long categoryId, final Long productId) {
         final Category category = findById(categoryId);
-        final Item item = itemService.findById(itemId);
+        final Product product = productService.findById(productId);
 
-        if (category.getItems().contains(item)) {
-            throw new ConflictException("Category already has this item");
+        if (category.getProducts().contains(product)) {
+            throw new ConflictException("Category already has this product");
         }
 
-        category.addItem(item);
+        category.addProduct(product);
         return categoryRepository.save(category);
     }
 
-    public Category removeItemFromCategory(final Long categoryId, final Long itemId) {
+    public Category removeProductFromCategory(final Long categoryId, final Long productId) {
         final Category category = findById(categoryId);
-        final Item item = itemService.findById(itemId);
+        final Product product = productService.findById(productId);
 
-        if (!category.getItems().contains(item)) {
-            throw new NotFoundException("Category does not have this item");
+        if (!category.getProducts().contains(product)) {
+            throw new NotFoundException("Category does not have this product");
         }
 
-        category.removeItem(item);
+        category.removeProduct(product);
         return categoryRepository.save(category);
     }
 

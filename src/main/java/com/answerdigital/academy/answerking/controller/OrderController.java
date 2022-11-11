@@ -56,23 +56,23 @@ public class OrderController {
         return new ResponseEntity<>(foundOrders, foundOrders.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
-    @PostMapping(path = "/{orderId}/item/{itemId}/quantity/{quantity}")
-    public ResponseEntity<Order> addItemToBasket(@PathVariable @NotNull final Long orderId,
-                                                 @PathVariable @NotNull final Long itemId,
-                                                 @PathVariable @NotNull final Integer quantity) {
-        return new ResponseEntity<>(orderService.addItemToBasket(orderId, itemId, quantity), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/{orderId}/item/{itemId}")
-    public ResponseEntity<Order> deleteItemInBasket(@PathVariable @NotNull final Long orderId,
-                                                    @PathVariable @NotNull final Long itemId) {
-        return new ResponseEntity<>(orderService.deleteItemInBasket(orderId, itemId), HttpStatus.OK);
-    }
-
-    @PutMapping(path = "/{orderId}/item/{itemId}/quantity/{quantity}")
-    public ResponseEntity<Order> updateItemQuantity(@PathVariable @NotNull final Long orderId,
-                                                    @PathVariable @NotNull final Long itemId,
+    @PostMapping(path = "/{orderId}/product/{productId}/quantity/{quantity}")
+    public ResponseEntity<Order> addProductToBasket(@PathVariable @NotNull final Long orderId,
+                                                    @PathVariable @NotNull final Long productId,
                                                     @PathVariable @NotNull final Integer quantity) {
-        return new ResponseEntity<>(orderService.updateItemQuantity(orderId, itemId, quantity), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.addProductToBasket(orderId, productId, quantity), HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/{orderId}/product/{productId}")
+    public ResponseEntity<Order> deleteProductInBasket(@PathVariable @NotNull final Long orderId,
+                                                       @PathVariable @NotNull final Long productId) {
+        return new ResponseEntity<>(orderService.deleteProductInBasket(orderId, productId), HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/{orderId}/product/{productId}/quantity/{quantity}")
+    public ResponseEntity<Order> updateProductQuantity(@PathVariable @NotNull final Long orderId,
+                                                       @PathVariable @NotNull final Long productId,
+                                                       @PathVariable @NotNull final Integer quantity) {
+        return new ResponseEntity<>(orderService.updateProductQuantity(orderId, productId, quantity), HttpStatus.OK);
     }
 }

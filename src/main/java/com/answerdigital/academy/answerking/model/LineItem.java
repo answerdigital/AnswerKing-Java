@@ -23,13 +23,13 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "order_product")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @AllArgsConstructor
-public class OrderItem {
+public class LineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -41,29 +41,29 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(name = "quantity")
     private Integer quantity;
 
-    public OrderItem(final Order order, final Item item, final int quantity) {
+    public LineItem(final Order order, final Product product, final int quantity) {
         this.order = order;
-        this.item = item;
+        this.product = product;
         this.quantity = quantity;
     }
 
     @JsonInclude
-    public BigDecimal getItemTotalPrice() {
-        return new BigDecimal(quantity).multiply(item.getPrice()).setScale(2, RoundingMode.DOWN);
+    public BigDecimal getProductTotalPrice() {
+        return new BigDecimal(quantity).multiply(product.getPrice()).setScale(2, RoundingMode.DOWN);
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final OrderItem orderItem = (OrderItem) o;
-        return id.equals(orderItem.id);
+        final LineItem lineItem = (LineItem) o;
+        return id.equals(lineItem.id);
     }
 
     @Override
@@ -73,10 +73,10 @@ public class OrderItem {
 
     @Override
     public String toString() {
-        return "OrderItem{" +
+        return "LineItem{" +
                 "id=" + id +
                 ", orderId=" + order.getId() +
-                ", itemId=" + item.getId() +
+                ", productId=" + product.getId() +
                 ", quantity=" + quantity +
                 '}';
     }

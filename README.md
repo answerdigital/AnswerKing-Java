@@ -1,7 +1,7 @@
 # Answer King REST API
 
-The Answer King REST API is the backend for a fast food business. It allows items and categories to be created and 
-orders to be placed. An item can be included in multiple categories.
+The Answer King REST API is the backend for a fast food business. It allows products and categories to be created and 
+orders to be placed. An product can be included in multiple categories.
 
 ## Docker
 

@@ -41,7 +41,7 @@ public class Order {
     private OrderStatus orderStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private Set<LineItem> lineItems = new HashSet<>();
 
     public Order() {
         this.orderStatus = OrderStatus.IN_PROGRESS;
@@ -54,9 +54,9 @@ public class Order {
 
     @JsonInclude
     public BigDecimal getTotalPrice() {
-        return orderItems.stream()
-                .map(orderItem -> orderItem.getItem().getPrice()
-                        .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+        return lineItems.stream()
+                .map(lineItem -> lineItem.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(lineItem.getQuantity())))
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO)
                 .setScale(2, RoundingMode.DOWN);

@@ -11,7 +11,7 @@ import java.util.Collections;
 public interface OrderMapper {
 
     @Mapping(target = "orderStatus", constant = "IN_PROGRESS")
-    @Mapping(target = "orderItems", expression = "java(Collections.EMPTY_SET)")
+    @Mapping(target = "lineItems", expression = "java(Collections.EMPTY_SET)")
     Order addRequestToOrder(OrderRequest orderRequest);
 
     Order updateOrderRequest(@MappingTarget Order order, OrderRequest orderRequest);

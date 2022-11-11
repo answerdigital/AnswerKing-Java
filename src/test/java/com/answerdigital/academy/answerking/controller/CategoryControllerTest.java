@@ -34,26 +34,26 @@ class CategoryControllerTest {
     CategoryService categoryService;
 
     @Test
-    void addItemToCategoryTest() throws Exception {
+    void addProductToCategoryTest() throws Exception {
         final var category = Category.builder().build();
-        final var itemId = 10L;
+        final var productId = 10L;
         final var categoryId = 20L;
 
-        doReturn(category).when(categoryService).addItemToCategory(categoryId, itemId);
+        doReturn(category).when(categoryService).addProductToCategory(categoryId, productId);
 
-        mvc.perform(put("/categories/{categoryId}/additem/{itemId}", categoryId, itemId))
+        mvc.perform(put("/categories/{categoryId}/addproduct/{productId}", categoryId, productId))
            .andExpect(status().isOk());
     }
 
     @Test
-    void removeItemFromCategoryTest() throws Exception {
+    void removeProductFromCategoryTest() throws Exception {
         final var category = Category.builder().build();
-        final var itemId = 10L;
+        final var productId = 10L;
         final var categoryId = 20L;
 
-        doReturn(category).when(categoryService).removeItemFromCategory(categoryId, itemId);
+        doReturn(category).when(categoryService).removeProductFromCategory(categoryId, productId);
 
-        mvc.perform(put("/categories/{categoryId}/removeitem/{itemId}", categoryId, itemId))
+        mvc.perform(put("/categories/{categoryId}/removeproduct/{productId}", categoryId, productId))
            .andExpect(status().isOk());
     }
 

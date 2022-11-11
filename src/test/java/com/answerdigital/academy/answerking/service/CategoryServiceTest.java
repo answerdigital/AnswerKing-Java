@@ -3,7 +3,7 @@ package com.answerdigital.academy.answerking.service;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.model.Category;
-import com.answerdigital.academy.answerking.model.Item;
+import com.answerdigital.academy.answerking.model.Product;
 import com.answerdigital.academy.answerking.repository.CategoryRepository;
 import com.answerdigital.academy.answerking.request.AddCategoryRequest;
 import com.answerdigital.academy.answerking.request.UpdateCategoryRequest;
@@ -38,14 +38,14 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @Mock
-    private ItemService itemService;
+    private ProductService productService;
 
-    Long categoryId = 1L;
-    Long itemId = 1L;
+    private final Long CATEGORY_ID = 1L;
+    private final Long PRODUCT_ID = 1L;
 
     @BeforeEach
     void setUp() {
-        categoryService = new CategoryService(itemService, categoryRepository);
+        categoryService = new CategoryService(productService, categoryRepository);
     }
 
     @AfterEach
@@ -88,21 +88,21 @@ class CategoryServiceTest {
     void testUpdateCategory() {
         // given
         Category existingCategory = new Category("Drinks", "Our selection of drinks");
-        existingCategory.setId(categoryId);
+        existingCategory.setId(CATEGORY_ID);
 
         UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest(
                 "DrinksUpdated",
                 "Our updated selection of drinks");
 
         Category expectedResponse = new Category("DrinksUpdated", "Our updated selection of drinks");
-        expectedResponse.setId(categoryId);
+        expectedResponse.setId(CATEGORY_ID);
 
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         doReturn(Optional.of(existingCategory)).when(categoryRepository).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        Category response = categoryService.updateCategory(updateCategoryRequest, categoryId);
+        Category response = categoryService.updateCategory(updateCategoryRequest, CATEGORY_ID);
 
         // then
         assertEquals(expectedResponse, response);
@@ -121,7 +121,7 @@ class CategoryServiceTest {
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.updateCategory(updateCategoryRequest, categoryId));
+        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.updateCategory(updateCategoryRequest, CATEGORY_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -133,7 +133,7 @@ class CategoryServiceTest {
     void testUpdateCategoryNameToCategoryThatAlreadyExists() {
         // given
         Category existingCategory = new Category("Drinks", "Our selection of drinks");
-        existingCategory.setId(categoryId);
+        existingCategory.setId(CATEGORY_ID);
 
         UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest(
                 "Burgers",
@@ -141,7 +141,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(true).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-        Exception exception = assertThrows(ConflictException.class, () -> categoryService.updateCategory(updateCategoryRequest, categoryId));
+        Exception exception = assertThrows(ConflictException.class, () -> categoryService.updateCategory(updateCategoryRequest, CATEGORY_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -149,62 +149,62 @@ class CategoryServiceTest {
     }
 
     @Test
-    void testAddItemToCategory() {
+    void testAddProductToCategory() {
         // given
-        Item item = new Item("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
-        item.setId(itemId);
+        Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
+        product.setId(PRODUCT_ID);
 
         Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(categoryId);
+        category.setId(CATEGORY_ID);
 
         Category expectedResponse = new Category("Drinks", "Our selection of drinks");
-        expectedResponse.setId(categoryId);
-        expectedResponse.addItem(item);
+        expectedResponse.setId(CATEGORY_ID);
+        expectedResponse.addProduct(product);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(item).when(itemService).findById(anyLong());
+        doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        Category response = categoryService.addItemToCategory(categoryId, itemId);
+        Category response = categoryService.addProductToCategory(CATEGORY_ID, PRODUCT_ID);
 
         // then
-        assertEquals(expectedResponse.getItems(), response.getItems());
+        assertEquals(expectedResponse.getProducts(), response.getProducts());
         verify(categoryRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
         verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
-    void testAddItemToCategoryThatIsAlreadyInCategory() {
+    void testAddProductToCategoryThatIsAlreadyInCategory() {
         // given
-        Item item = new Item("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
-        item.setId(itemId);
+        Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
+        product.setId(PRODUCT_ID);
 
         Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(categoryId);
-        category.addItem(item);
+        category.setId(CATEGORY_ID);
+        category.addProduct(product);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(item).when(itemService).findById(anyLong());
-        Exception exception = assertThrows(ConflictException.class, () -> categoryService.addItemToCategory(categoryId, itemId));
+        doReturn(product).when(productService).findById(anyLong());
+        Exception exception = assertThrows(ConflictException.class, () -> categoryService.addProductToCategory(CATEGORY_ID, PRODUCT_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
         verify(categoryRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testAddItemToCategoryThatDoesNotExist() {
+    void testAddProductToCategoryThatDoesNotExist() {
         // given
-        Item item = new Item("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
-        item.setId(itemId);
+        Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
+        product.setId(PRODUCT_ID);
 
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.addItemToCategory(categoryId, itemId));
+        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.addProductToCategory(CATEGORY_ID, PRODUCT_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -212,61 +212,61 @@ class CategoryServiceTest {
     }
 
     @Test
-    void testRemoveItemFromCategory() {
+    void testRemoveProductFromCategory() {
         // given
-        Item item = new Item("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
-        item.setId(itemId);
+        Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
+        product.setId(PRODUCT_ID);
 
         Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(categoryId);
-        category.addItem(item);
+        category.setId(CATEGORY_ID);
+        category.addProduct(product);
 
         Category expectedResponse = new Category("Drinks", "Our selection of drinks");
-        expectedResponse.setId(categoryId);
+        expectedResponse.setId(CATEGORY_ID);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(item).when(itemService).findById(anyLong());
+        doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        Category response = categoryService.removeItemFromCategory(categoryId, itemId);
+        Category response = categoryService.removeProductFromCategory(CATEGORY_ID, PRODUCT_ID);
 
         // then
-        assertEquals(0, response.getItems().size());
+        assertEquals(0, response.getProducts().size());
         verify(categoryRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
         verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
-    void testRemoveItemThatIsNotInCategory() {
+    void testRemoveProductThatIsNotInCategory() {
         // given
-        Item item = new Item("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
-        item.setId(itemId);
+        Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
+        product.setId(PRODUCT_ID);
 
         Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(categoryId);
+        category.setId(CATEGORY_ID);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(item).when(itemService).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.removeItemFromCategory(categoryId, itemId));
+        doReturn(product).when(productService).findById(anyLong());
+        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.removeProductFromCategory(CATEGORY_ID, PRODUCT_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
         verify(categoryRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testRemoveItemFromCategoryThatDoesNotExist() {
+    void testRemoveProductFromCategoryThatDoesNotExist() {
         // given
-        Item item = new Item("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
-        item.setId(itemId);
+        Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
+        product.setId(PRODUCT_ID);
 
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.removeItemFromCategory(categoryId, itemId));
+        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.removeProductFromCategory(CATEGORY_ID, PRODUCT_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -277,13 +277,13 @@ class CategoryServiceTest {
     void testDeleteCategory() {
         // given
         Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(categoryId);
+        category.setId(CATEGORY_ID);
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
 
         // then
-        assertDoesNotThrow(() -> categoryService.deleteCategoryById(categoryId));
+        assertDoesNotThrow(() -> categoryService.deleteCategoryById(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
     }
 
@@ -291,11 +291,11 @@ class CategoryServiceTest {
     void testDeleteCategoryThatDoesNotExist() {
         // given
         Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(categoryId);
+        category.setId(CATEGORY_ID);
 
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.deleteCategoryById(categoryId));
+        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.deleteCategoryById(CATEGORY_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
