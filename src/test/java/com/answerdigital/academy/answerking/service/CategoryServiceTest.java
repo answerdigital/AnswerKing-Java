@@ -40,8 +40,8 @@ class CategoryServiceTest {
     @Mock
     private ProductService productService;
 
-    private final Long CATEGORY_ID = 1L;
-    private final Long PRODUCT_ID = 1L;
+    private static final Long CATEGORY_ID = 1L;
+    private static final Long PRODUCT_ID = 1L;
 
     @BeforeEach
     void setUp() {
