@@ -279,7 +279,9 @@ class CategoryServiceTest {
         Category category = Category.builder()
                 .name("Drinks")
                 .description("Our selection of drinks")
-                .id(CATEGORY_ID).build();
+                .id(CATEGORY_ID)
+                .retired(false)
+                .build();
 
         Category expectedCategory = Category.builder()
                 .name("Drinks")
@@ -296,16 +298,14 @@ class CategoryServiceTest {
                 .when(categoryRepository)
                 .save(any(Category.class));
 
-        category = categoryService.retireCategory(CATEGORY_ID);
-
         // then
-        assertEquals(expectedCategory, category);
+        assertEquals(expectedCategory, categoryService.retireCategory(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
         verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
-    void testRetireCategoryThatIsAlreadyRetiredThrowsRetirementException() {
+    void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
         Category category = new Category("Drinks", "Our selection of drinks");
         category.setId(CATEGORY_ID);
@@ -317,9 +317,14 @@ class CategoryServiceTest {
                 .findById(anyLong());
 
         // then
-        assertThrows(RetirementException.class, () -> {
-            categoryService.retireCategory(CATEGORY_ID);
-        });
+        assertThrows(RetirementException.class, () -> categoryService.retireCategory(CATEGORY_ID));
+        verify(categoryRepository).findById(anyLong());
+    }
+
+    @Test
+    void testRetireCategoryDoesNotExistThrowsNotFoundException() {
+        // then
+        assertThrows(NotFoundException.class, () -> categoryService.retireCategory(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
     }
 }
