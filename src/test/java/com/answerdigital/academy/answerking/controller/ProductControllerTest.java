@@ -111,7 +111,7 @@ class ProductControllerTest {
     @Test
     void addProductWithInvalidNameThrowsException() throws Exception {
         //given
-        String newProduct = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
+        String newProduct = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\"}";
         //when
         final String error = mvc.perform(post("/products")
                         .content(newProduct)
@@ -128,7 +128,7 @@ class ProductControllerTest {
     @Test
     void addProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
-        String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
+        String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\"}";
         given(productService.addNewProduct(any())).willReturn(product);
 
         //when
@@ -146,7 +146,7 @@ class ProductControllerTest {
     @Test
     void updateProductWithInvalidPriceThrowsException() throws Exception {
         //given
-        String newProduct = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\",\"available\": \"true\"}";
+        String newProduct = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\"}";
         //when
         final String error = mvc.perform(MockMvcRequestBuilders.put("/products/{id}", 55L)
                         .content(newProduct)
@@ -164,7 +164,7 @@ class ProductControllerTest {
     @Test
     void updateProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
-        String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
+        String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\"}";
         given(productService.updateProduct(eq(55L), any())).willReturn(product);
         //when
 
