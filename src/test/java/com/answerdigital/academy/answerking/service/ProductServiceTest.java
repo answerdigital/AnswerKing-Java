@@ -1,5 +1,6 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.model.Product;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.verify;
@@ -34,20 +36,21 @@ class ProductServiceTest {
     private Product product;
     private ProductRequest productRequest;
 
+    private static final long PRODUCT_ID = 55L;
+
     @BeforeEach
     public void generateProduct() {
         product = Product.builder()
-                .id(55L)
+                .id(PRODUCT_ID)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
-                .available(true)
+                .retired(false)
                 .build();
         productRequest = ProductRequest.builder()
                 .name("test")
                 .description("testD")
                 .price(BigDecimal.valueOf(1.99))
-                .available(true)
                 .build();
     }
 
@@ -145,6 +148,46 @@ class ProductServiceTest {
                 //then
                 .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("already exists");
+    }
+
+    @Test
+    void testRetireProduct() {
+        // when
+        when(productRepository.findById(anyLong()))
+                .thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class)))
+                .thenReturn(product);
+
+        // then
+        assertEquals(product, productService.retireProduct(PRODUCT_ID));
+        verify(productRepository).findById(anyLong());
+        verify(productRepository).save(any(Product.class));
+    }
+
+    @Test
+    void testRetireProductAlreadyRetiredThrowsRetirementException() {
+        // given
+        Product expectedProduct = product;
+        expectedProduct.setRetired(true);
+
+        // when
+        when(productRepository.findById(anyLong()))
+                .thenReturn(Optional.of(expectedProduct));
+
+        // then
+        assertThrows(RetirementException.class, () -> productService.retireProduct(PRODUCT_ID));
+        verify(productRepository).findById(anyLong());
+    }
+
+    @Test
+    void testRetireProductDoesNotExistThrowsNotFoundException() {
+        // when
+        when(productRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThrows(NotFoundException.class, () -> productService.retireProduct(PRODUCT_ID));
+        verify(productRepository).findById(anyLong());
     }
 }
 

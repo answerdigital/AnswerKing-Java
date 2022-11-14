@@ -1,5 +1,6 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.model.Category;
@@ -22,7 +23,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
@@ -274,31 +274,60 @@ class CategoryServiceTest {
     }
 
     @Test
-    void testDeleteCategory() {
+    void testRetireCategory() {
+        // given
+        Category category = Category.builder()
+                .name("Drinks")
+                .description("Our selection of drinks")
+                .id(CATEGORY_ID)
+                .retired(false)
+                .build();
+
+        Category expectedCategory = Category.builder()
+                .name("Drinks")
+                .description("Our selection of drinks")
+                .id(CATEGORY_ID)
+                .retired(true)
+                .build();
+
+        // when
+        doReturn(Optional.of(category))
+                .when(categoryRepository)
+                .findById(anyLong());
+        doReturn(expectedCategory)
+                .when(categoryRepository)
+                .save(any(Category.class));
+
+        // then
+        assertEquals(expectedCategory, categoryService.retireCategory(CATEGORY_ID));
+        verify(categoryRepository).findById(anyLong());
+        verify(categoryRepository).save(any(Category.class));
+    }
+
+    @Test
+    void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
         Category category = new Category("Drinks", "Our selection of drinks");
         category.setId(CATEGORY_ID);
+        category.setRetired(true);
 
         // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
+        doReturn(Optional.of(category))
+                .when(categoryRepository)
+                .findById(anyLong());
 
         // then
-        assertDoesNotThrow(() -> categoryService.deleteCategoryById(CATEGORY_ID));
+        assertThrows(RetirementException.class, () -> categoryService.retireCategory(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
     }
 
     @Test
-    void testDeleteCategoryThatDoesNotExist() {
-        // given
-        Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(CATEGORY_ID);
-
+    void testRetireCategoryDoesNotExistThrowsNotFoundException() {
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class, () -> categoryService.deleteCategoryById(CATEGORY_ID));
 
         // then
-        assertFalse(exception.getMessage().isEmpty());
+        assertThrows(NotFoundException.class, () -> categoryService.retireCategory(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
     }
 }

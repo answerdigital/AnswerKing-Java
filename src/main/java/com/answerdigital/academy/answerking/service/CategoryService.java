@@ -1,5 +1,6 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.mapper.CategoryMapper;
@@ -84,8 +85,12 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public void deleteCategoryById(final Long categoryId) {
-        findById(categoryId);
-        categoryRepository.deleteById(categoryId);
+    public Category retireCategory(final Long categoryId) {
+        final Category category = findById(categoryId);
+        if(category.isRetired()) {
+            throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
+        }
+        category.setRetired(true);
+        return categoryRepository.save(category);
     }
 }

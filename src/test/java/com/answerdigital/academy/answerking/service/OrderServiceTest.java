@@ -1,7 +1,7 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
-import com.answerdigital.academy.answerking.exception.custom.ProductUnavailableException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.model.LineItem;
 import com.answerdigital.academy.answerking.model.Product;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {OrderService.class})
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
+class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
@@ -45,6 +45,9 @@ public class OrderServiceTest {
 
     @InjectMocks
     private OrderService orderService;
+
+    private static final long PRODUCT_ID = 1L;
+    private static final long ORDER_ID = 2L;
 
     @Test
     void testAddOrderReturnsSavedOrder() {
@@ -75,7 +78,7 @@ public class OrderServiceTest {
                 .thenReturn(Optional.of(order));
 
         // Then
-        assertSame(order, orderService.findById(123L));
+        assertSame(order, orderService.findById(ORDER_ID));
         verify(orderRepository).findById(anyLong());
     }
 
@@ -87,7 +90,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.findById(123L));
+                () -> orderService.findById(ORDER_ID));
         verify(orderRepository).findById(anyLong());
     }
 
@@ -142,10 +145,10 @@ public class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedOrder);
 
-        Order reponse = orderService.updateOrder(1L, updateOrderRequest);
+        Order response = orderService.updateOrder(ORDER_ID, updateOrderRequest);
 
         // Then
-        assertEquals(expectedOrder, reponse);
+        assertEquals(expectedOrder, response);
         verify(orderRepository).findById(anyLong());
         verify(orderRepository).save(any(Order.class));
     }
@@ -157,7 +160,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.updateOrder(10L, orderRequest));
+                orderService.updateOrder(ORDER_ID, orderRequest));
     }
 
     @Test
@@ -171,7 +174,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
 
         Order expectedResponse = Order.builder()
@@ -188,7 +191,7 @@ public class OrderServiceTest {
                 .thenReturn(expectedResponse);
 
         Order response =
-                orderService.addProductToBasket(12L, 12L, 1);
+                orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 1);
 
         // Then (assertions)
         assertEquals(expectedResponse, response);
@@ -213,7 +216,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.addProductToBasket(123L, 123L, 2));
+                () -> orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 2));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
@@ -226,12 +229,12 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.addProductToBasket(123L, 123L, 2));
+                () -> orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 2));
         verify(orderRepository).findById(anyLong());
     }
 
     @Test
-    void testAddProductToBasketWhenProductIsUnavailableThrowsProductUnavailableException() {
+    void testAddProductToBasketWhenProductIsRetiredThrowsRetirementException() {
         // Given
         Order order = Order.builder()
                 .lineItems(new HashSet<>())
@@ -240,7 +243,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(false)
+                .retired(true)
                 .build();
 
         // When
@@ -250,8 +253,8 @@ public class OrderServiceTest {
                 .thenReturn(product);
 
         // Then
-        assertThrows(ProductUnavailableException.class,
-                () -> orderService.addProductToBasket(123L, 123L, 1));
+        assertThrows(RetirementException.class,
+                () -> orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 1));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
@@ -266,7 +269,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
         order.setLineItems(Set.of(new LineItem(order, product, 1)));
 
@@ -278,7 +281,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(ConflictException.class,
-                () -> orderService.addProductToBasket(12L, 12L, 1));
+                () -> orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 1));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
@@ -291,7 +294,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
 
         Order order = Order.builder()
@@ -320,7 +323,7 @@ public class OrderServiceTest {
                 .thenReturn(expectedResult);
 
         Order actualResult =
-                orderService.updateProductQuantity(12L, 12L, 2);
+                orderService.updateProductQuantity(ORDER_ID, PRODUCT_ID, 2);
 
         // Then
         assertEquals(expectedResult, actualResult);
@@ -344,7 +347,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.updateProductQuantity(12L, 12L, 1));
+                () -> orderService.updateProductQuantity(ORDER_ID, PRODUCT_ID, 1));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
@@ -357,7 +360,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.updateProductQuantity(12L, 12L, 1));
+                () -> orderService.updateProductQuantity(ORDER_ID, PRODUCT_ID, 1));
         verify(orderRepository).findById(anyLong());
     }
 
@@ -369,7 +372,7 @@ public class OrderServiceTest {
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
-                .available(true)
+                .retired(false)
                 .build();
         Order order = Order.builder()
                 .lineItems(new HashSet<>())
@@ -383,7 +386,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.updateProductQuantity(12L, 12L, 2));
+                () -> orderService.updateProductQuantity(ORDER_ID, PRODUCT_ID, 2));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
@@ -419,7 +422,7 @@ public class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
-        Order response = orderService.deleteProductInBasket(12L, 12L);
+        Order response = orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID);
 
         // Then
         assertEquals(expectedResponse, response);
@@ -436,7 +439,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.deleteProductInBasket(12L, 12L));
+                orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID));
         verify(orderRepository).findById(anyLong());
     }
 
@@ -455,7 +458,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.deleteProductInBasket(12L, 12L));
+                orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }
@@ -476,7 +479,7 @@ public class OrderServiceTest {
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.deleteProductInBasket(12L, 12L));
+                orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
     }

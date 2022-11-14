@@ -6,21 +6,21 @@ import org.springframework.http.HttpStatus;
 import java.util.Collection;
 import java.util.List;
 
-public class ProductUnavailableException extends AnswerKingException {
+public class RetirementException extends AnswerKingException {
 
     private static final String TYPE = "https://www.rfc-editor.org/rfc/rfc7231";
 
-    private static final String TITLE = "Product Unavailable Exception";
+    private static final String TITLE = "Retirement Exception";
 
-    private static final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
+    private static final HttpStatus STATUS = HttpStatus.GONE;
 
     private static final String DETAIL = null;
 
-    public ProductUnavailableException(final Collection<String> errors) {
+    public RetirementException(final Collection<String> errors) {
         super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public ProductUnavailableException(final String error) {
+    public RetirementException(final String error) {
         this(List.of(error));
     }
 }

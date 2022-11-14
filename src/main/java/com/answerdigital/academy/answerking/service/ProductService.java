@@ -1,5 +1,6 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.mapper.ProductMapper;
@@ -51,5 +52,14 @@ public class ProductService {
 
         final Product updatedProduct = productMapper.updateRequestToProduct(findById(productId), productRequest);
         return productRepository.save(updatedProduct);
+    }
+
+    public Product retireProduct(final long productId) {
+        final Product product = findById(productId);
+        if (product.isRetired()) {
+            throw new RetirementException(String.format("The product with ID %d is already retired", productId));
+        }
+        product.setRetired(true);
+        return productRepository.save(product);
     }
 }

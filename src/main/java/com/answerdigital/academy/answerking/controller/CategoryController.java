@@ -80,8 +80,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<HttpStatus> deleteCategory(@PathVariable @NotNull final Long categoryId) {
-        categoryService.deleteCategoryById(categoryId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Category> retireCategory(@PathVariable @NotNull final Long categoryId) {
+        return new ResponseEntity<>(categoryService.retireCategory(categoryId), HttpStatus.OK);
     }
 }
