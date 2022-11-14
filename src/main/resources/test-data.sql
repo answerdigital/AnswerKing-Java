@@ -19,14 +19,14 @@ INSERT INTO category (id, name, description) values
                             name = name,
                             description = description;
 
-INSERT INTO product (id, name, description, available, price) values
+INSERT INTO product (id, name, description, retired, price) values
     (1, 'Answer Whopper', 'The biggest burger', true, '5.99'),
     (2, 'Chicken Burger', 'Standard chicken burger', true, '3.99'),
     (3, 'Cheese Burger', 'standard cheese burger', true, '2.99')
     ON DUPLICATE KEY UPDATE id = id,
                             name = name,
                             description = description,
-                            available = available,
+                            retired = retired,
                             price = price;
 
 INSERT INTO product_category (id, product_id, category_id) values
