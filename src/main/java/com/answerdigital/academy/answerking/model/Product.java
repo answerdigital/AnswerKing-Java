@@ -1,6 +1,6 @@
 package com.answerdigital.academy.answerking.model;
 
-import com.answerdigital.academy.answerking.request.ItemRequest;
+import com.answerdigital.academy.answerking.request.ProductRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
@@ -28,14 +28,14 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "item")
+@Table(name = "product")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @AllArgsConstructor
-public class Item {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,12 +50,12 @@ public class Item {
     private Boolean available;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "items")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "products")
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private Set<LineItem> lineItems = new HashSet<>();
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
@@ -65,14 +65,14 @@ public class Item {
         this.available = available;
     }
 
-    public Item(final ItemRequest itemRequest){
-        this.name = itemRequest.name();
-        this.description = itemRequest.description();
-        this.price = itemRequest.price();
-        this.available = itemRequest.available();
+    public Product(final ProductRequest productRequest){
+        this.name = productRequest.name();
+        this.description = productRequest.description();
+        this.price = productRequest.price();
+        this.available = productRequest.available();
     }
 
-    public Item(final String name, final String description, final BigDecimal price, final boolean isAvailable) {
+    public Product(final String name, final String description, final BigDecimal price, final boolean isAvailable) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -81,9 +81,9 @@ public class Item {
     }
 
     @PreRemove
-    private void removeItemsFromCategories() {
+    private void removeProductsFromCategories() {
         for (Category category : categories) {
-            category.removeItem(this);
+            category.removeProduct(this);
         }
     }
 
@@ -95,8 +95,8 @@ public class Item {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Item item = (Item) o;
-        return Objects.equals(id, item.id);
+        final Product product = (Product) o;
+        return Objects.equals(id, product.id);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item{" +
+        return "Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
