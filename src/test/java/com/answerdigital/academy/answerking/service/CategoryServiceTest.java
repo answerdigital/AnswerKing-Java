@@ -323,6 +323,9 @@ class CategoryServiceTest {
 
     @Test
     void testRetireCategoryDoesNotExistThrowsNotFoundException() {
+        // when
+        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
+
         // then
         assertThrows(NotFoundException.class, () -> categoryService.retireCategory(CATEGORY_ID));
         verify(categoryRepository).findById(anyLong());
