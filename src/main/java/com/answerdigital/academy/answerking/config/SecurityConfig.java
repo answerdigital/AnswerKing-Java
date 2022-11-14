@@ -3,6 +3,7 @@ package com.answerdigital.academy.answerking.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,4 +51,15 @@ public class SecurityConfig {
 
         return new InMemoryUserDetailsManager(paul, john, ringo, george);
     }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web
+                        .ignoring()
+                        .antMatchers("/")
+                        .antMatchers("/api/swagger/**”,”/api/swagger-ui/**”,”/api/swagger-ui.html”," +
+                                "/api/swagger-ui-custom.html", "/webjars/**", "/api/swagger-resources/**",
+                                "/api/configuration/**”, ”/api/api-docs/**");
+    }
+
 }
