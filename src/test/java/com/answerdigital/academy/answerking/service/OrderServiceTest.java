@@ -234,7 +234,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void testAddProductToBasketWhenProductIsUnavailableThrowsProductUnavailableException() {
+    void testAddProductToBasketWhenProductIsRetiredThrowsRetirementException() {
         // Given
         Order order = Order.builder()
                 .lineItems(new HashSet<>())
