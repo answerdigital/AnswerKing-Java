@@ -1,7 +1,7 @@
 package com.answerdigital.academy.answerking.service;
 
+import com.answerdigital.academy.answerking.exception.custom.RetirementException;
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
-import com.answerdigital.academy.answerking.exception.custom.ProductUnavailableException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.mapper.OrderMapper;
 import com.answerdigital.academy.answerking.model.LineItem;
@@ -57,11 +57,11 @@ public class OrderService {
 
     @Transactional
     public Order addProductToBasket(final Long orderId, final Long productId, final Integer quantity) {
-        final  Order order = findById(orderId);
+        final Order order = findById(orderId);
         final Product product = productService.findById(productId);
 
-        if (!product.getAvailable()) {
-            throw new ProductUnavailableException(String.format("The product with ID %d is not available.", product.getId()));
+        if (product.isRetired()) {
+            throw new RetirementException(String.format("The product with ID %d has been retired", product.getId()));
         }
 
         final Optional<LineItem> existingLineItem = order.getLineItems()
