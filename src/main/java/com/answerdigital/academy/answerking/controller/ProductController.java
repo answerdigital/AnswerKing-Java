@@ -3,6 +3,7 @@ package com.answerdigital.academy.answerking.controller;
 import com.answerdigital.academy.answerking.model.Product;
 import com.answerdigital.academy.answerking.request.ProductRequest;
 import com.answerdigital.academy.answerking.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
+@Tag(name = "Products", description = "The Products API")
 @RestController
 @RequestMapping(path = "/products")
 public class ProductController {
