@@ -55,11 +55,11 @@ public class ProductService {
     }
 
     public Product retireProduct(final long productId) {
-        final Product productToRetire = findById(productId);
-        if (productToRetire.isRetired()) {
+        final Product product = findById(productId);
+        if (product.isRetired()) {
             throw new RetirementException(String.format("The product with ID %d is already retired", productId));
         }
-        productToRetire.setRetired(true);
-        return productRepository.save(productToRetire);
+        product.setRetired(true);
+        return productRepository.save(product);
     }
 }
