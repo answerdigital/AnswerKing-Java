@@ -36,12 +36,12 @@ class ProductServiceTest {
     private Product product;
     private ProductRequest productRequest;
 
-    private static final long ITEM_ID = 55L;
+    private static final long PRODUCT_ID = 55L;
 
     @BeforeEach
     public void generateProduct() {
         product = Product.builder()
-                .id(ITEM_ID)
+                .id(PRODUCT_ID)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
@@ -159,7 +159,7 @@ class ProductServiceTest {
                 .thenReturn(product);
 
         // then
-        assertEquals(product, productService.retireProduct(ITEM_ID));
+        assertEquals(product, productService.retireProduct(PRODUCT_ID));
         verify(productRepository).findById(anyLong());
         verify(productRepository).save(any(Product.class));
     }
@@ -175,7 +175,7 @@ class ProductServiceTest {
                 .thenReturn(Optional.of(expectedProduct));
 
         // then
-        assertThrows(RetirementException.class, () -> productService.retireProduct(ITEM_ID));
+        assertThrows(RetirementException.class, () -> productService.retireProduct(PRODUCT_ID));
         verify(productRepository).findById(anyLong());
     }
 
@@ -186,7 +186,7 @@ class ProductServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        assertThrows(NotFoundException.class, () -> productService.retireProduct(ITEM_ID));
+        assertThrows(NotFoundException.class, () -> productService.retireProduct(PRODUCT_ID));
         verify(productRepository).findById(anyLong());
     }
 }
