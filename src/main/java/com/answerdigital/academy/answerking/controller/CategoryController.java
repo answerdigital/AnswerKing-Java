@@ -47,16 +47,16 @@ public class CategoryController {
         return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
-    @PutMapping("/{categoryId}/additem/{itemId}")
-    public ResponseEntity<Category> addItemToCategory(@PathVariable @NotNull final Long categoryId,
-                                                      @PathVariable @NotNull final Long itemId) {
-        return new ResponseEntity<>(categoryService.addItemToCategory(categoryId, itemId), HttpStatus.OK);
+    @PutMapping("/{categoryId}/addproduct/{productId}")
+    public ResponseEntity<Category> addProductToCategory(@PathVariable @NotNull final Long categoryId,
+                                                         @PathVariable @NotNull final Long productId) {
+        return new ResponseEntity<>(categoryService.addProductToCategory(categoryId, productId), HttpStatus.OK);
     }
 
-    @PutMapping("/{categoryId}/removeitem/{itemId}")
-    public ResponseEntity<Category> removeItemFromCategory(@PathVariable @NotNull final Long categoryId,
-                                                           @PathVariable @NotNull final Long itemId) {
-        return new ResponseEntity<>(categoryService.removeItemFromCategory(categoryId, itemId), HttpStatus.OK);
+    @PutMapping("/{categoryId}/removeproduct/{productId}")
+    public ResponseEntity<Category> removeProductFromCategory(@PathVariable @NotNull final Long categoryId,
+                                                              @PathVariable @NotNull final Long productId) {
+        return new ResponseEntity<>(categoryService.removeProductFromCategory(categoryId, productId), HttpStatus.OK);
     }
 
     @PutMapping("/{categoryId}")
