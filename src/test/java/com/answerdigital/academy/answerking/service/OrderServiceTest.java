@@ -1,11 +1,11 @@
 package com.answerdigital.academy.answerking.service;
 
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
-import com.answerdigital.academy.answerking.exception.custom.ItemUnavailableException;
+import com.answerdigital.academy.answerking.exception.custom.ProductUnavailableException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
-import com.answerdigital.academy.answerking.model.Item;
+import com.answerdigital.academy.answerking.model.LineItem;
+import com.answerdigital.academy.answerking.model.Product;
 import com.answerdigital.academy.answerking.model.Order;
-import com.answerdigital.academy.answerking.model.OrderItem;
 import com.answerdigital.academy.answerking.repository.OrderRepository;
 
 import java.math.BigDecimal;
@@ -41,7 +41,7 @@ public class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private ItemService itemService;
+    private ProductService productService;
 
     @InjectMocks
     private OrderService orderService;
@@ -161,13 +161,13 @@ public class OrderServiceTest {
     }
 
     @Test
-    void testAddItemToBasketIsSuccessful() {
+    void testAddProductToBasketIsSuccessful() {
         // Given (Setup)
         Order order = Order.builder()
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
 
-        Item item = Item.builder()
+        Product product = Product.builder()
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
@@ -176,30 +176,30 @@ public class OrderServiceTest {
 
         Order expectedResponse = Order.builder()
                 .address("42 Main Street")
-                .orderItems(Set.of(new OrderItem(order, item, 1)))
+                .lineItems(Set.of(new LineItem(order, product, 1)))
                 .build();
 
         // When (Mocking, sending requests)
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
         Order response =
-                orderService.addItemToBasket(12L, 12L, 1);
+                orderService.addProductToBasket(12L, 12L, 1);
 
         // Then (assertions)
         assertEquals(expectedResponse, response);
-        assertFalse(response.getOrderItems().isEmpty());
+        assertFalse(response.getLineItems().isEmpty());
         verify(orderRepository).save(any(Order.class));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testAddItemToBasketWhenItemDoesNotExistThrowsNotFoundException() {
+    void testAddProductToBasketWhenProductDoesNotExistThrowsNotFoundException() {
         // Given
         Order order = Order.builder()
                 .address("42 Main Street")
@@ -208,35 +208,35 @@ public class OrderServiceTest {
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
+        when(productService.findById(anyLong()))
                 .thenThrow(new NotFoundException("An error occurred"));
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.addItemToBasket(123L, 123L, 2));
+                () -> orderService.addProductToBasket(123L, 123L, 2));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testAddItemToBasketWhenOrderDoesNotExistThrowsNotFoundException() {
+    void testAddProductToBasketWhenOrderDoesNotExistThrowsNotFoundException() {
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.addItemToBasket(123L, 123L, 2));
+                () -> orderService.addProductToBasket(123L, 123L, 2));
         verify(orderRepository).findById(anyLong());
     }
 
     @Test
-    void testAddItemToBasketWhenItemIsUnavailableThrowsItemUnavailableException() {
+    void testAddProductToBasketWhenProductIsUnavailableThrowsProductUnavailableException() {
         // Given
         Order order = Order.builder()
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
-        Item item = Item.builder()
+        Product product = Product.builder()
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
@@ -246,47 +246,47 @@ public class OrderServiceTest {
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
 
         // Then
-        assertThrows(ItemUnavailableException.class,
-                () -> orderService.addItemToBasket(123L, 123L, 1));
+        assertThrows(ProductUnavailableException.class,
+                () -> orderService.addProductToBasket(123L, 123L, 1));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testAddItemToBasketWhenItemAlreadyExistsInBasketThrowsConflictException() {
+    void testAddProductToBasketWhenProductAlreadyExistsInBasketThrowsConflictException() {
         // Given
         Order order = Order.builder()
                 .address("42 Main Street")
                 .build();
-        Item item = Item.builder()
+        Product product = Product.builder()
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
                 .available(true)
                 .build();
-        order.setOrderItems(Set.of(new OrderItem(order, item, 1)));
+        order.setLineItems(Set.of(new LineItem(order, product, 1)));
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
 
         // Then
         assertThrows(ConflictException.class,
-                () -> orderService.addItemToBasket(12L, 12L, 1));
+                () -> orderService.addProductToBasket(12L, 12L, 1));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testUpdateItemQuantity() {
+    void testUpdateProductQuantity() {
         // Given
-        Item item = Item.builder()
+        Product product = Product.builder()
                 .id(12L)
                 .name("King Burger")
                 .description("A burger fit for a king")
@@ -299,72 +299,72 @@ public class OrderServiceTest {
                 .address("42 Main Street")
                 .build();
 
-        order.setOrderItems(Set.of(
-                new OrderItem(order, item, 1)
+        order.setLineItems(Set.of(
+                new LineItem(order, product, 1)
         ));
 
         Order expectedResult = Order.builder()
                 .id(12L)
                 .address("42 Main Street")
                 .build();
-        expectedResult.setOrderItems(Set.of(
-                new OrderItem(expectedResult, item, 2)
+        expectedResult.setLineItems(Set.of(
+                new LineItem(expectedResult, product, 2)
         ));
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResult);
 
         Order actualResult =
-                orderService.updateItemQuantity(12L, 12L, 2);
+                orderService.updateProductQuantity(12L, 12L, 2);
 
         // Then
         assertEquals(expectedResult, actualResult);
         verify(orderRepository).save(any(Order.class));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testUpdateItemQuantityItemNotFoundThrowsNotFoundException() {
+    void testUpdateProductQuantityProductNotFoundThrowsNotFoundException() {
         // Given
         Order order = Order.builder()
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
+        when(productService.findById(anyLong()))
                 .thenThrow(new NotFoundException("An error occurred"));
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.updateItemQuantity(12L, 12L, 1));
+                () -> orderService.updateProductQuantity(12L, 12L, 1));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testUpdateItemQuantityOrderNotFoundThrowsNotFoundException() {
+    void testUpdateProductQuantityOrderNotFoundThrowsNotFoundException() {
         // When
         when(orderRepository.findById(anyLong()))
                 .thenThrow(new NotFoundException("An error occurred"));
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.updateItemQuantity(12L, 12L, 1));
+                () -> orderService.updateProductQuantity(12L, 12L, 1));
         verify(orderRepository).findById(anyLong());
     }
 
     @Test
-    void testUpdateItemQuantityExistingOrderItemNotPresentThrowsNotFoundException() {
+    void testUpdateProductQuantityExistingOrderProductNotPresentThrowsNotFoundException() {
         // Given
-        Item item = Item.builder()
+        Product product = Product.builder()
                 .id(12L)
                 .name("King Burger")
                 .description("A burger fit for a king")
@@ -372,40 +372,40 @@ public class OrderServiceTest {
                 .available(true)
                 .build();
         Order order = Order.builder()
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
 
         // Then
         assertThrows(NotFoundException.class,
-                () -> orderService.updateItemQuantity(12L, 12L, 2));
+                () -> orderService.updateProductQuantity(12L, 12L, 2));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testDeleteItemInBasket() {
+    void testDeleteProductInBasket() {
         // Given
-        Item item = Item.builder()
+        Product product = Product.builder()
                 .id(12L)
                 .build();
 
         Order order = Order.builder()
                 .id(12L)
                 .address("42 Main Street")
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
-        OrderItem orderItem = OrderItem.builder()
+        LineItem lineItem = LineItem.builder()
                 .order(order)
-                .item(item)
+                .product(product)
                 .quantity(5)
                 .build();
-        order.getOrderItems().add(orderItem);
+        order.getLineItems().add(lineItem);
 
         Order expectedResponse = Order.builder()
                 .id(12L)
@@ -414,70 +414,70 @@ public class OrderServiceTest {
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
-        Order response = orderService.deleteItemInBasket(12L, 12L);
+        Order response = orderService.deleteProductInBasket(12L, 12L);
 
         // Then
         assertEquals(expectedResponse, response);
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
         verify(orderRepository).save(any(Order.class));
     }
 
     @Test
-    void testDeleteItemInBasketWhenOrderNotFoundThrowsNotFoundException() {
+    void testDeleteProductInBasketWhenOrderNotFoundThrowsNotFoundException() {
         // When
         when(orderRepository.findById(anyLong()))
                 .thenThrow(new NotFoundException("An error occurred."));
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.deleteItemInBasket(12L, 12L));
+                orderService.deleteProductInBasket(12L, 12L));
         verify(orderRepository).findById(anyLong());
     }
 
     @Test
-    void testDeleteItemInBasketWhenItemNotFoundThrowsNotFoundException() {
+    void testDeleteProductInBasketWhenProductNotFoundThrowsNotFoundException() {
         // Given
         Order order = Order.builder()
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
+        when(productService.findById(anyLong()))
                 .thenThrow(new NotFoundException("An error occurred"));
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.deleteItemInBasket(12L, 12L));
+                orderService.deleteProductInBasket(12L, 12L));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 
     @Test
-    void testDeleteItemInBasketWhenExistingOrderItemIsEmptyThrowNotFoundException() {
+    void testDeleteProductInBasketWhenExistingOrderProductIsEmptyThrowNotFoundException() {
         // Given
-        Item item = Item.builder().build();
+        Product product = Product.builder().build();
         Order order = Order.builder()
-                .orderItems(new HashSet<>())
+                .lineItems(new HashSet<>())
                 .build();
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(itemService.findById(anyLong()))
-                .thenReturn(item);
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
 
         // Then
         assertThrows(NotFoundException.class, () ->
-                orderService.deleteItemInBasket(12L, 12L));
+                orderService.deleteProductInBasket(12L, 12L));
         verify(orderRepository).findById(anyLong());
-        verify(itemService).findById(anyLong());
+        verify(productService).findById(anyLong());
     }
 }

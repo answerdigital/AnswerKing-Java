@@ -1,7 +1,7 @@
 package com.answerdigital.academy.answerking.controller;
 
-import com.answerdigital.academy.answerking.model.Item;
-import com.answerdigital.academy.answerking.service.ItemService;
+import com.answerdigital.academy.answerking.model.Product;
+import com.answerdigital.academy.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,23 +37,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(ItemController.class)
-class ItemControllerTest {
+@WebMvcTest(ProductController.class)
+class ProductControllerTest {
 
     @Autowired
-    private ItemController itemController;
+    private ProductController productController;
 
     @MockBean
-    private ItemService itemService;
+    private ProductService productService;
 
     @Autowired
     private MockMvc mvc;
 
-    private Item item;
+    private Product product;
 
     @BeforeEach
-    public void generateItem() {
-        item = Item.builder()
+    public void generateProduct() {
+        product = Product.builder()
                 .id(55L)
                 .name("test")
                 .description("testDes")
@@ -64,12 +64,12 @@ class ItemControllerTest {
 
     @WithMockUser("paul")
     @Test
-    void getAllItemsReturnListOfItemObjects() throws Exception {
+    void getAllProductsReturnListOfProductObjects() throws Exception {
         //given
-        given(itemService.findAll()).willReturn(List.of(item));
+        given(productService.findAll()).willReturn(List.of(product));
 
         //when
-        RequestBuilder request = MockMvcRequestBuilders.get("/items");
+        RequestBuilder request = MockMvcRequestBuilders.get("/products");
 
         MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 
@@ -77,79 +77,79 @@ class ItemControllerTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertFalse(response.getContentAsString().isEmpty());
         ObjectMapper mapper = new ObjectMapper();
-        assertEquals(item.getId(), mapper.readTree(response.getContentAsString()).get(0).get("id").asLong());
+        assertEquals(product.getId(), mapper.readTree(response.getContentAsString()).get(0).get("id").asLong());
     }
 
     @WithMockUser("paul")
     @Test
-    void getAllItemsReturnNoContentIfEmpty() throws Exception {
+    void getAllProductsReturnNoContentIfEmpty() throws Exception {
         //when
-        mvc.perform(get("/items"))
+        mvc.perform(get("/products"))
                 .andExpect(status().isNoContent());
     }
 
     @WithMockUser("paul")
     @Test
-    void getItemByIdReturnsOkStatusIfExist() throws Exception {
+    void getProductByIdReturnsOkStatusIfExist() throws Exception {
         //given
-        when(itemService.findById(55L)).thenReturn(item);
+        when(productService.findById(55L)).thenReturn(product);
         //when
-        ResultActions actualPerformResult = mvc.perform(get("/items/{id}", 55L)).andExpect(status().isOk());
+        ResultActions actualPerformResult = mvc.perform(get("/products/{id}", 55L)).andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
         //then
-        assertEquals(item.getId(), mapper.readTree(actualPerformResult.andReturn()
+        assertEquals(product.getId(), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("id").asLong());
     }
 
     @WithMockUser("paul")
     @Test
-    void getItemByIdReturnsNotFoundExceptionIfIdDoesNotExist() throws Exception {
+    void getProductByIdReturnsNotFoundExceptionIfIdDoesNotExist() throws Exception {
         mvc.perform(get("/{id}", 55L)).andExpect(status().isNotFound());
     }
 
     @WithMockUser("paul")
     @Test
-    void addItemWithInvalidNameThrowsException() throws Exception {
+    void addProductWithInvalidNameThrowsException() throws Exception {
         //given
-        String newItem = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
+        String newProduct = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
         //when
-        final String error = mvc.perform(post("/items")
-                        .content(newItem)
+        final String error = mvc.perform(post("/products")
+                        .content(newProduct)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                         .andExpect(MockMvcResultMatchers.status().isBadRequest())
                         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResolvedException().getMessage();
 
-        assertTrue(error.contains("Item name must only contain letters, spaces and dashes"));
+        assertTrue(error.contains("Product name must only contain letters, spaces and dashes"));
     }
 
     @WithMockUser("paul")
     @Test
-    void addItemWithValidObjectReturnsItemAndOkStatus() throws Exception {
+    void addProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
-        String newItem = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
-        given(itemService.addNewItem(any())).willReturn(item);
+        String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
+        given(productService.addNewProduct(any())).willReturn(product);
 
         //when
-        ResultActions actualPerformResult = mvc.perform(post("/items")
-                .content(newItem)
+        ResultActions actualPerformResult = mvc.perform(post("/products")
+                .content(newProduct)
                 .contentType(MediaType.APPLICATION_JSON));
         //then
         actualPerformResult.andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
-        assertEquals(mapper.readTree(newItem).get("name"), mapper.readTree(actualPerformResult.andReturn()
+        assertEquals(mapper.readTree(newProduct).get("name"), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("name"));
     }
 
     @WithMockUser("paul")
     @Test
-    void updateItemWithInvalidPriceThrowsException() throws Exception {
+    void updateProductWithInvalidPriceThrowsException() throws Exception {
         //given
-        String newItem = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\",\"available\": \"true\"}";
+        String newProduct = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\",\"available\": \"true\"}";
         //when
-        final String error = mvc.perform(MockMvcRequestBuilders.put("/items/{id}", 55L)
-                        .content(newItem)
+        final String error = mvc.perform(MockMvcRequestBuilders.put("/products/{id}", 55L)
+                        .content(newProduct)
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                         .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -157,25 +157,25 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResolvedException().getMessage();
 
-        assertTrue(error.contains("Item price is invalid"));
+        assertTrue(error.contains("Product price is invalid"));
     }
 
     @WithMockUser("paul")
     @Test
-    void updateItemWithValidObjectReturnsItemAndOkStatus() throws Exception {
+    void updateProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
-        String newItem = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
-        given(itemService.updateItem(eq(55L), any())).willReturn(item);
+        String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"available\": \"true\"}";
+        given(productService.updateProduct(eq(55L), any())).willReturn(product);
         //when
 
-        ResultActions actualPerformResult = mvc.perform(put("/items/{id}", 55L)
-                .content(newItem)
+        ResultActions actualPerformResult = mvc.perform(put("/products/{id}", 55L)
+                .content(newProduct)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
         actualPerformResult.andExpect(status().isOk());
         ObjectMapper mapper = new ObjectMapper();
-        assertEquals(mapper.readTree(newItem).get("name"), mapper.readTree(actualPerformResult.andReturn()
+        assertEquals(mapper.readTree(newProduct).get("name"), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("name"));
     }
 }

@@ -1,12 +1,12 @@
 package com.answerdigital.academy.answerking.service;
 
 import com.answerdigital.academy.answerking.exception.generic.ConflictException;
-import com.answerdigital.academy.answerking.exception.custom.ItemUnavailableException;
+import com.answerdigital.academy.answerking.exception.custom.ProductUnavailableException;
 import com.answerdigital.academy.answerking.exception.generic.NotFoundException;
 import com.answerdigital.academy.answerking.mapper.OrderMapper;
-import com.answerdigital.academy.answerking.model.Item;
+import com.answerdigital.academy.answerking.model.LineItem;
+import com.answerdigital.academy.answerking.model.Product;
 import com.answerdigital.academy.answerking.model.Order;
-import com.answerdigital.academy.answerking.model.OrderItem;
 import com.answerdigital.academy.answerking.repository.OrderRepository;
 import com.answerdigital.academy.answerking.request.OrderRequest;
 import org.mapstruct.factory.Mappers;
@@ -21,15 +21,15 @@ import java.util.Optional;
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    private final ItemService itemService;
+    private final ProductService productService;
 
     private final OrderMapper orderMapper =
             Mappers.getMapper(OrderMapper.class);
 
     @Autowired
-    public OrderService(final OrderRepository orderRepository, final ItemService itemService) {
+    public OrderService(final OrderRepository orderRepository, final ProductService productService) {
         this.orderRepository = orderRepository;
-        this.itemService = itemService;
+        this.productService = productService;
     }
 
     public Order addOrder(final OrderRequest orderRequest) {
@@ -56,60 +56,64 @@ public class OrderService {
     }
 
     @Transactional
-    public Order addItemToBasket(final Long orderId, final Long itemId, final Integer quantity) {
+    public Order addProductToBasket(final Long orderId, final Long productId, final Integer quantity) {
         final  Order order = findById(orderId);
-        final Item item = itemService.findById(itemId);
+        final Product product = productService.findById(productId);
 
-        if (!item.getAvailable()) {
-            throw new ItemUnavailableException(String.format("The item with ID %d is not available.", item.getId()));
+        if (!product.getAvailable()) {
+            throw new ProductUnavailableException(String.format("The product with ID %d is not available.", product.getId()));
         }
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
+        final Optional<LineItem> existingLineItem = order.getLineItems()
                 .stream()
-                .filter(orderItem -> orderItem.getItem() == item)
+                .filter(lineItem -> lineItem.getProduct() == product)
                 .findFirst();
 
-        if (existingOrderItem.isPresent()) {
-            throw new ConflictException(String.format("Item id %s is already in the basket", item.getId()));
+        if (existingLineItem.isPresent()) {
+            throw new ConflictException(String.format("Product id %s is already in the basket", product.getId()));
         }
 
-        final OrderItem orderItem = new OrderItem(order, item, quantity);
-        order.getOrderItems().add(orderItem);
+        final LineItem lineItem = new LineItem(order, product, quantity);
+        order.getLineItems().add(lineItem);
 
         return orderRepository.save(order);
     }
 
-    public Order updateItemQuantity(final Long orderId, final Long itemId, final Integer itemQuantity) {
+    public Order updateProductQuantity(final Long orderId, final Long productId, final Integer productQuantity) {
         final Order order = findById(orderId);
-        final Item item = itemService.findById(itemId);
+        final Product product = productService.findById(productId);
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
+        final Optional<LineItem> existingLineItem = order.getLineItems()
                 .stream()
-                .filter(orderItem -> orderItem.getItem() == item)
+                .filter(lineItem -> lineItem.getProduct() == product)
                 .findFirst();
 
-        if (existingOrderItem.isEmpty()) {
-            throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", orderId, itemId));
+        if (existingLineItem.isEmpty()) {
+            throw new NotFoundException(
+                    String.format("Product id = %d is not in the basket of order id = %d", orderId, productId)
+            );
         }
 
-        existingOrderItem.get().setQuantity(itemQuantity);
+        existingLineItem.get().setQuantity(productQuantity);
         return orderRepository.save(order);
     }
 
-    public Order deleteItemInBasket(final Long orderId, final Long itemId) {
+    public Order deleteProductInBasket(final Long orderId, final Long productId) {
         final Order order = findById(orderId);
-        final Item item = itemService.findById(itemId);
+        final Product product = productService.findById(productId);
 
-        final Optional<OrderItem> existingOrderItem = order.getOrderItems()
+        final Optional<LineItem> existingLineItem = order.getLineItems()
                 .stream()
-                .filter(orderItem -> orderItem.getItem() == item)
+                .filter(lineItem -> lineItem.getProduct() == product)
                 .findFirst();
 
-        if (existingOrderItem.isEmpty()) {
-            throw new NotFoundException(String.format("Item id = %s is not in the basket of order id = %s", itemId, orderId));
+        if (existingLineItem.isEmpty()) {
+            throw new NotFoundException(
+                    String.format("Product id = %s is not in the basket of order id = %s", productId, orderId)
+            );
         }
 
-        order.getOrderItems().remove(existingOrderItem.get());
+        order.getLineItems().remove(existingLineItem.get());
         return orderRepository.save(order);
     }
 }
