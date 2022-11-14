@@ -3,6 +3,7 @@ package com.answerdigital.academy.answerking.controller;
 import com.answerdigital.academy.answerking.model.Order;
 import com.answerdigital.academy.answerking.request.OrderRequest;
 import com.answerdigital.academy.answerking.service.OrderService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
+@Tag(name = "Orders", description = "The Orders API")
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController {
