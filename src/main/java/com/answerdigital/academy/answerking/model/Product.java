@@ -69,7 +69,6 @@ public class Product {
         this.name = productRequest.name();
         this.description = productRequest.description();
         this.price = productRequest.price();
-        this.retired = productRequest.available();
     }
 
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
@@ -82,9 +81,7 @@ public class Product {
 
     @PreRemove
     private void removeProductsFromCategories() {
-        for (Category category : categories) {
-            category.removeProduct(this);
-        }
+        categories.forEach(category -> category.removeProduct(this));
     }
 
     public BigDecimal getPrice() {
