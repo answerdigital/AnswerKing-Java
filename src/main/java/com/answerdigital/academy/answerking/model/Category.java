@@ -60,18 +60,18 @@ public class Category {
         this.retired = false;
     }
 
+    public Category(final String name, final String description) {
+        this.name = name;
+        this.description = description;
+        this.retired = false;
+    }
+
     public void addProduct(final Product product) {
         products.add(product);
     }
 
     public void removeProduct(final Product product) {
         products.remove(product);
-    }
-
-    public Category(final String name, final String description) {
-        this.name = name;
-        this.description = description;
-        this.retired = false;
     }
 
     @Override
