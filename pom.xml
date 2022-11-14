@@ -78,6 +78,11 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.5.3.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-security</artifactId>
+			<version>1.6.12</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -192,7 +197,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
+					<apiDocsUrl>http://localhost:8080/api-docs</apiDocsUrl>
 					<outputFileName>openapi.yml</outputFileName>
 					<outputDir>${project.build.directory}</outputDir>
 				</configuration>
