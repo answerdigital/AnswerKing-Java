@@ -61,7 +61,7 @@ public class OrderService {
         final Product product = productService.findById(productId);
 
         if (product.isRetired()) {
-            throw new RetirementException(String.format("The product with ID %d is not available.", product.getId()));
+            throw new RetirementException(String.format("The product with ID %d has been retired", product.getId()));
         }
 
         final Optional<LineItem> existingLineItem = order.getLineItems()
