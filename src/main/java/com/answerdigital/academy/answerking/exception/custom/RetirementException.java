@@ -12,7 +12,7 @@ public class RetirementException extends AnswerKingException {
 
     private static final String TITLE = "Retirement Exception";
 
-    private static final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
+    private static final HttpStatus STATUS = HttpStatus.NOT_FOUND;
 
     private static final String DETAIL = null;
 
