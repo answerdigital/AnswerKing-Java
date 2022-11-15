@@ -2,7 +2,10 @@ name: Docker Image Pipeline
 on:
   workflow_run:
     workflows: ["Integration and code analysis"]
-    branches: [main]
+    branches:
+      - main
+      - master
+      - develop
     types:
       - completed
 
@@ -39,9 +42,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Log into registry
-      #  run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
@@ -60,5 +60,5 @@ jobs:
       - name: Tag docker image
         run: docker tag answer-king-rest-api_app ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
 
-      - name: Push images 2
-        run: docker push ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
+      - name: Push images
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
