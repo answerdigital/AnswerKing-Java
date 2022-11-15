@@ -126,7 +126,7 @@ class ProductControllerTest {
 
     @WithMockUser("paul")
     @Test
-    void addProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
+    void addProductWithValidObjectReturnsProductAndCreatedStatus() throws Exception {
         //given
         String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\"}";
         given(productService.addNewProduct(any())).willReturn(product);
@@ -136,7 +136,7 @@ class ProductControllerTest {
                 .content(newProduct)
                 .contentType(MediaType.APPLICATION_JSON));
         //then
-        actualPerformResult.andExpect(status().isOk());
+        actualPerformResult.andExpect(status().isCreated());
         ObjectMapper mapper = new ObjectMapper();
         assertEquals(mapper.readTree(newProduct).get("name"), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("name"));
