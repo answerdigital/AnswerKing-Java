@@ -15,3 +15,14 @@ updates:
       timezone: "Europe/London"
     labels:
       - "Dependabot"
+      
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+    labels:
+      - "Dependabot"
