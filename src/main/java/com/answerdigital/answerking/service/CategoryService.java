@@ -1,7 +1,8 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
-import com.answerdigital.answerking.exception.generic.ConflictException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
@@ -34,7 +35,7 @@ public class CategoryService {
 
     public Category addCategory(final AddCategoryRequest categoryRequest) {
         if (categoryRepository.existsByName(categoryRequest.name())) {
-            throw new ConflictException(String.format("A category named '%s' already exists", categoryRequest.name()));
+            throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
 
         final Category newCategory = categoryMapper.addRequestToCategory(categoryRequest);
@@ -53,7 +54,7 @@ public class CategoryService {
     public Category updateCategory(final UpdateCategoryRequest updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
-            throw new ConflictException(String.format("A category named %s already exists", updateCategoryRequest.name()));
+            throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
         final Category updatedCategory = categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest);
@@ -66,7 +67,7 @@ public class CategoryService {
         final Product product = productService.findById(productId);
 
         if (category.getProducts().contains(product)) {
-            throw new ConflictException("Category already has this product");
+            throw new ProductAlreadyPresentException("Category already has this product");
         }
 
         category.addProduct(product);
