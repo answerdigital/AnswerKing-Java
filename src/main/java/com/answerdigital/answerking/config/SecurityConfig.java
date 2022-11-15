@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http
@@ -54,12 +53,11 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web
+        return web -> web
                         .ignoring()
                         .antMatchers("/")
                         .antMatchers("/api/swagger/**”,”/api/swagger-ui/**”,”/api/swagger-ui.html”," +
                                 "/api/swagger-ui-custom.html", "/webjars/**", "/api/swagger-resources/**",
                                 "/api/configuration/**”, ”/api/api-docs/**");
     }
-
 }
