@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
-import com.answerdigital.answerking.exception.generic.ConflictException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
 import com.answerdigital.answerking.model.LineItem;
@@ -70,7 +70,7 @@ public class OrderService {
                 .findFirst();
 
         if (existingLineItem.isPresent()) {
-            throw new ConflictException(String.format("Product id %s is already in the basket", product.getId()));
+            throw new ProductAlreadyPresentException(String.format("Product id %s is already in the basket", product.getId()));
         }
 
         final LineItem lineItem = new LineItem(order, product, quantity);
