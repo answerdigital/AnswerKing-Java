@@ -41,7 +41,7 @@ public class CategoryService {
         return categoryRepository.save(newCategory);
     }
 
-    private Category findById(final Long categoryId) {
+    public Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
     }
