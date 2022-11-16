@@ -114,8 +114,7 @@ public class OrderController {
             )
     })
     public ResponseEntity<List<Order>> getAllOrders() {
-        final List<Order> orders = orderService.findAll();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
     }
 
     @PutMapping("/{orderId}")
