@@ -7,7 +7,7 @@ echo "================================================"
 echo "Beginning Docker Build on Linux"
 echo "================================================"
 
-docker-compose down --remove-orphans
 mvn clean install
+docker-compose down --remove-orphans
 docker-compose build
 docker-compose up
