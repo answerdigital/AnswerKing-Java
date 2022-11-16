@@ -50,10 +50,10 @@ public class Category {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    String createdOn;
+    private String createdOn;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    String lastUpdated;
+    private String lastUpdated;
 
     private boolean retired;
 
@@ -71,6 +71,8 @@ public class Category {
         this.createdOn = ZonedDateTime.now(ZoneOffset.UTC)
                                       .truncatedTo( ChronoUnit.SECONDS )
                                       .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm::ss" ) );
+        this.lastUpdated = this.createdOn;
+
         this.retired = false;
     }
 
@@ -81,6 +83,7 @@ public class Category {
         this.createdOn = ZonedDateTime.now(ZoneOffset.UTC)
                                       .truncatedTo( ChronoUnit.SECONDS )
                                       .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm::ss" ) );
+        this.lastUpdated = this.createdOn;
     }
 
     public void addProduct(final Product product) {
