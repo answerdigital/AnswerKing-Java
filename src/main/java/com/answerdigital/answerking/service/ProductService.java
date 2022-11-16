@@ -42,7 +42,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product updateProduct(final long productId, final ProductRequest productRequest) {
+    public Product updateProduct(final Long productId, final ProductRequest productRequest) {
         productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
 
@@ -54,7 +54,7 @@ public class ProductService {
         return productRepository.save(updatedProduct);
     }
 
-    public Product retireProduct(final long productId) {
+    public Product retireProduct(final Long productId) {
         final Product product = findById(productId);
         if (product.isRetired()) {
             throw new RetirementException(String.format("The product with ID %d is already retired", productId));

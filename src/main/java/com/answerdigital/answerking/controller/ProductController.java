@@ -52,7 +52,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final long id,
+    public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final Long id,
                                               @Valid @RequestBody final ProductRequest productRequest,
                                               final Errors errors) {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest),
@@ -60,7 +60,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> retireProduct(@PathVariable @NotNull final long id) {
+    public ResponseEntity<Product> retireProduct(@PathVariable @NotNull final Long id) {
         return new ResponseEntity<>(productService.retireProduct(id), HttpStatus.OK);
     }
 }
