@@ -23,6 +23,7 @@ public class SecurityConfig {
     };
 
     private static final String COMMON_ROLE = "ROLE_USER";
+
     private static final String COMMON_PASSWORD = "{noop}secret";
 
     @Bean
