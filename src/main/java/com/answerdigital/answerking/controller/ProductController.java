@@ -48,7 +48,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest, final Errors errors) {
         return new ResponseEntity<>(productService.addNewProduct(productRequest),
-                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
