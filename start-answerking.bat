@@ -4,7 +4,7 @@
 :: Maven onto your machine, https://maven.apache.org/install.html
 
 echo ================================================
-echo Beginning Docker Build
+echo Beginning Docker Build on Windows
 echo ================================================
 
 call mvn clean install
