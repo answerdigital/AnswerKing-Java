@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
+
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -29,6 +31,7 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
+<<<<<<< Updated upstream
         final UserDetails paul = User.withUsername("paul")
                 .password("{noop}secret")
                 .authorities("ROLE_USER")
@@ -62,4 +65,17 @@ public class SecurityConfig {
                                 "/api/configuration/**”, ”/api/api-docs/**");
     }
 
+=======
+        return new InMemoryUserDetailsManager(
+        List.of("paul", "john", "ringo", "george").stream()
+                                                  .map(user -> {
+                                                    return User.withUsername(user)
+                                                            .password(COMMON_PASSWORD)
+                                                            .authorities(COMMON_ROLE)
+                                                            .build();
+                                                    }).toList()
+        );
+    }
+
+>>>>>>> Stashed changes
 }
