@@ -79,6 +79,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional
     public Order updateProductQuantity(final Long orderId, final Long productId, final Integer productQuantity) {
         final Order order = findById(orderId);
         final Product product = productService.findById(productId);
