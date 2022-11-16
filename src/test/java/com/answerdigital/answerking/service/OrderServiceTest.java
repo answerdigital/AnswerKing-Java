@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
-import com.answerdigital.answerking.exception.generic.ConflictException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.Product;
@@ -260,7 +260,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void testAddProductToBasketWhenProductAlreadyExistsInBasketThrowsConflictException() {
+    void testAddProductToBasketWhenProductAlreadyExistsInBasketThrowsProductAlreadyPresentException() {
         // Given
         Order order = Order.builder()
                 .address("42 Main Street")
@@ -280,7 +280,7 @@ class OrderServiceTest {
                 .thenReturn(product);
 
         // Then
-        assertThrows(ConflictException.class,
+        assertThrows(ProductAlreadyPresentException.class,
                 () -> orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 1));
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
