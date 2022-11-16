@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
-import com.answerdigital.answerking.exception.generic.ConflictException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
@@ -75,7 +75,7 @@ class ProductServiceTest {
         //when
         assertThatThrownBy(() -> productService.addNewProduct(productRequest))
                 //then
-                .isInstanceOf(ConflictException.class)
+                .isInstanceOf(NameUnavailableException.class)
                 .hasMessageContaining("already exists");
     }
 
@@ -146,7 +146,7 @@ class ProductServiceTest {
         //when
         assertThatThrownBy(() -> productService.updateProduct(12L, productRequest))
                 //then
-                .isInstanceOf(ConflictException.class)
+                .isInstanceOf(NameUnavailableException.class)
                 .hasMessageContaining("already exists");
     }
 
