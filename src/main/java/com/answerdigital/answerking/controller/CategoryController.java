@@ -59,6 +59,11 @@ public class CategoryController {
         return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable @NotNull final Long categoryId) {
+        return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
+    }
+
     @PutMapping("/{categoryId}/addproduct/{productId}")
     public ResponseEntity<Category> addProductToCategory(@PathVariable @NotNull final Long categoryId,
                                                          @PathVariable @NotNull final Long productId) {
