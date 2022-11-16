@@ -1,7 +1,8 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
-import com.answerdigital.answerking.exception.generic.ConflictException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
@@ -77,7 +78,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(true).when(categoryRepository).existsByName(anyString());
-        Exception exception = assertThrows(ConflictException.class, () -> categoryService.addCategory(addCategoryRequest));
+        Exception exception = assertThrows(NameUnavailableException.class, () -> categoryService.addCategory(addCategoryRequest));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -141,7 +142,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(true).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-        Exception exception = assertThrows(ConflictException.class, () -> categoryService.updateCategory(updateCategoryRequest, CATEGORY_ID));
+        Exception exception = assertThrows(NameUnavailableException.class, () -> categoryService.updateCategory(updateCategoryRequest, CATEGORY_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -188,7 +189,7 @@ class CategoryServiceTest {
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
         doReturn(product).when(productService).findById(anyLong());
-        Exception exception = assertThrows(ConflictException.class, () -> categoryService.addProductToCategory(CATEGORY_ID, PRODUCT_ID));
+        Exception exception = assertThrows(ProductAlreadyPresentException.class, () -> categoryService.addProductToCategory(CATEGORY_ID, PRODUCT_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
