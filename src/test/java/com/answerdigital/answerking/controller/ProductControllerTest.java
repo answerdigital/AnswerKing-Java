@@ -136,7 +136,7 @@ class ProductControllerTest {
                 .content(newProduct)
                 .contentType(MediaType.APPLICATION_JSON));
         //then
-        actualPerformResult.andExpect(status().isOk());
+        actualPerformResult.andExpect(status().isCreated());
         ObjectMapper mapper = new ObjectMapper();
         assertEquals(mapper.readTree(newProduct).get("name"), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("name"));

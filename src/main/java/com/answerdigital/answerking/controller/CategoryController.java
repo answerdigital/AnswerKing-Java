@@ -45,7 +45,7 @@ public class CategoryController {
     public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest,
                                                 final Errors errors) {
         return new ResponseEntity<>(categoryService.addCategory(categoryRequest),
-                                                        errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+                                                        errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get all categories.")
