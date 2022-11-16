@@ -111,10 +111,20 @@ public class OrderController {
                         array = @ArraySchema(schema = @Schema(implementation = Order.class))
                     )
                 }
+            ),
+            @ApiResponse(
+                responseCode = "204",
+                description = "When no orders are returned.",
+                content = {
+                    @Content(
+                        mediaType = "application/json"
+                    )
+                }
             )
     })
     public ResponseEntity<List<Order>> getAllOrders() {
-        return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
+        final List<Order> foundOrders = orderService.findAll();
+        return new ResponseEntity<>(foundOrders, foundOrders.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
     @PutMapping("/{orderId}")
