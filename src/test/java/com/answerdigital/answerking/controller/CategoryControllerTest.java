@@ -68,7 +68,7 @@ class CategoryControllerTest {
         final var response = mvc.perform(post("/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
+                        .andExpect(status().isCreated())
                         .andReturn()
                         .getResponse();
         final var resultJsonNode = mapper.readTree(response.getContentAsString());
