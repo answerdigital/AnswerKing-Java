@@ -50,10 +50,10 @@ public class Category {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    String createdOn;
+    private String createdOn;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    String lastUpdated;
+    private String lastUpdated;
 
     private boolean retired;
 
