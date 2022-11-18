@@ -99,6 +99,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional
     public Order deleteProductInBasket(final Long orderId, final Long productId) {
         final Order order = findById(orderId);
         final Product product = productService.findById(productId);
