@@ -85,8 +85,6 @@ public class Category {
         this.lastUpdated = this.createdOn;
     }
 
-
-
     public void addProduct(final Product product) {
         products.add(product);
     }
