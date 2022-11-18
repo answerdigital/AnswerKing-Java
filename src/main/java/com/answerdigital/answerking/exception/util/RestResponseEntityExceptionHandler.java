@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler {
@@ -39,11 +43,24 @@ public class RestResponseEntityExceptionHandler {
             final ConstraintViolationException exception,
             final HttpServletRequest request ) {
 
-        final List<String> errorMessages = exception.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .toList();
 
-        final ErrorResponse response = new ErrorResponse(new BadRequestException(errorMessages), request);
+        Map<String, Collection<String>> newMap = new HashMap<>();
+        for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
+            String mapKey = Objects.requireNonNull(StreamSupport
+                    .stream(constraintViolation.getPropertyPath().spliterator(), false)
+                    .reduce((first, second) -> second)
+                    .orElse(null)).toString();
+
+            if(newMap.containsKey(mapKey)){
+                    newMap.get(mapKey).add(constraintViolation.getMessage());
+            } else {
+                Collection<String> newCollection = new ArrayList<>();
+                newCollection.add(constraintViolation.getMessage());
+                newMap.put(mapKey, newCollection);
+            }
+        }
+
+        final ErrorResponse response = new ErrorResponse(new BadRequestException(newMap, "One or more validation errors occurred"), request, true);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

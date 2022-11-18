@@ -16,11 +16,8 @@ public class ConflictException extends AnswerKingException {
 
     private static final String DETAIL = null;
 
-    public ConflictException(final Collection<String> errors) {
+    public ConflictException(final String errors) {
         super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public ConflictException(final String error) {
-        this(List.of(error));
-    }
 }

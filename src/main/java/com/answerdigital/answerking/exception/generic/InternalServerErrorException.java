@@ -16,11 +16,8 @@ public class InternalServerErrorException extends AnswerKingException {
 
     private static final String DETAIL = null;
 
-    public InternalServerErrorException(final Collection<String> errors) {
+    public InternalServerErrorException(final String errors) {
         super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public InternalServerErrorException(final String error) {
-        this(List.of(error));
-    }
 }

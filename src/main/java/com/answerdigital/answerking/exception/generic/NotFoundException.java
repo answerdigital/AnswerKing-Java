@@ -16,11 +16,8 @@ public class NotFoundException extends AnswerKingException {
 
     private static final String DETAIL = null;
 
-    public NotFoundException(final Collection<String> errors) {
+    public NotFoundException(final String errors) {
         super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public NotFoundException(final String error) {
-        this(List.of(error));
-    }
 }

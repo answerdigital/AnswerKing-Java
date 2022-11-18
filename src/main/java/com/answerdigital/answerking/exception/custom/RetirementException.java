@@ -16,11 +16,8 @@ public class RetirementException extends AnswerKingException {
 
     private static final String DETAIL = null;
 
-    public RetirementException(final Collection<String> errors) {
+    public RetirementException(final String errors) {
         super(TYPE, TITLE, STATUS, DETAIL, errors);
     }
 
-    public RetirementException(final String error) {
-        this(List.of(error));
-    }
 }

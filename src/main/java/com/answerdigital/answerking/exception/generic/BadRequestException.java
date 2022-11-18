@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class BadRequestException extends AnswerKingException {
 
@@ -16,11 +17,10 @@ public class BadRequestException extends AnswerKingException {
 
     private static final String DETAIL = null;
 
-    public BadRequestException(final Collection<String> errors) {
-        super(TYPE, TITLE, STATUS, DETAIL, errors);
-    }
-
     public BadRequestException(final String error) {
-        this(List.of(error));
+        super(TYPE, TITLE, STATUS, DETAIL, error);
+    }
+    public BadRequestException(final Map<String, Collection<String>> errors, String detail) {
+        super(TYPE, TITLE, STATUS, detail, errors);
     }
 }

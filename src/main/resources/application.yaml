@@ -31,9 +31,9 @@ spring:
       on-profile: dev
 
   datasource:
-    username: test_user
-    password: GS3ef_fsd^!
-    url: jdbc:mysql://localhost:3306/answer_king
+    username: root
+    password: 9391
+    url: jdbc:mysql://localhost:3306/bench-king
 
 ---
 spring:
