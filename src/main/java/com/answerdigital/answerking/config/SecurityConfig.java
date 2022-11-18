@@ -45,17 +45,14 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
-
         return new InMemoryUserDetailsManager(
-            List.of("paul", "john", "ringo", "george")
-                                            .stream()
-                                            .map(user -> {
-                                                return User.withUsername(user)
-                                                           .password(COMMON_PASSWORD)
-                                                           .authorities(COMMON_ROLE)
-                                                           .build();
-                                            }).toList()
+        List.of("paul", "john", "ringo", "george").stream()
+                                                  .map(user -> {
+                                                    return User.withUsername(user)
+                                                            .password(COMMON_PASSWORD)
+                                                            .authorities(COMMON_ROLE)
+                                                            .build();
+                                                    }).toList()
         );
     }
-
 }
