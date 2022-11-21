@@ -10,7 +10,7 @@ import java.util.Collections;
 @Mapper(componentModel = "spring", imports = Collections.class)
 public interface OrderMapper {
 
-    @Mapping(target = "orderStatus", constant = "IN_PROGRESS")
+    @Mapping(target = "orderStatus", constant = "CREATED")
     @Mapping(target = "lineItems", expression = "java(Collections.EMPTY_SET)")
     Order addRequestToOrder(OrderRequest orderRequest);
 
