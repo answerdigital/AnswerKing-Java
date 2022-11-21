@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -16,26 +18,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "order")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
+@Table(name = "order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private String address;
+    @CreationTimestamp
+    private LocalDateTime createdOn;
+
+    @UpdateTimestamp
+    private LocalDateTime lastUpdated;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -44,16 +49,11 @@ public class Order {
     private Set<LineItem> lineItems = new HashSet<>();
 
     public Order() {
-        this.orderStatus = OrderStatus.IN_PROGRESS;
-    }
-
-    public Order(final String address) {
-        this.address = address;
-        this.orderStatus = OrderStatus.IN_PROGRESS;
+        this.orderStatus = OrderStatus.CREATED;
     }
 
     @JsonInclude
-    public BigDecimal getTotalPrice() {
+    public BigDecimal getOrderTotal() {
         return lineItems.stream()
                 .map(lineItem -> lineItem.getProduct().getPrice()
                         .multiply(BigDecimal.valueOf(lineItem.getQuantity())))
@@ -79,7 +79,6 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", address='" + address + '\'' +
                 ", orderStatus=" + orderStatus +
                 '}';
     }
