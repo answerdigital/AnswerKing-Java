@@ -42,7 +42,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @Operation(summary = "Create a new category")
+    @Operation(summary = "Create a new category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "When the category has been created.",
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
@@ -56,9 +56,9 @@ public class CategoryController {
                                                         errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get all categories")
+    @Operation(summary = "Get all categories.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found the list of categories",
+        @ApiResponse(responseCode = "200", description = "Found the list of categories.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) })
     })
     @GetMapping
@@ -67,11 +67,11 @@ public class CategoryController {
         return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
-    @Operation(summary = "Get a single category")
+    @Operation(summary = "Get a single category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the category with the provided id has been found.",
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
-        @ApiResponse(responseCode = "404", description = "When the category with the given id does not exist",
+        @ApiResponse(responseCode = "404", description = "When the category with the given id does not exist.",
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @GetMapping("/{categoryId}")
@@ -79,7 +79,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
     }
 
-    @Operation(summary = "Add product to a category")
+    @Operation(summary = "Add product to a category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Add product to a category.",
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) })
@@ -90,7 +90,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.addProductToCategory(categoryId, productId), HttpStatus.OK);
     }
 
-    @Operation(summary = "Remove product from a category")
+    @Operation(summary = "Remove product from a category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Remove product from a category.",
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) })

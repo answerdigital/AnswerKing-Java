@@ -5,9 +5,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -44,26 +45,17 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
-        final UserDetails paul = User.withUsername("paul")
-                .password(COMMON_PASSWORD)
-                .authorities(COMMON_ROLE)
-                .build();
 
-        final UserDetails john = User.withUsername("john")
-                .password(COMMON_PASSWORD)
-                .authorities(COMMON_ROLE)
-                .build();
-
-        final UserDetails ringo = User.withUsername("ringo")
-                .password(COMMON_PASSWORD)
-                .authorities(COMMON_ROLE)
-                .build();
-
-        final UserDetails george = User.withUsername("george")
-                .password(COMMON_PASSWORD)
-                .authorities(COMMON_ROLE)
-                .build();
-
-        return new InMemoryUserDetailsManager(paul, john, ringo, george);
+        return new InMemoryUserDetailsManager(
+            List.of("paul", "john", "ringo", "george")
+                                            .stream()
+                                            .map(user -> {
+                                                return User.withUsername(user)
+                                                           .password(COMMON_PASSWORD)
+                                                           .authorities(COMMON_ROLE)
+                                                           .build();
+                                            }).toList()
+        );
     }
+
 }
