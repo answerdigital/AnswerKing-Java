@@ -5,6 +5,7 @@ import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
 import com.answerdigital.answerking.model.LineItem;
+import com.answerdigital.answerking.model.OrderStatus;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
@@ -115,5 +116,12 @@ public class OrderService {
 
         order.getLineItems().remove(existingLineItem.get());
         return orderRepository.save(order);
+    }
+
+    public Order cancelOrder(final Long orderId) {
+        final Order order = findById(orderId);
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+        return order;
     }
 }
