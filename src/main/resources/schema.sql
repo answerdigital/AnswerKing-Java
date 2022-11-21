@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS product_category (
 
 CREATE TABLE IF NOT EXISTS `order` (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    address VARCHAR(255) NOT NULL,
+    created_on TIMESTAMP NOT NULL,
+    last_updated TIMESTAMP NOT NULL,
     order_status VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (id)
