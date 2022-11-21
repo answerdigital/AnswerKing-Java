@@ -68,6 +68,9 @@ class CategoryControllerTest {
         final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
         final var category = new Category(addCategoryRequest);
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
+        String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
+                .truncatedTo( ChronoUnit.SECONDS )
+                .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
 
         final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
                                             .truncatedTo( ChronoUnit.SECONDS )
