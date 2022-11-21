@@ -1,6 +1,7 @@
 package com.answerdigital.answerking.exception.util;
 
 import com.answerdigital.answerking.exception.AnswerKingException;
+import com.answerdigital.answerking.exception.custom.AnswerKingValidationException;
 import com.answerdigital.answerking.exception.generic.BadRequestException;
 import com.answerdigital.answerking.exception.generic.InternalServerErrorException;
 import org.springframework.http.HttpStatus;
@@ -39,28 +40,27 @@ public class RestResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+    public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(
             final ConstraintViolationException exception,
-            final HttpServletRequest request ) {
+            final HttpServletRequest request) {
 
-
-        Map<String, Collection<String>> newMap = new HashMap<>();
+        final Map<String, Collection<String>> newMap = new HashMap<>();
         for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
-            String mapKey = Objects.requireNonNull(StreamSupport
+            final String mapKey = Objects.requireNonNull(StreamSupport
                     .stream(constraintViolation.getPropertyPath().spliterator(), false)
                     .reduce((first, second) -> second)
                     .orElse(null)).toString();
 
-            if(newMap.containsKey(mapKey)){
-                    newMap.get(mapKey).add(constraintViolation.getMessage());
+            if (newMap.containsKey(mapKey)) {
+                newMap.get(mapKey).add(constraintViolation.getMessage());
             } else {
-                Collection<String> newCollection = new ArrayList<>();
+                final Collection<String> newCollection = new ArrayList<>();
                 newCollection.add(constraintViolation.getMessage());
                 newMap.put(mapKey, newCollection);
             }
         }
 
-        final ErrorResponse response = new ErrorResponse(new BadRequestException(newMap, "One or more validation errors occurred"), request, true);
+        final ValidationErrorResponse response = new ValidationErrorResponse(new AnswerKingValidationException(newMap), request);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
