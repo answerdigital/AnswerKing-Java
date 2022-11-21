@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
     properties:
       hibernate:
@@ -32,7 +32,7 @@ spring:
 
   datasource:
     username: test_user
-    password: ***REMOVED***
+    password: GS3ef_fsd^!
     url: jdbc:mysql://localhost:3306/answer_king
 
 ---
@@ -43,7 +43,7 @@ spring:
 
   datasource:
     username: test_user
-    password: ***REMOVED***
+    password: GS3ef_fsd^!
     url: jdbc:mysql://localhost:3306/answer_king_test
 
 ---
@@ -54,5 +54,5 @@ spring:
 
   datasource:
     username: test_user
-    password: ***REMOVED***
+    password: GS3ef_fsd^!
     url: jdbc:mysql://mysqldb:3306/answer_king
