@@ -123,23 +123,8 @@ public class OrderController {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
     }
 
-    @PutMapping(path = "/{orderId}/product/{productId}/quantity/{quantity}")
-    public ResponseEntity<Order> updateProductQuantity(@PathVariable @NotNull final Long orderId,
-                                                       @PathVariable @NotNull final Long productId,
-                                                       @PathVariable @NotNull final Integer quantity) {
-        return new ResponseEntity<>(orderService.updateProductQuantity(orderId, productId, quantity), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "/{orderId}/product/{productId}/quantity/{quantity}")
-    public ResponseEntity<Order> addProductToBasket(@PathVariable @NotNull final Long orderId,
-                                                    @PathVariable @NotNull final Long productId,
-                                                    @PathVariable @NotNull final Integer quantity) {
-        return new ResponseEntity<>(orderService.addProductToBasket(orderId, productId, quantity), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/{orderId}/product/{productId}")
-    public ResponseEntity<Order> deleteProductInBasket(@PathVariable @NotNull final Long orderId,
-                                                       @PathVariable @NotNull final Long productId) {
-        return new ResponseEntity<>(orderService.deleteProductInBasket(orderId, productId), HttpStatus.OK);
+    @DeleteMapping(path = "/{orderId}")
+    public ResponseEntity<Order> cancelOrder(@PathVariable @NotNull final Long orderId) {
+        return new ResponseEntity<>(orderService.cancelOrder(orderId), HttpStatus.OK);
     }
 }
