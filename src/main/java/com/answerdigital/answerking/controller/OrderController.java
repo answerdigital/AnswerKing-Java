@@ -34,7 +34,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController {
-
     private final OrderService orderService;
 
     @Autowired
@@ -42,29 +41,47 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @GetMapping
+    @Operation(summary = "Get all orders.")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "When all the orders have been returned.",
+            content = {
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Order.class))
+                )
+            }
+        )
+    })
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
+    }
+
     @PostMapping
     @Operation(summary = "Create a new order.")
     @ApiResponses(value = {
-            @ApiResponse(
-                responseCode = "201",
-                description = "When the order has been created.",
-                content = {
-                    @Content(
-                        mediaType = "application/json",
-                        schema = @Schema(implementation = Order.class)
-                    )
-                }
-            ),
-            @ApiResponse(
-                responseCode = "400",
-                description = "When invalid parameters are provided.",
-                content = {
-                    @Content(
-                        mediaType = "application/json",
-                        schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                }
-            )
+        @ApiResponse(
+            responseCode = "201",
+            description = "When the order has been created.",
+            content = {
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Order.class)
+                )
+            }
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "When invalid parameters are provided.",
+            content = {
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            }
+        )
     })
     public ResponseEntity<Order> createOrder(@Valid @RequestBody final OrderRequest orderRequest, final Errors errors) {
         return new ResponseEntity<>(orderService.addOrder(orderRequest),
@@ -74,47 +91,29 @@ public class OrderController {
     @GetMapping(path = "/{orderId}")
     @Operation(summary = "Get a single order.")
     @ApiResponses(value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "When the order with the provided id has been found.",
-                content = {
-                    @Content(
-                        mediaType = "application/json",
-                        schema = @Schema(implementation = Order.class)
-                    )
-                }
-            ),
-            @ApiResponse(
-                responseCode = "404",
-                description = "When the order with the given id does not exist.",
-                content = {
-                    @Content(
-                        mediaType = "application/json",
-                        schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                }
-            )
+        @ApiResponse(
+            responseCode = "200",
+            description = "When the order with the provided id has been found.",
+            content = {
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Order.class)
+                )
+            }
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "When the order with the given id does not exist.",
+            content = {
+                @Content(
+                    mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            }
+        )
     })
     public ResponseEntity<Order> getOrderById(@PathVariable @NotNull final Long orderId) {
         return new ResponseEntity<>(orderService.findById(orderId), HttpStatus.CREATED);
-    }
-
-    @GetMapping
-    @Operation(summary = "Get all orders.")
-    @ApiResponses(value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "When all the orders have been returned.",
-                content = {
-                    @Content(
-                        mediaType = "application/json",
-                        array = @ArraySchema(schema = @Schema(implementation = Order.class))
-                    )
-                }
-            )
-    })
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
     }
 
     @PutMapping("/{orderId}")
@@ -124,6 +123,39 @@ public class OrderController {
     }
 
     @DeleteMapping(path = "/{orderId}")
+    @Operation(summary = "Cancel an existing order.")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "When the order has been cancelled.",
+            content = {
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Order.class)
+                )
+            }
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "When invalid parameters are provided.",
+            content = {
+                @Content(
+                    mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            }
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "When the order with the given id does not exist.",
+            content = {
+                @Content(
+                    mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            }
+        )
+    })
     public ResponseEntity<Order> cancelOrder(@PathVariable @NotNull final Long orderId) {
         return new ResponseEntity<>(orderService.cancelOrder(orderId), HttpStatus.OK);
     }
