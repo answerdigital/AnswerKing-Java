@@ -57,13 +57,6 @@ public class Product {
     @JsonIgnore
     private Set<LineItem> lineItems = new HashSet<>();
 
-    public Product(final ProductRequest productRequest){
-        this.name = productRequest.name();
-        this.description = productRequest.description();
-        this.price = productRequest.price();
-        this.retired = false;
-    }
-
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
         this.name = name;
         this.description = description;
