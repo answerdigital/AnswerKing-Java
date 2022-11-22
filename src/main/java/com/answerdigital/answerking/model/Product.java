@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.model;
 
-import com.answerdigital.answerking.request.ProductRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
