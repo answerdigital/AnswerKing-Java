@@ -62,4 +62,9 @@ public class ProductService {
         product.setRetired(true);
         return productRepository.save(product);
     }
+
+    public List<Product> findProductsByCategoryId(final Long categoryId) {
+        return productRepository.findProductsByCategoryId(categoryId);
+                //.orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+    }
 }
