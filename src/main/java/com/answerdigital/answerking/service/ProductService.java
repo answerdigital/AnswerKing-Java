@@ -16,8 +16,7 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    private final ProductMapper productMapper =
-            Mappers.getMapper(ProductMapper.class);
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     @Autowired
     public ProductService(final ProductRepository productRepository) {
@@ -64,7 +63,6 @@ public class ProductService {
     }
 
     public List<Product> findProductsByCategoryId(final Long categoryId) {
-        return productRepository.findProductsByCategoryId(categoryId);
-                //.orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+        return productRepository.findProductsByCategoriesId(categoryId);
     }
 }
