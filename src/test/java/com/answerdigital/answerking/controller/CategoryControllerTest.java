@@ -4,6 +4,7 @@ import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.answerking.service.CategoryService;
+import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,9 @@ class CategoryControllerTest {
 
     @MockBean
     CategoryService categoryService;
+
+    @MockBean
+    ProductService productService;
 
     @Test
     void addProductToCategoryTest() throws Exception {
