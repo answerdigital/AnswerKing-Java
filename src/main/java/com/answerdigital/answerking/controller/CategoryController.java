@@ -2,10 +2,12 @@ package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Category;
+import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
+import com.answerdigital.answerking.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,9 +39,12 @@ import java.util.Set;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    private final ProductService productService;
+
     @Autowired
-    public CategoryController(final CategoryService categoryService) {
+    public CategoryController(final CategoryService categoryService, final ProductService productService) {
         this.categoryService = categoryService;
+        this.productService = productService;
     }
 
     @Operation(summary = "Create a new category.")
@@ -75,6 +80,18 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public ResponseEntity<Category> getCategoryById(@PathVariable @NotNull final Long categoryId) {
         return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all products in a category.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+        @ApiResponse(responseCode = "404", description = "When the category with the given id does not exist.",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+    })
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<Collection<Product>> fetchProductsByCategory(@PathVariable @NotNull final Long categoryId) {
+        return new ResponseEntity<>(productService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 
     @Operation(summary = "Add product to a category.")
