@@ -47,6 +47,7 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
+    @JsonIgnore
     private boolean retired;
 
     @JsonIgnore
