@@ -12,6 +12,7 @@ public abstract class AbstractContainerBaseTest {
     static {
         MY_SQL_CONTAINER =
                 new MySQLContainer<>("mysql:8.0.31")
+                        .withInitScript("init_db.sql")
                         .withReuse(true);
         MY_SQL_CONTAINER.start();
     }
