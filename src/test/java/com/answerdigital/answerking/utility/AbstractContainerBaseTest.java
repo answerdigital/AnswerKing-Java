@@ -7,7 +7,7 @@ import org.testcontainers.containers.MySQLContainer;
 
 @ActiveProfiles("test")
 public abstract class AbstractContainerBaseTest {
-    static final MySQLContainer MYSQL_CONTAINER;
+    private static final MySQLContainer MYSQL_CONTAINER;
 
     static {
         MYSQL_CONTAINER =
