@@ -3,6 +3,7 @@ package com.answerdigital.answerking.model;
 import com.answerdigital.answerking.request.ProductRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,7 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String name;
@@ -47,6 +49,7 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
     @JsonIgnore
