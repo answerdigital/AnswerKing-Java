@@ -46,6 +46,9 @@ spring:
     password: GS3ef_fsd^!
     url: jdbc:mysql://localhost:3306/answer_king_test
     name: answer_king_test
+  sql:
+    init:
+      mode: never
 
 ---
 spring:
