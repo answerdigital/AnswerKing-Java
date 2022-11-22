@@ -7,21 +7,21 @@ import org.testcontainers.containers.MySQLContainer;
 
 @ActiveProfiles("test")
 public abstract class AbstractContainerBaseTest {
-    static final MySQLContainer MY_SQL_CONTAINER;
+    static final MySQLContainer MYSQL_CONTAINER;
 
     static {
-        MY_SQL_CONTAINER =
+        MYSQL_CONTAINER =
                 new MySQLContainer<>("mysql:8.0.31")
                         .withInitScript("init_db.sql")
                         .withReuse(true);
-        MY_SQL_CONTAINER.start();
+        MYSQL_CONTAINER.start();
     }
 
     @DynamicPropertySource
     private static void overrideProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", MY_SQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", MY_SQL_CONTAINER::getUsername);
-        registry.add("spring.datasource.password", MY_SQL_CONTAINER::getPassword);
-        registry.add("spring.datasource.name", MY_SQL_CONTAINER::getDatabaseName);
+        registry.add("spring.datasource.url", MYSQL_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", MYSQL_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", MYSQL_CONTAINER::getPassword);
+        registry.add("spring.datasource.name", MYSQL_CONTAINER::getDatabaseName);
     }
 }
