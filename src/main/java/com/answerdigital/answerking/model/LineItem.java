@@ -54,7 +54,7 @@ public class LineItem {
     }
 
     @JsonInclude
-    public BigDecimal getProductTotalPrice() {
+    public BigDecimal getSubTotal() {
         return new BigDecimal(quantity).multiply(product.getPrice()).setScale(2, RoundingMode.DOWN);
     }
 
