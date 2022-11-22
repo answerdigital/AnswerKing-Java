@@ -117,6 +117,39 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
+    @Operation(summary = "Update an existing order.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "When the order has been updated.",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Order.class)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "When invalid parameters are provided.",
+                    content = {
+                            @Content(
+                                    mediaType = "application/problem+json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "When the order with the given id does not exist.",
+                    content = {
+                            @Content(
+                                    mediaType = "application/problem+json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    }
+            )
+    })
     public ResponseEntity<Order> updateOrder(@PathVariable @NotNull final Long orderId,
                                              @Valid @RequestBody final OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
