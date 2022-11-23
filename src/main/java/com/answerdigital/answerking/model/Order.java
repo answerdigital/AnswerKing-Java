@@ -30,7 +30,6 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
-@Table(name = "order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +49,14 @@ public class Order {
 
     public Order() {
         this.orderStatus = OrderStatus.CREATED;
+    }
+
+    public void addLineItem(final LineItem lineItem) {
+        lineItems.add(lineItem);
+    }
+
+    public void removeLineItem(final LineItem lineItem) {
+        lineItems.remove(lineItem);
     }
 
     @JsonInclude
