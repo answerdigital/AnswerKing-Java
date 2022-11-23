@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("integration-test")
-public class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
+class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
 
     private static final Long CATEGORY_ID = 1L;
 
