@@ -11,8 +11,8 @@ public class ConflictException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.CONFLICT;
 
-    public ConflictException(final String errors) {
-        super(TYPE, TITLE, STATUS, errors);
+    public ConflictException(final String error) {
+        super(TYPE, TITLE, STATUS, error);
     }
 
 }

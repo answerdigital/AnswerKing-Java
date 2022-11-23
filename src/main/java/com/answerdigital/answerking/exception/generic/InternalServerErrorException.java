@@ -11,8 +11,8 @@ public class InternalServerErrorException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    public InternalServerErrorException(final String errors) {
-        super(TYPE, TITLE, STATUS, errors);
+    public InternalServerErrorException(final String error) {
+        super(TYPE, TITLE, STATUS, error);
     }
 
 }

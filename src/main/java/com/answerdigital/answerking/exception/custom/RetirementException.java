@@ -11,8 +11,8 @@ public class RetirementException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.GONE;
 
-    public RetirementException(final String errors) {
-        super(TYPE, TITLE, STATUS, errors);
+    public RetirementException(final String error) {
+        super(TYPE, TITLE, STATUS, error);
     }
 
 }
