@@ -13,6 +13,8 @@ on:
 jobs:
   Sonar-Cloud:
     name: Static Code Analysis - Sonar Cloud
+    outputs:
+      job-status: ${{ job.status }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -44,6 +46,8 @@ jobs:
 
   Build-Test:
     name: Integration Test
+    outputs:
+      job-status: ${{ job.status }}
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -78,3 +82,24 @@ jobs:
           coverage_report_title: 'Test coverage results'
           coverage_report_name: 'Test coverage results'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  Notify-Slack:
+    if: ${{ always() }}
+    needs: [ Build-Test, Sonar-Cloud ]
+    runs-on: ubuntu-latest
+    name: New push to repo
+    steps:
+      - name: Send GitHub trigger payload to Slack Workflow Builder
+        id: slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "PR_URL": "${{ github.event.pull_request.html_url }}",
+              "Sonar_Status": "${{ needs.Sonar-Cloud.outputs.job-status }}",
+              "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
+              "Title": "${{ github.event.pull_request.title }}",
+              "Type": "${{ github.event.action }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
