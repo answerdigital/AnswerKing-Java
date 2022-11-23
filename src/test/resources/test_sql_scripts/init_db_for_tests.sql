@@ -51,9 +51,12 @@ CREATE TABLE `product`  (
 -- ----------------------------
 -- Records of product
 -- ----------------------------
-INSERT INTO `product` VALUES (1, 'Burger', '300g Beef', b'0', 6.69);
-INSERT INTO `product` VALUES (2, 'Cola', '500ml', b'1', 2.99);
-INSERT INTO `product` VALUES (3, 'Fries', 'Large Fries', b'0', 2.99);
+INSERT INTO product (name, description, price, retired)
+VALUES('Burger', '300g Beef', 6.69, 0);
+INSERT INTO product (name, description, price, retired)
+VALUES('Cola', '500ml', 2.99, 0);
+INSERT INTO product (name, description, price, retired)
+VALUES('Fries', 'Large Fries', 2.99, 0);
 
 -- ----------------------------
 -- Table structure for order_product
