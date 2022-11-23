@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,10 +41,8 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest,
-                                                final Errors errors) {
-        return new ResponseEntity<>(categoryService.addCategory(categoryRequest),
-                                                        errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
+    public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest) {
+        return new ResponseEntity<>(categoryService.addCategory(categoryRequest), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get all categories.")
@@ -78,10 +75,8 @@ public class CategoryController {
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@Valid @RequestBody final UpdateCategoryRequest updateCategoryRequest,
-                                                   @PathVariable @NotNull final Long categoryId,
-                                                   final Errors errors) {
-        return new ResponseEntity<>(categoryService.updateCategory(updateCategoryRequest, categoryId),
-                                                    errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+                                                   @PathVariable @NotNull final Long categoryId) {
+        return new ResponseEntity<>(categoryService.updateCategory(updateCategoryRequest, categoryId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{categoryId}")
