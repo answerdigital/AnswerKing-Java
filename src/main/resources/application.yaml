@@ -51,6 +51,22 @@ spring:
       mode: never
 
 ---
+
+spring:
+  config:
+    activate:
+      on-profile: integration-test
+
+  datasource:
+    username:
+    password:
+    url:
+    name:
+  sql:
+    init:
+      mode: never
+
+---
 spring:
   config:
     activate:
