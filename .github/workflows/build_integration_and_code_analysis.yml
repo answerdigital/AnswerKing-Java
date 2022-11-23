@@ -13,6 +13,8 @@ on:
 jobs:
   Sonar-Cloud:
     name: Static Code Analysis - Sonar Cloud
+    outputs:
+      job-status: ${{ job.status }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -44,6 +46,8 @@ jobs:
 
   Build-Test:
     name: Integration Test
+    outputs:
+      job-status: ${{ job.status }}
     runs-on: ubuntu-latest
     permissions:
       checks: write
