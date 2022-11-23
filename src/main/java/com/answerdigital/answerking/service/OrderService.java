@@ -33,9 +33,14 @@ public class OrderService {
         this.productService = productService;
     }
 
+    /**
+     * Creates an order *
+     * @param orderRequest The Order Request
+     * @return The created Order
+     */
     @Transactional
     public Order addOrder(final OrderRequest orderRequest) {
-        final Order order = orderMapper.addRequestToOrder(orderRequest);
+        final Order order = new Order();
         final Order persistedOrder = orderRepository.save(order);
 
         orderRequest.lineItems().forEach(lineItemRequest ->
@@ -45,24 +50,35 @@ public class OrderService {
         return persistedOrder;
     }
 
+    /**
+     * Finds an order by a given ID *
+     * @param orderId The Order ID
+     * @return The found Order
+     */
     public Order findById(final Long orderId) {
         return orderRepository
                 .findById(orderId)
                 .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
     }
 
-    @Transactional
+    /**
+     * Finds all the orders within the database *
+     * @return A list of all found Orders
+     */
     public List<Order> findAll() {
         return this.orderRepository.findAll();
     }
 
     public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        final Order orderToUpdate = findById(orderId);
-        final Order updatedOrder = orderMapper.updateOrderRequest(orderToUpdate, orderRequest);
-
-        return orderRepository.save(updatedOrder);
+        return null;
     }
 
+    /**
+     * Adds a line item to an order *
+     * @param order The Order that the line item should be associated with
+     * @param productId The ID of the product
+     * @param quantity The quantity of the product
+     */
     @Transactional
     public void addLineItemToOrder(final Order order, final Long productId, final Integer quantity) {
         final Product product = productService.findById(productId);
@@ -77,17 +93,26 @@ public class OrderService {
                 .findFirst();
 
         if (existingLineItem.isPresent()) {
-            throw new ProductAlreadyPresentException(String.format("Product id %s is already in the basket", product.getId()));
+            throw new ProductAlreadyPresentException(String.format("The product with ID %d is already in the order", product.getId()));
         }
 
-        final LineItem lineItem = new LineItem(order, product, quantity);
+        final LineItem lineItem = LineItem.builder()
+                .quantity(quantity)
+                .product(product)
+                .order(order)
+                .build();
+
         order.addLineItem(lineItem);
         orderRepository.save(order);
     }
 
+    /**
+     * Removes a line item from an order *
+     * @param order The Order that the line item should be associated with
+     * @param productId The ID of the product
+     */
     @Transactional
-    public Order updateProductQuantity(final Long orderId, final Long productId, final Integer productQuantity) {
-        final Order order = findById(orderId);
+    public void removeLineItemFromOrder(final Order order, final Long productId) {
         final Product product = productService.findById(productId);
 
         final Optional<LineItem> existingLineItem = order.getLineItems()
@@ -97,34 +122,19 @@ public class OrderService {
 
         if (existingLineItem.isEmpty()) {
             throw new NotFoundException(
-                    String.format("Product id = %d is not in the basket of order id = %d", orderId, productId)
+                    String.format("The product with ID %d was not found in order with ID %d", productId, order.getId())
             );
         }
 
-        existingLineItem.get().setQuantity(productQuantity);
-        return orderRepository.save(order);
+        order.removeLineItem(existingLineItem.get());
+        orderRepository.save(order);
     }
 
-    @Transactional
-    public Order deleteProductInBasket(final Long orderId, final Long productId) {
-        final Order order = findById(orderId);
-        final Product product = productService.findById(productId);
-
-        final Optional<LineItem> existingLineItem = order.getLineItems()
-                .stream()
-                .filter(lineItem -> lineItem.getProduct() == product)
-                .findFirst();
-
-        if (existingLineItem.isEmpty()) {
-            throw new NotFoundException(
-                    String.format("Product id = %s is not in the basket of order id = %s", productId, orderId)
-            );
-        }
-
-        order.getLineItems().remove(existingLineItem.get());
-        return orderRepository.save(order);
-    }
-
+    /**
+     * Marks an Order as cancelled *
+     * @param orderId The ID of the Order to cancel
+     * @return The order with the status as cancelled
+     */
     public Order cancelOrder(final Long orderId) {
         final Order order = findById(orderId);
         order.setOrderStatus(OrderStatus.CANCELLED);
