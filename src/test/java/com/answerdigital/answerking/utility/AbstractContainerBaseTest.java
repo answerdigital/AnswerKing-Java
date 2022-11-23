@@ -5,14 +5,14 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 
-@ActiveProfiles("test")
+@ActiveProfiles("integration-test")
 public abstract class AbstractContainerBaseTest {
     private static final MySQLContainer MYSQL_CONTAINER;
 
     static {
         MYSQL_CONTAINER =
                 new MySQLContainer<>("mysql:8.0.31")
-                        .withInitScript("init_db.sql")
+                        .withInitScript("test_sql_scripts/init_db_for_tests.sql")
                         .withReuse(true);
         MYSQL_CONTAINER.start();
     }

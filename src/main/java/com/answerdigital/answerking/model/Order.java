@@ -41,7 +41,7 @@ public class Order {
     private OrderStatus orderStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<LineItem> lineItems = new HashSet<>();
+    private Set<LineItem> lineItems = new HashSet<LineItem>();
 
     public Order() {
         this.orderStatus = OrderStatus.IN_PROGRESS;
