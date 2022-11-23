@@ -29,10 +29,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Validated
-@Tag(name = "Orders", description = "The Orders API")
 @RestController
 @RequestMapping(path = "/orders")
+@Tag(name = "Orders", description = "The Orders API")
 public class OrderController {
     private final OrderService orderService;
 
