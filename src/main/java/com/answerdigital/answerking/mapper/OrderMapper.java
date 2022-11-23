@@ -11,7 +11,6 @@ import java.util.Collections;
 public interface OrderMapper {
 
     @Mapping(target = "orderStatus", constant = "CREATED")
-    @Mapping(target = "lineItems", expression = "java(Collections.EMPTY_SET)")
     Order addRequestToOrder(OrderRequest orderRequest);
 
     Order updateOrderRequest(@MappingTarget Order order, OrderRequest orderRequest);
