@@ -43,7 +43,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
     private Set<LineItem> lineItems = new HashSet<>();
 
     public Order() {
