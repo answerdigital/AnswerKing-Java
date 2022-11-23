@@ -58,9 +58,8 @@ public class ProductController {
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Product> getProductById(@Valid @PathVariable @NotNull final Long id, final Errors errors) {
-        return new ResponseEntity<>(productService.findById(id),
-                                            errors.hasErrors() ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+    public ResponseEntity<Product> getProductById(@Valid @PathVariable @NotNull final Long id) {
+        return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a new product.")
