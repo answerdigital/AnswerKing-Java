@@ -33,9 +33,16 @@ public class OrderService {
         this.productService = productService;
     }
 
+    @Transactional
     public Order addOrder(final OrderRequest orderRequest) {
-        final Order newOrder = orderMapper.addRequestToOrder(orderRequest);
-        return orderRepository.save(newOrder);
+        final Order order = orderMapper.addRequestToOrder(orderRequest);
+        final Order persistedOrder = orderRepository.save(order);
+
+        orderRequest.lineItems().forEach(lineItemRequest ->
+            addLineItemToOrder(persistedOrder, lineItemRequest.productId(), lineItemRequest.quantity())
+        );
+
+        return persistedOrder;
     }
 
     public Order findById(final Long orderId) {
@@ -57,8 +64,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order addProductToBasket(final Long orderId, final Long productId, final Integer quantity) {
-        final Order order = findById(orderId);
+    public void addLineItemToOrder(final Order order, final Long productId, final Integer quantity) {
         final Product product = productService.findById(productId);
 
         if (product.isRetired()) {
@@ -75,9 +81,8 @@ public class OrderService {
         }
 
         final LineItem lineItem = new LineItem(order, product, quantity);
-        order.getLineItems().add(lineItem);
-
-        return orderRepository.save(order);
+        order.addLineItem(lineItem);
+        orderRepository.save(order);
     }
 
     @Transactional
