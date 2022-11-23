@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,9 +69,8 @@ public class ProductController {
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest, final Errors errors) {
-        return new ResponseEntity<>(productService.addNewProduct(productRequest),
-                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
+    public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
+        return new ResponseEntity<>(productService.addNewProduct(productRequest), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update an existing product.")
@@ -86,10 +84,8 @@ public class ProductController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final Long id,
-                                              @Valid @RequestBody final ProductRequest productRequest,
-                                              final Errors errors) {
-        return new ResponseEntity<>(productService.updateProduct(id, productRequest),
-                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+                                              @Valid @RequestBody final ProductRequest productRequest) {
+        return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);
     }
 
     @Operation(summary = "Retire an existing product.")

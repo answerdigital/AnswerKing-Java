@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +35,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest, final Errors errors) {
-        return new ResponseEntity<>(orderService.addOrder(orderRequest),
-                                            errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+        return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{orderId}")
