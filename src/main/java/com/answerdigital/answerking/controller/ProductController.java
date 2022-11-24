@@ -54,7 +54,7 @@ public class ProductController {
         @ApiResponse(responseCode = "200", description = "When the product with the provided id has been found.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+            content = { @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @GetMapping(path = "/{id}")
     public ResponseEntity<Product> getProductById(@Valid @PathVariable @NotNull final Long id) {
@@ -66,7 +66,7 @@ public class ProductController {
         @ApiResponse(responseCode = "201", description = "When the product has been created.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+            content = { @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
     public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
@@ -78,9 +78,9 @@ public class ProductController {
         @ApiResponse(responseCode = "200", description = "When the product has been updated.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }),
+            content = { @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+            content = { @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final Long id,
@@ -93,9 +93,9 @@ public class ProductController {
         @ApiResponse(responseCode = "200", description = "When the product has been retired.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }),
+            content = { @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class)) }),
         @ApiResponse(responseCode = "410", description = "When the product with the given id is already retired.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+            content = { @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Product> retireProduct(@PathVariable @NotNull final Long id) {
