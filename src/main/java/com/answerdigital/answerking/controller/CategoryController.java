@@ -4,6 +4,7 @@ import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,7 +51,7 @@ public class CategoryController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<Category> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest,
+    public ResponseEntity<CategoryResponse> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest,
                                                 final Errors errors) {
         return new ResponseEntity<>(categoryService.addCategory(categoryRequest),
                                                         errors.hasErrors() ? HttpStatus.BAD_REQUEST : HttpStatus.CREATED);
@@ -62,8 +63,8 @@ public class CategoryController {
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) })
     })
     @GetMapping
-    public ResponseEntity<Collection<Category>> getAllCategories() {
-        final Set<Category> categories = categoryService.findAll();
+    public ResponseEntity<Collection<CategoryResponse>> getAllCategories() {
+        final Set<CategoryResponse> categories = categoryService.findAll();
         return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 

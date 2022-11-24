@@ -57,7 +57,7 @@ public class Category {
 
     private boolean retired;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "product_category",
             joinColumns = {@JoinColumn(name = "category_id")},
