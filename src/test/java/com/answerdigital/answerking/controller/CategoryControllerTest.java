@@ -66,7 +66,6 @@ class CategoryControllerTest {
     @Test
     void addCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-
         final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
                                              .truncatedTo( ChronoUnit.SECONDS )
                                              .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
@@ -77,7 +76,6 @@ class CategoryControllerTest {
                                                      .createdOn(testDate)
                                                      .build();
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
-
 
         doReturn(categoryResponse).when(categoryService).addCategory(addCategoryRequest);
         final var response = mvc.perform(post("/categories")
