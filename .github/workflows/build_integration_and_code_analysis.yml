@@ -101,6 +101,6 @@ jobs:
             "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",
             "Type": "${{ github.event_name == 'push' && 'Merged' || github.event.action }}",
             "Author": "${{ github.actor }}"
-        }
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
