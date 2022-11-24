@@ -87,7 +87,7 @@ jobs:
     if: ${{ always() }}
     needs: [ Build-Test, Sonar-Cloud ]
     runs-on: ubuntu-latest
-    name: New push to repo
+    name: Send Slack Notification
     steps:
       - name: Send GitHub trigger payload to Slack Workflow Builder
         id: slack
