@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.model;
 
-import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -64,16 +63,6 @@ public class Category {
             inverseJoinColumns = {@JoinColumn(name = "product_id")})
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
-
-    public Category(final AddCategoryRequest categoryRequest) {
-        this.name = categoryRequest.name();
-        this.description = categoryRequest.description();
-        this.createdOn = ZonedDateTime.now(ZoneOffset.UTC)
-                                      .truncatedTo( ChronoUnit.SECONDS )
-                                      .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm::ss" ) );
-        this.lastUpdated = this.createdOn;
-        this.retired = false;
-    }
 
     public Category(final String name, final String description) {
         this.name = name;
