@@ -70,7 +70,7 @@ class CategoryControllerTest {
     void addCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
-        final var category = new Category(addCategoryRequest);
+        final var category = new Category("random name", "random description");
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
         final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
                                             .truncatedTo( ChronoUnit.SECONDS )
