@@ -94,7 +94,9 @@ public class OrderService {
                 .findFirst();
 
         if (existingLineItem.isPresent()) {
-            throw new ProductAlreadyPresentException(String.format("The product with ID %d is already in the order", product.getId()));
+            throw new ProductAlreadyPresentException(
+                String.format("The product with ID %d is already in the order", product.getId())
+            );
         }
 
         final LineItem lineItem = LineItem.builder()
