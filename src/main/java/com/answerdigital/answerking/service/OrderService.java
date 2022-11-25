@@ -1,5 +1,6 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.OrderCancelledException;
 import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
@@ -63,10 +64,22 @@ public class OrderService {
         return this.orderRepository.findAll();
     }
 
+    /**
+     * Updates an order *
+     * @param orderId The ID of the Order
+     * @param orderRequest The Order Request
+     * @return The updated Order
+     */
     @Transactional
     public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findById(orderId);
         order.clearLineItems();
+
+        if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
+            throw new OrderCancelledException(
+                String.format("The order with ID %d has been cancelled, not possible to update", orderId)
+            );
+        }
 
         orderRequest.lineItemRequests().forEach(lineItemRequest ->
             addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
