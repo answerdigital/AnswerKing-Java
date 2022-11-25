@@ -78,7 +78,6 @@ class CategoryControllerTest {
                                                      .build();
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
-
         doReturn(categoryResponse).when(categoryService).addCategory(addCategoryRequest);
         final var response = mvc.perform(post("/categories")
                         .content(categoryRequest)
