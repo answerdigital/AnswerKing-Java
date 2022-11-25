@@ -2,7 +2,12 @@ package com.answerdigital.answerking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,11 +59,14 @@ public class LineItem {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LineItem lineItem = (LineItem) o;
-        return Objects.equals(order, lineItem.order) && Objects.equals(product, lineItem.product) && Objects.equals(quantity, lineItem.quantity);
+        final LineItem lineItem = (LineItem) o;
+        return (
+            Objects.equals(order, lineItem.order)
+            && Objects.equals(product, lineItem.product)
+            && Objects.equals(quantity, lineItem.quantity));
     }
 
     @Override
