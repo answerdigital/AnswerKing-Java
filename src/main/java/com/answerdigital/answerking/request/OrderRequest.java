@@ -1,7 +1,10 @@
 package com.answerdigital.answerking.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public record OrderRequest(
-        List<LineItemRequest> lineItems
+        @JsonProperty("lineItems")
+        List<LineItemRequest> lineItemRequests
 ) { }
