@@ -5,7 +5,7 @@ import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
-import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.request.RequestModelsProduct;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +34,7 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
     private Product product;
-    private ProductRequest productRequest;
+    private RequestModelsProduct productRequest;
 
     private static final long PRODUCT_ID = 55L;
 
@@ -47,7 +47,7 @@ class ProductServiceTest {
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
                 .build();
-        productRequest = ProductRequest.builder()
+        productRequest = RequestModelsProduct.builder()
                 .name("test")
                 .description("testD")
                 .price(BigDecimal.valueOf(1.99))

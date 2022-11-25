@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.model.Order;
-import com.answerdigital.answerking.request.OrderRequest;
+import com.answerdigital.answerking.request.RequestModelsOrder;
 import com.answerdigital.answerking.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+    public ResponseEntity<Order> addOrder(@Valid @RequestBody final RequestModelsOrder orderRequest) {
         return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
     }
 
@@ -46,7 +46,7 @@ public class OrderController {
 
     @PutMapping("/{orderId}")
     public ResponseEntity<Order> updateOrder(@PathVariable @NotNull final Long orderId,
-                                             @Valid @RequestBody final OrderRequest orderRequest) {
+                                             @Valid @RequestBody final RequestModelsOrder orderRequest) {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
     }
 

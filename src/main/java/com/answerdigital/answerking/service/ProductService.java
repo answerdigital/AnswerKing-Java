@@ -6,7 +6,7 @@ import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.ProductMapper;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
-import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.request.RequestModelsProduct;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product addNewProduct(final ProductRequest productRequest) {
+    public Product addNewProduct(final RequestModelsProduct productRequest) {
         if (productRepository.existsByName(productRequest.name())) {
             throw new NameUnavailableException(String.format("A Product named '%s' already exists", productRequest.name()));
         }
@@ -42,7 +42,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product updateProduct(final Long productId, final ProductRequest productRequest) {
+    public Product updateProduct(final Long productId, final RequestModelsProduct productRequest) {
         productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
 

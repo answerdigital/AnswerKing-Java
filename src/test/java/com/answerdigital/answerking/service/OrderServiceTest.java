@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.answerdigital.answerking.request.OrderRequest;
+import com.answerdigital.answerking.request.RequestModelsOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,7 +52,7 @@ class OrderServiceTest {
     @Test
     void testAddOrderReturnsSavedOrder() {
         // Given
-        OrderRequest orderRequest = new OrderRequest("42 Main St");
+        RequestModelsOrder orderRequest = new RequestModelsOrder("42 Main St");
         Order expectedResult = Order.builder()
                 .address("42 Main Street")
                 .build();
@@ -136,7 +136,7 @@ class OrderServiceTest {
     void testUpdateOrder() {
         // Given
         Order originalOrder = new Order("14 Main St");
-        OrderRequest updateOrderRequest = new OrderRequest("14 Green Street");
+        RequestModelsOrder updateOrderRequest = new RequestModelsOrder("14 Green Street");
         Order expectedOrder = new Order("14 Green Street");
 
         // When
@@ -156,7 +156,7 @@ class OrderServiceTest {
     @Test
     void testUpdateOrderWhenOrderNotExistsThrowsNotFoundException() {
         // Given
-        OrderRequest orderRequest = new OrderRequest("14 High St");
+        RequestModelsOrder orderRequest = new RequestModelsOrder("14 High St");
 
         // Then
         assertThrows(NotFoundException.class, () ->

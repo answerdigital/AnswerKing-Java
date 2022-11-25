@@ -1,6 +1,6 @@
 package com.answerdigital.answerking.model;
 
-import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.request.RequestModelsProduct;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -60,7 +60,7 @@ public class Product {
     @JsonIgnore
     private Set<LineItem> lineItems = new HashSet<>();
 
-    public Product(final ProductRequest productRequest){
+    public Product(final RequestModelsProduct productRequest){
         this.name = productRequest.name();
         this.description = productRequest.description();
         this.price = productRequest.price();
