@@ -70,6 +70,7 @@ public class Category {
         this.description = categoryRequest.description();
         this.retired = false;
     }
+
     public Category(final String name, final String description) {
         this.name = name;
         this.description = description;

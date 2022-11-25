@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring",
         imports = {DateTimeFormatter.class, ZoneOffset.class, ZonedDateTime.class, ChronoUnit.class, Collectors.class})
 public interface CategoryMapper {
-    Category updateRequestToCategory(@MappingTarget Category category, RequestModelsCategory updateCategoryRequest);
-
     @Mapping(target = "createdOn", expression = "java( ZonedDateTime.now(ZoneOffset.UTC)" +
                                                     ".truncatedTo( ChronoUnit.SECONDS )" +
                                                     ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
