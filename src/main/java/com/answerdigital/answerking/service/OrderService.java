@@ -73,13 +73,14 @@ public class OrderService {
     @Transactional
     public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findById(orderId);
-        order.clearLineItems();
 
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
             throw new OrderCancelledException(
                 String.format("The order with ID %d has been cancelled, not possible to update", orderId)
             );
         }
+
+        order.clearLineItems();
 
         orderRequest.lineItemRequests().forEach(lineItemRequest ->
             addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
