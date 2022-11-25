@@ -63,6 +63,10 @@ public class Order {
         lineItems.remove(lineItem);
     }
 
+    public void clearLineItems() {
+        lineItems.clear();
+    }
+
     @JsonInclude
     public BigDecimal getOrderTotal() {
         return lineItems.stream()
