@@ -3,14 +3,12 @@ package com.answerdigital.answerking.service;
 import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
-import com.answerdigital.answerking.mapper.OrderMapper;
 import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.OrderStatus;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
 import com.answerdigital.answerking.request.OrderRequest;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +21,6 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     private final ProductService productService;
-
-    private final OrderMapper orderMapper =
-            Mappers.getMapper(OrderMapper.class);
 
     @Autowired
     public OrderService(final OrderRepository orderRepository, final ProductService productService) {
@@ -41,13 +36,12 @@ public class OrderService {
     @Transactional
     public Order addOrder(final OrderRequest orderRequest) {
         final Order order = new Order();
-        final Order persistedOrder = orderRepository.save(order);
 
-        orderRequest.lineItems().forEach(lineItemRequest ->
-            addLineItemToOrder(persistedOrder, lineItemRequest.productId(), lineItemRequest.quantity())
+        orderRequest.lineItemRequests().forEach(lineItemRequest ->
+            addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
         );
 
-        return persistedOrder;
+        return orderRepository.save(order);
     }
 
     /**
@@ -69,8 +63,16 @@ public class OrderService {
         return this.orderRepository.findAll();
     }
 
+    @Transactional
     public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        return null;
+        final Order order = findById(orderId);
+        order.clearLineItems();
+
+        orderRequest.lineItemRequests().forEach(lineItemRequest ->
+            addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
+        );
+
+        return orderRepository.save(order);
     }
 
     /**
@@ -79,8 +81,7 @@ public class OrderService {
      * @param productId The ID of the product
      * @param quantity The quantity of the product
      */
-    @Transactional
-    public void addLineItemToOrder(final Order order, final Long productId, final Integer quantity) {
+    private void addLineItemToOrder(final Order order, final Long productId, final Integer quantity) {
         final Product product = productService.findById(productId);
 
         if (product.isRetired()) {
@@ -103,31 +104,6 @@ public class OrderService {
                 .build();
 
         order.addLineItem(lineItem);
-        orderRepository.save(order);
-    }
-
-    /**
-     * Removes a line item from an order *
-     * @param order The Order that the line item should be associated with
-     * @param productId The ID of the product
-     */
-    @Transactional
-    public void removeLineItemFromOrder(final Order order, final Long productId) {
-        final Product product = productService.findById(productId);
-
-        final Optional<LineItem> existingLineItem = order.getLineItems()
-                .stream()
-                .filter(lineItem -> lineItem.getProduct() == product)
-                .findFirst();
-
-        if (existingLineItem.isEmpty()) {
-            throw new NotFoundException(
-                    String.format("The product with ID %d was not found in order with ID %d", productId, order.getId())
-            );
-        }
-
-        order.removeLineItem(existingLineItem.get());
-        orderRepository.save(order);
     }
 
     /**
