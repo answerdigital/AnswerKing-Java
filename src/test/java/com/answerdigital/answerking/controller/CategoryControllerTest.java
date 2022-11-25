@@ -3,6 +3,7 @@ package com.answerdigital.answerking.controller;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -65,14 +66,20 @@ class CategoryControllerTest {
     @Test
     void addCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
-        final var category = new Category("random name", "random description");
-        final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
-        final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
-                                            .truncatedTo( ChronoUnit.SECONDS )
-                                            .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
 
-        doReturn(category).when(categoryService).addCategory(addCategoryRequest);
+        final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
+                                             .truncatedTo( ChronoUnit.SECONDS )
+                                             .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
+        final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
+        final var categoryResponse = CategoryResponse.builder()
+                                                     .name(addCategoryRequest.name())
+                                                     .description(addCategoryRequest.description())
+                                                     .createdOn(testDate)
+                                                     .build();
+        final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
+
+
+        doReturn(categoryResponse).when(categoryService).addCategory(addCategoryRequest);
         final var response = mvc.perform(post("/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
