@@ -1,6 +1,7 @@
 package com.answerdigital.answerking.exception.util;
 
 import com.answerdigital.answerking.exception.AnswerKingException;
+import com.answerdigital.answerking.exception.custom.ValidationException;
 import com.answerdigital.answerking.exception.generic.BadRequestException;
 import com.answerdigital.answerking.exception.generic.InternalServerErrorException;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler {
@@ -37,13 +42,25 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(
             final ConstraintViolationException exception,
-            final HttpServletRequest request ) {
+            final HttpServletRequest request) {
 
-        final List<String> errorMessages = exception.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .toList();
+        final Map<String, Collection<String>> errorsMap = new HashMap<>();
+        for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
+            final String mapKey = Objects.requireNonNull(StreamSupport
+                    .stream(constraintViolation.getPropertyPath().spliterator(), false)
+                    .reduce((first, second) -> second)
+                    .orElse(null)).toString();
 
-        final ErrorResponse response = new ErrorResponse(new BadRequestException(errorMessages), request);
+            if (errorsMap.containsKey(mapKey)) {
+                errorsMap.get(mapKey).add(constraintViolation.getMessage());
+            } else {
+                final Collection<String> newCollection = new ArrayList<>();
+                newCollection.add(constraintViolation.getMessage());
+                errorsMap.put(mapKey, newCollection);
+            }
+        }
+
+        final ErrorResponse response = new ValidationErrorResponse(new ValidationException(errorsMap), request);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

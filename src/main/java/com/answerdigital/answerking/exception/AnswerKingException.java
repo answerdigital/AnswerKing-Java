@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.exception;
 
-import java.util.Collection;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -15,20 +14,16 @@ public abstract class AnswerKingException extends RuntimeException {
 
     private final String detail;
 
-    private final Collection<String> errors;
-
     protected AnswerKingException(
             final String type,
             final String title,
             final HttpStatus status,
-            final String detail,
-            final Collection<String> errors
+            final String detail
     ) {
-        super(errors.toString());
+        super(detail);
         this.type = type;
         this.title = title;
         this.status = status;
         this.detail = detail;
-        this.errors = errors;
     }
 }

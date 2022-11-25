@@ -20,7 +20,7 @@ public record ProductRequest(
         String description,
 
         @Digits(integer = 12, fraction = 2, message = "Product price is invalid")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Product price is invalid")
+        @DecimalMin(value = "0.0", inclusive = false, message = "Product price cannot be less than 0")
         @NotNull
         BigDecimal price
 ) {
