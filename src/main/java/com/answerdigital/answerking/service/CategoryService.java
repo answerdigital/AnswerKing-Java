@@ -8,8 +8,7 @@ import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.RequestModelsCategory;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public Category addCategory(final AddCategoryRequest categoryRequest) {
+    public Category addCategory(final RequestModelsCategory categoryRequest) {
         if (categoryRepository.existsByName(categoryRequest.name())) {
             throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
@@ -51,7 +50,7 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category updateCategory(final UpdateCategoryRequest updateCategoryRequest, final Long id) {
+    public Category updateCategory(final RequestModelsCategory updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
             throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));

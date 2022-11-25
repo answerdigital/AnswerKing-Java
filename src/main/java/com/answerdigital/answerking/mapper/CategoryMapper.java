@@ -1,14 +1,13 @@
 package com.answerdigital.answerking.mapper;
 
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.RequestModelsCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    Category addRequestToCategory(AddCategoryRequest addCategoryRequest);
+    Category addRequestToCategory(RequestModelsCategory addCategoryRequest);
 
-    Category updateRequestToCategory(@MappingTarget Category category, UpdateCategoryRequest updateCategoryRequest);
+    Category updateRequestToCategory(@MappingTarget Category category, RequestModelsCategory updateCategoryRequest);
 }

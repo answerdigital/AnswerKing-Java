@@ -1,8 +1,7 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.RequestModelsCategory;
 import com.answerdigital.answerking.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -60,7 +59,7 @@ class CategoryControllerTest {
     @Test
     void addCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
+        final var addCategoryRequest = new RequestModelsCategory("random name", "random description");
         final var category = new Category(addCategoryRequest);
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
@@ -109,7 +108,7 @@ class CategoryControllerTest {
     @Test
     void updateCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        final var updateCategoryRequest =  new UpdateCategoryRequest("random name", "random description");
+        final var updateCategoryRequest = new RequestModelsCategory("random name", "random description");
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
         final var category = new Category(newRandomName, newRandomDesc);
