@@ -2,6 +2,7 @@ package com.answerdigital.answerking.model;
 
 import com.answerdigital.answerking.request.RequestModelsCategory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -44,9 +49,15 @@ public class Category {
             message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String createdOn;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String lastUpdated;
+
     private boolean retired;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "product_category",
             joinColumns = {@JoinColumn(name = "category_id")},
@@ -59,11 +70,14 @@ public class Category {
         this.description = categoryRequest.description();
         this.retired = false;
     }
-
     public Category(final String name, final String description) {
         this.name = name;
         this.description = description;
         this.retired = false;
+        this.createdOn = ZonedDateTime.now(ZoneOffset.UTC)
+                                      .truncatedTo( ChronoUnit.SECONDS )
+                                      .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm::ss" ) );
+        this.lastUpdated = this.createdOn;
     }
 
     public void addProduct(final Product product) {

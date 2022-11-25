@@ -9,6 +9,7 @@ import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.response.CategoryResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -32,13 +34,14 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public Category addCategory(final RequestModelsCategory categoryRequest) {
+    public CategoryResponse addCategory(final RequestModelsCategory categoryRequest) {
         if (categoryRepository.existsByName(categoryRequest.name())) {
             throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
 
         final Category newCategory = categoryMapper.addRequestToCategory(categoryRequest);
-        return categoryRepository.save(newCategory);
+        final var category =  categoryRepository.save(newCategory);
+        return categoryMapper.convertCategoryEntityToCategoryResponse(category);
     }
 
     public Category findById(final Long categoryId) {
@@ -46,8 +49,12 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
     }
 
-    public Set<Category> findAll() {
-        return categoryRepository.findAll();
+    public Set<CategoryResponse> findAll() {
+        final var categorySet = categoryRepository.findAll();
+        return categorySet
+                .stream()
+                .map(categoryMapper::convertCategoryEntityToCategoryResponse)
+                .collect(Collectors.toSet());
     }
 
     public Category updateCategory(final RequestModelsCategory updateCategoryRequest, final Long id) {

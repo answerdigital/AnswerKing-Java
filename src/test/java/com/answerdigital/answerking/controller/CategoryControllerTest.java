@@ -2,6 +2,7 @@ package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -59,11 +65,18 @@ class CategoryControllerTest {
     @Test
     void addCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
+        final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
+                                             .truncatedTo( ChronoUnit.SECONDS )
+                                             .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
         final var addCategoryRequest = new RequestModelsCategory("random name", "random description");
-        final var category = new Category(addCategoryRequest);
+        final var categoryResponse = CategoryResponse.builder()
+                                                     .name(addCategoryRequest.name())
+                                                     .description(addCategoryRequest.description())
+                                                     .createdOn(testDate)
+                                                     .build();
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
 
-        doReturn(category).when(categoryService).addCategory(addCategoryRequest);
+        doReturn(categoryResponse).when(categoryService).addCategory(addCategoryRequest);
         final var response = mvc.perform(post("/categories")
                         .content(categoryRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -75,6 +88,7 @@ class CategoryControllerTest {
         assertFalse(response.getContentAsString().isEmpty());
         assertEquals(addCategoryRequest.name(), resultJsonNode.get("name").textValue());
         assertEquals(addCategoryRequest.description(), resultJsonNode.get("description").textValue());
+        assertEquals(testDate.split(" ")[0], resultJsonNode.get("createdOn").textValue().split(" ")[0]);
     }
 
     @Test
@@ -114,6 +128,9 @@ class CategoryControllerTest {
         final var category = new Category(newRandomName, newRandomDesc);
         final var categoryId = 112L;
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
+        String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
+                                       .truncatedTo( ChronoUnit.SECONDS )
+                                       .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
 
         doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
         final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
@@ -127,6 +144,7 @@ class CategoryControllerTest {
         assertFalse(response.getContentAsString().isEmpty());
         assertEquals(newRandomName, resultJsonNode.get("name").textValue());
         assertEquals(newRandomDesc, resultJsonNode.get("description").textValue());
+        assertEquals(testDate.split(" ")[0], resultJsonNode.get("lastUpdated").textValue().split(" ")[0]);
     }
 
     @Test

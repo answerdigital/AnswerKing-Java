@@ -66,7 +66,6 @@ public class Product {
         this.price = productRequest.price();
         this.retired = false;
     }
-
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
         this.name = name;
         this.description = description;

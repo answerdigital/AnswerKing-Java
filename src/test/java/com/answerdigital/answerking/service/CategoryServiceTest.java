@@ -18,11 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
@@ -57,15 +56,19 @@ class CategoryServiceTest {
     void testAddCategory() {
         // given
         RequestModelsCategory addCategoryRequest = new RequestModelsCategory("Drinks", "Our selection of drinks");
-        Category expectedResponse = new Category("Drinks", "Our selection of drinks");
+        final var expectedResponse = new Category("Drinks", "Our selection of drinks");
 
         // when
         doReturn(false).when(categoryRepository).existsByName(anyString());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
-        Category response = categoryService.addCategory(addCategoryRequest);
+        final var categoryResponse = categoryService.addCategory(addCategoryRequest);
 
         // then
-        assertEquals(expectedResponse, response);
+        assertAll(
+                () -> assertEquals(expectedResponse.getId(), categoryResponse.getId()),
+                () -> assertEquals(expectedResponse.getName(), categoryResponse.getName()),
+                () -> assertEquals(expectedResponse.getDescription(), categoryResponse.getDescription())
+        );
         verify(categoryRepository).existsByName(anyString());
         verify(categoryRepository).save(any(Category.class));
     }
@@ -181,8 +184,13 @@ class CategoryServiceTest {
         Product product = new Product("Coca cola", "This is a coke", BigDecimal.valueOf(2.00d), true);
         product.setId(PRODUCT_ID);
 
-        Category category = new Category("Drinks", "Our selection of drinks");
-        category.setId(CATEGORY_ID);
+        final var category = Category.builder()
+                                              .name("Drinks")
+                                              .description("Our selection of drinks")
+                                              .id(CATEGORY_ID)
+                                              .products(new HashSet<>())
+                                              .build();
+
         category.addProduct(product);
 
         // when
