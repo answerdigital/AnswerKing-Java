@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
-@Tag(name = "Orders", description = "The Orders API")
+@Tag(name = "Orders", description = "Create and manage customer orders.")
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController {
