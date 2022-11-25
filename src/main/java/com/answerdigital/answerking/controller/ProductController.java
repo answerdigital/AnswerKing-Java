@@ -2,7 +2,7 @@ package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Product;
-import com.answerdigital.answerking.request.RequestModelsProduct;
+import com.answerdigital.answerking.request.ProductRequest;
 import com.answerdigital.answerking.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -71,7 +71,7 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody final RequestModelsProduct productRequest) {
+    public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.addNewProduct(productRequest), HttpStatus.CREATED);
     }
 
@@ -88,7 +88,7 @@ public class ProductController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final Long id,
-                                              @Valid @RequestBody final RequestModelsProduct productRequest) {
+                                              @Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);
     }
 

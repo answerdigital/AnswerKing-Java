@@ -2,7 +2,7 @@ package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +49,7 @@ public class CategoryController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<CategoryResponse> addCategory(@Valid @RequestBody final RequestModelsCategory categoryRequest) {
+    public ResponseEntity<CategoryResponse> addCategory(@Valid @RequestBody final CategoryRequest categoryRequest) {
         return new ResponseEntity<>(categoryService.addCategory(categoryRequest), HttpStatus.CREATED);
     }
 
@@ -108,7 +108,7 @@ public class CategoryController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PutMapping("/{categoryId}")
-    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final RequestModelsCategory updateCategoryRequest,
+    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final CategoryRequest updateCategoryRequest,
                                                    @PathVariable @NotNull final Long categoryId) {
         return new ResponseEntity<>(categoryService.updateCategory(updateCategoryRequest, categoryId), HttpStatus.OK);
     }

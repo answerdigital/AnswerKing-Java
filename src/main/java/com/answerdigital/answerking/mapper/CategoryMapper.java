@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.mapper;
 
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,12 +21,12 @@ public interface CategoryMapper {
     @Mapping(target = "lastUpdated", expression = "java( ZonedDateTime.now(ZoneOffset.UTC)" +
                                                         ".truncatedTo( ChronoUnit.SECONDS )" +
                                                         ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
-    Category addRequestToCategory(RequestModelsCategory addCategoryRequest);
+    Category addRequestToCategory(CategoryRequest addCategoryRequest);
 
     @Mapping(target = "lastUpdated", expression = "java( ZonedDateTime.now(ZoneOffset.UTC)" +
                                                     ".truncatedTo( ChronoUnit.SECONDS )" +
                                                     ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
-    Category updateRequestToCategory(@MappingTarget Category category, RequestModelsCategory updateCategoryRequest);
+    Category updateRequestToCategory(@MappingTarget Category category, CategoryRequest updateCategoryRequest);
 
     @Mapping(target = "productIds",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")

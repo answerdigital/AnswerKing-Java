@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,7 +68,7 @@ class CategoryControllerTest {
         final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
                                              .truncatedTo( ChronoUnit.SECONDS )
                                              .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
-        final var addCategoryRequest = new RequestModelsCategory("random name", "random description");
+        final var addCategoryRequest = new CategoryRequest("random name", "random description");
         final var categoryResponse = CategoryResponse.builder()
                                                      .name(addCategoryRequest.name())
                                                      .description(addCategoryRequest.description())
@@ -122,7 +122,7 @@ class CategoryControllerTest {
     @Test
     void updateCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        final var updateCategoryRequest = new RequestModelsCategory("random name", "random description");
+        final var updateCategoryRequest = new CategoryRequest("random name", "random description");
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
         final var category = new Category(newRandomName, newRandomDesc);

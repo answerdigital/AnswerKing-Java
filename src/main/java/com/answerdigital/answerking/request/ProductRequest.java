@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public record RequestModelsProduct(
+public record ProductRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s-]*",
                 message = "Product name must only contain letters, spaces and dashes")
@@ -25,6 +25,6 @@ public record RequestModelsProduct(
         BigDecimal price
 ) {
     @Builder
-    public RequestModelsProduct {
+    public ProductRequest {
     }
 }

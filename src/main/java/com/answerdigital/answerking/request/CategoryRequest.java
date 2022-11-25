@@ -3,7 +3,7 @@ package com.answerdigital.answerking.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-public record RequestModelsCategory(
+public record CategoryRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s-]*",
                 message = "Category name must only contain letters, spaces and dashes")

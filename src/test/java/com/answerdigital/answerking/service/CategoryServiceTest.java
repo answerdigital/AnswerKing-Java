@@ -7,7 +7,7 @@ import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
-import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.request.CategoryRequest;
 
 import java.math.BigDecimal;
 
@@ -55,7 +55,7 @@ class CategoryServiceTest {
     @Test
     void testAddCategory() {
         // given
-        RequestModelsCategory addCategoryRequest = new RequestModelsCategory("Drinks", "Our selection of drinks");
+        CategoryRequest addCategoryRequest = new CategoryRequest("Drinks", "Our selection of drinks");
         final var expectedResponse = new Category("Drinks", "Our selection of drinks");
 
         // when
@@ -76,7 +76,7 @@ class CategoryServiceTest {
     @Test
     void testAddCategoryThatAlreadyExists() {
         // given
-        RequestModelsCategory addCategoryRequest = new RequestModelsCategory("Drinks", "Our selection of drinks");
+        CategoryRequest addCategoryRequest = new CategoryRequest("Drinks", "Our selection of drinks");
 
         // when
         doReturn(true).when(categoryRepository).existsByName(anyString());
@@ -93,7 +93,7 @@ class CategoryServiceTest {
         Category existingCategory = new Category("Drinks", "Our selection of drinks");
         existingCategory.setId(CATEGORY_ID);
 
-        RequestModelsCategory updateCategoryRequest = new RequestModelsCategory(
+        CategoryRequest updateCategoryRequest = new CategoryRequest(
                 "DrinksUpdated",
                 "Our updated selection of drinks");
 
@@ -117,7 +117,7 @@ class CategoryServiceTest {
     @Test
     void testUpdateCategoryThatDoesNotExist() {
         // given
-        RequestModelsCategory updateCategoryRequest = new RequestModelsCategory(
+        CategoryRequest updateCategoryRequest = new CategoryRequest(
                 "DrinksUpdated",
                 "Our updated selection of drinks");
 
@@ -138,7 +138,7 @@ class CategoryServiceTest {
         Category existingCategory = new Category("Drinks", "Our selection of drinks");
         existingCategory.setId(CATEGORY_ID);
 
-        RequestModelsCategory updateCategoryRequest = new RequestModelsCategory(
+        CategoryRequest updateCategoryRequest = new CategoryRequest(
                 "Burgers",
                 "Our updated selection of drinks");
 

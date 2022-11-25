@@ -1,6 +1,6 @@
 package com.answerdigital.answerking.model;
 
-import com.answerdigital.answerking.request.RequestModelsCategory;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -65,7 +65,7 @@ public class Category {
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
-    public Category(final RequestModelsCategory categoryRequest) {
+    public Category(final CategoryRequest categoryRequest) {
         this.name = categoryRequest.name();
         this.description = categoryRequest.description();
         this.retired = false;

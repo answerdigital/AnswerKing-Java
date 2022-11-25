@@ -8,7 +8,7 @@ import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
-import com.answerdigital.answerking.request.RequestModelsOrder;
+import com.answerdigital.answerking.request.OrderRequest;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class OrderService {
         this.productService = productService;
     }
 
-    public Order addOrder(final RequestModelsOrder orderRequest) {
+    public Order addOrder(final OrderRequest orderRequest) {
         final Order newOrder = orderMapper.addRequestToOrder(orderRequest);
         return orderRepository.save(newOrder);
     }
@@ -48,7 +48,7 @@ public class OrderService {
         return this.orderRepository.findAll();
     }
 
-    public Order updateOrder(final Long orderId, final RequestModelsOrder orderRequest) {
+    public Order updateOrder(final Long orderId, final OrderRequest orderRequest) {
         final Order orderToUpdate = findById(orderId);
         final Order updatedOrder = orderMapper.updateOrderRequest(orderToUpdate, orderRequest);
 
