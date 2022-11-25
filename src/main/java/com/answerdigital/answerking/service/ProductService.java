@@ -62,7 +62,4 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> findProductsByCategoryId(final Long categoryId) {
-        return productRepository.findProductsByCategoriesId(categoryId);
-    }
 }

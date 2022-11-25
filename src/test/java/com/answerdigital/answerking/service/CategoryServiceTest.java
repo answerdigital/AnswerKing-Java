@@ -7,6 +7,7 @@ import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
+import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
 
@@ -38,6 +39,9 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @Mock
+    private ProductRepository productRepository;
+
+    @Mock
     private ProductService productService;
 
     private static final Long CATEGORY_ID = 1L;
@@ -45,7 +49,7 @@ class CategoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        categoryService = new CategoryService(productService, categoryRepository);
+        categoryService = new CategoryService(productService, categoryRepository, productRepository);
     }
 
     @AfterEach
