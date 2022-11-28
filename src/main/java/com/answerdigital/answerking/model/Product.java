@@ -1,15 +1,14 @@
 package com.answerdigital.answerking.model;
 
-import com.answerdigital.answerking.request.ProductRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -59,13 +58,6 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<LineItem> lineItems = new HashSet<>();
-
-    public Product(final ProductRequest productRequest){
-        this.name = productRequest.name();
-        this.description = productRequest.description();
-        this.price = productRequest.price();
-        this.retired = false;
-    }
 
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
         this.name = name;

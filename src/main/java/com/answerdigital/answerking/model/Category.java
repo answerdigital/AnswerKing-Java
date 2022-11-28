@@ -1,14 +1,13 @@
 package com.answerdigital.answerking.model;
 
-import com.answerdigital.answerking.request.CategoryRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -64,12 +63,6 @@ public class Category {
             inverseJoinColumns = {@JoinColumn(name = "product_id")})
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
-
-    public Category(final CategoryRequest categoryRequest) {
-        this.name = categoryRequest.name();
-        this.description = categoryRequest.description();
-        this.retired = false;
-    }
 
     public Category(final String name, final String description) {
         this.name = name;
