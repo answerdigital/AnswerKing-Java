@@ -61,6 +61,7 @@ CREATE TABLE `product`  (
 -- ----------------------------
 -- Records of product
 -- ----------------------------
+
 INSERT INTO product (name, description, price, retired, category_id)
 VALUES('Burger', '300g Beef', 6.69, 0, 1);
 INSERT INTO product (name, description, price, retired, category_id)
