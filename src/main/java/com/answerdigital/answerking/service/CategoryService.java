@@ -8,6 +8,7 @@ import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
+import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,13 +28,17 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    private final ProductRepository productRepository;
+
     private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
 
     @Autowired
     public CategoryService(final ProductService productService,
-                           final CategoryRepository categoryRepository) {
+                           final CategoryRepository categoryRepository,
+                           final ProductRepository productRepository) {
         this.productService = productService;
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     public CategoryResponse addCategory(final AddCategoryRequest categoryRequest) {
@@ -100,5 +106,9 @@ public class CategoryService {
         }
         category.setRetired(true);
         return categoryRepository.save(category);
+    }
+
+    public List<Product> findProductsByCategoryId(final Long categoryId) {
+        return productRepository.findProductsByCategoriesId(categoryId);
     }
 }

@@ -91,7 +91,7 @@ public class CategoryController {
     })
     @GetMapping("/{categoryId}/products")
     public ResponseEntity<Collection<Product>> fetchProductsByCategory(@PathVariable @NotNull final Long categoryId) {
-        return new ResponseEntity<>(productService.findProductsByCategoryId(categoryId), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 
     @Operation(summary = "Add product to a category.")
