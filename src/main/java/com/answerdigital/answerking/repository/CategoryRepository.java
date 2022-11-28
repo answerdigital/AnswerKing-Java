@@ -15,5 +15,5 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
 
     Set<Category> findAll();
 
-    List<Category> findCategoriesByProductsId(Long productId);
+    List<Category> findCategoryByProductId(Long productId);
 }
