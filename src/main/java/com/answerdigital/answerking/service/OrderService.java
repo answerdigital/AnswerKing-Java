@@ -130,7 +130,6 @@ public class OrderService {
     public Order cancelOrder(final Long orderId) {
         final Order order = findById(orderId);
         order.setOrderStatus(OrderStatus.CANCELLED);
-        orderRepository.save(order);
-        return order;
+        return orderRepository.save(order);
     }
 }
