@@ -5,6 +5,7 @@ import com.answerdigital.answerking.AnswerKingApplication;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.utility.AbstractContainerBaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {AnswerKingApplication.class, Category.class, Product.class},
+@SpringBootTest(classes = {AnswerKingApplication.class, Category.class, Product.class, ProductResponse.class},
                 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("integration-test")
@@ -44,7 +45,7 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
                                                     .andReturn()
                                                     .getResponse();
 
-        final var resultJsonNode = mapper.readTree(response.getContentAsString());
+       // final var resultJsonNode = mapper.readTree(response.getContentAsString());
         final var responseContent = response.getContentAsString();
 
         assertAll(
