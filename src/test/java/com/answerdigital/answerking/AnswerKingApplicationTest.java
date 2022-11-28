@@ -17,8 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-class AnswerKingApplicationTest extends AbstractContainerBaseTest
-{
+class AnswerKingApplicationTest extends AbstractContainerBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
