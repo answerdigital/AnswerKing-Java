@@ -11,12 +11,23 @@ import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsStr
 public class CategoryTestBuilder {
 
     private Long id = 1L;
-    private String name = "Burgers";
-    private String description = "A selection of delicious burgers.";
-    private String createdOn = getDateTimeAsString();
-    private String lastUpdated = getDateTimeAsString();;
-    private boolean retired = false;
-    private Set<Product> products = new HashSet<>();
+    private String name;
+    private String description;
+    private String createdOn;
+    private String lastUpdated;
+    private boolean retired;
+    private Set<Product> products;
+
+    public CategoryTestBuilder withDefaultValues() {
+        this.id = 1L;
+        this.name = "Burgers";
+        this.description = "A selection of delicious burgers.";
+        this.createdOn = getDateTimeAsString();
+        this.lastUpdated = getDateTimeAsString();
+        this.retired = false;
+        this.products = new HashSet<>();
+        return this;
+    }
 
     public CategoryTestBuilder withId(Long id) {
         this.id = id;
@@ -54,7 +65,9 @@ public class CategoryTestBuilder {
     }
 
     public CategoryTestBuilder withProduct(Product product) {
-        this.products.add(product);
+        Set<Product> products = new HashSet<>();
+        products.add(product);
+        this.products = products;
         return this;
     }
 

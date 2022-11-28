@@ -4,8 +4,14 @@ import com.answerdigital.answerking.request.AddCategoryRequest;
 
 public class AddCategoryRequestTestBuilder {
 
-    private String name = "Burgers";
-    private String description = "A selection of delicious burgers.";
+    private String name;
+    private String description;
+
+    public AddCategoryRequestTestBuilder withDefaultValues() {
+        this.name = "Burgers";
+        this.description = "A selection of delicious burgers.";
+        return this;
+    }
 
     public AddCategoryRequestTestBuilder withName(String name) {
         this.name = name;

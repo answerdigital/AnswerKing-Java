@@ -10,14 +10,25 @@ import java.util.Set;
 
 public class ProductTestBuilder {
 
-    private Long id = 1L;
-    private String name = "Cheeseburger";
-    private String description = "A beef patty with cheddar cheese.";
-    private BigDecimal price = BigDecimal.valueOf(5.00D);
-    private boolean retired = false;
-    private Set<Category> categories = new HashSet<>();
-    private Set<LineItem> lineItems = new HashSet<>();
-    
+    private Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private boolean retired;
+    private Set<Category> categories;
+    private Set<LineItem> lineItems;
+
+    public ProductTestBuilder withDefaultValues() {
+        this.id = 1L;
+        this.name = "Cheeseburger";
+        this.description = "A beef patty with cheddar cheese.";
+        this.price = BigDecimal.valueOf(5.00D);
+        this.retired = false;
+        this.categories = new HashSet<>();
+        this.lineItems = new HashSet<>();
+        return this;
+    }
+
     public ProductTestBuilder withId(Long id) {
         this.id = id;
         return this;

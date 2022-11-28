@@ -4,8 +4,14 @@ import com.answerdigital.answerking.request.UpdateCategoryRequest;
 
 public class UpdateCategoryRequestTestBuilder {
 
-    private String name = "Pizzas";
-    private String description = "Italian style stone baked pizzas.";
+    private String name;
+    private String description;
+
+    public UpdateCategoryRequestTestBuilder withDefaultValues() {
+        this.name = "Pizzas";
+        this.description = "Italian style stone baked pizzas.";
+        return this;
+    }
 
     public UpdateCategoryRequestTestBuilder withName(String name) {
         this.name = name;
