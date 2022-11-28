@@ -108,9 +108,9 @@ public class CategoryController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PutMapping("/{categoryId}")
-    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final CategoryRequest updateCategoryRequest,
+    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final CategoryRequest categoryRequest,
                                                    @PathVariable @NotNull final Long categoryId) {
-        return new ResponseEntity<>(categoryService.updateCategory(updateCategoryRequest, categoryId), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.updateCategory(categoryRequest, categoryId), HttpStatus.OK);
     }
 
     @Operation(summary = "Retire an existing category.")
