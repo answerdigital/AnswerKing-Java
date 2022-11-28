@@ -53,11 +53,8 @@ public class CategoryTestBuilder {
         return this;
     }
 
-    // creates a HashSet of one product, to remove boilerplate
     public CategoryTestBuilder withProduct(Product product) {
-        Set<Product> products = new HashSet<>();
-        products.add(product);
-        this.products = products;
+        this.products.add(product);
         return this;
     }
 
