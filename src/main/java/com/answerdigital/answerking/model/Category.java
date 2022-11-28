@@ -19,13 +19,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
 
 @Entity
 @Getter
@@ -68,9 +66,7 @@ public class Category {
         this.name = name;
         this.description = description;
         this.retired = false;
-        this.createdOn = ZonedDateTime.now(ZoneOffset.UTC)
-                                      .truncatedTo( ChronoUnit.SECONDS )
-                                      .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm::ss" ) );
+        this.createdOn = getDateTimeAsString();
         this.lastUpdated = this.createdOn;
     }
 
