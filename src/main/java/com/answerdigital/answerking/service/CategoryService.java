@@ -109,6 +109,6 @@ public class CategoryService {
     }
 
     public List<Product> findProductsByCategoryId(final Long categoryId) {
-        return productRepository.findProductsByCategoryId(categoryId);
+        return productService.findProductsByCategoryId(categoryId);
     }
 }
