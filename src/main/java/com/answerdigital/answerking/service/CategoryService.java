@@ -5,6 +5,7 @@ import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentExcept
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.CategoryMapper;
+import com.answerdigital.answerking.mapper.ProductMapper;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
@@ -12,6 +13,7 @@ import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
+import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class CategoryService {
     private final ProductRepository productRepository;
 
     private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
+
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     @Autowired
     public CategoryService(final ProductService productService,
@@ -108,7 +112,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public List<Product> findProductsByCategoryId(final Long categoryId) {
+    public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productService.findProductsByCategoryId(categoryId);
     }
 }

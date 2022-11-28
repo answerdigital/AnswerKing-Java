@@ -7,10 +7,12 @@ import com.answerdigital.answerking.mapper.ProductMapper;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -62,7 +64,10 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> findProductsByCategoryId(final Long categoryId) {
-        return productRepository.findProductsByCategoryId(categoryId);
+    public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
+        return productRepository.findProductsByCategoryId(categoryId)
+                                .stream()
+                                .map(product -> productMapper.convertProductEntityToProductResponse(product))
+                                .collect(Collectors.toList());
     }
 }
