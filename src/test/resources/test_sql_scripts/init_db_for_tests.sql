@@ -10,9 +10,14 @@ CREATE TABLE `category`  (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
     `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+    `createdOn` VARCHAR(255) DEFAULT NULL,
     `retired` bit(1) NOT NULL,
+    `last_updated` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+INSERT INTO category (name, description, createdOn, retired, last_updated)
+VALUES('CatOne', 'CatOne description', '', 0, '');
 
 -- ----------------------------
 -- Records of category
@@ -45,18 +50,23 @@ CREATE TABLE `product`  (
     `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
     `retired` bit(1) NOT NULL,
     `price` decimal(12, 2) NOT NULL,
-    PRIMARY KEY (`id`) USING BTREE
+    category_id BIGINT NOT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+
+    KEY `category_id` (`category_id`),
+    CONSTRAINT `products_fk_1` FOREIGN KEY (`category_id`) REFERENCES category (`id`)
+
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of product
 -- ----------------------------
-INSERT INTO product (name, description, price, retired)
-VALUES('Burger', '300g Beef', 6.69, 0);
-INSERT INTO product (name, description, price, retired)
-VALUES('Cola', '500ml', 2.99, 0);
-INSERT INTO product (name, description, price, retired)
-VALUES('Fries', 'Large Fries', 2.99, 0);
+INSERT INTO product (name, description, price, retired, category_id)
+VALUES('Burger', '300g Beef', 6.69, 0, 1);
+INSERT INTO product (name, description, price, retired, category_id)
+VALUES('Cola', '500ml', 2.99, 0, 1);
+INSERT INTO product (name, description, price, retired, category_id)
+VALUES('Fries', 'Large Fries', 2.99, 0, 1);
 
 -- ----------------------------
 -- Table structure for order_product
