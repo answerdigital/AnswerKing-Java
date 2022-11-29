@@ -98,7 +98,7 @@ public class OrderService {
     private void addLineItemToOrder(final Order order, final Long productId, final Integer quantity) {
         final Product product = productService.findById(productId);
 
-        if (product.isRetired()) {
+        if (OrderStatus.CANCELLED.equals(order.getOrderStatus())) {
             throw new RetirementException(String.format("The product with ID %d has been retired", product.getId()));
         }
 
