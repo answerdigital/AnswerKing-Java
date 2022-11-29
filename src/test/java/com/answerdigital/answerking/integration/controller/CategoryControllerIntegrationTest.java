@@ -4,7 +4,6 @@ package com.answerdigital.answerking.integration.controller;
 import com.answerdigital.answerking.AnswerKingApplication;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
-import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.utility.AbstractContainerBaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +41,6 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
                                                     .andReturn()
                                                     .getResponse();
 
-       // final var resultJsonNode = mapper.readTree(response.getContentAsString());
         final var responseContent = response.getContentAsString();
 
         assertAll(
