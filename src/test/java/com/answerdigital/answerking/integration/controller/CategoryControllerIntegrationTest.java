@@ -1,11 +1,8 @@
 package com.answerdigital.answerking.integration.controller;
 
-
 import com.answerdigital.answerking.AnswerKingApplication;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
-import com.answerdigital.answerking.response.ProductResponse;
-import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.utility.AbstractContainerBaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +34,7 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
     @Test
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/category_controller_test_input.sql"})
     void getAllProductsByCategoryTest() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
 
         final var response = mvc.perform(get("/categories/{categoryId}/products", CATEGORY_ID))
                                                     .andExpect(status().isOk())
@@ -46,12 +44,12 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
         final var responseContent = response.getContentAsString();
 
         assertAll(
-          () -> assertFalse(responseContent.isEmpty()),
-          () -> assertEquals(2, mapper.readTree(responseContent).size()),
-          () -> assertEquals("Burger", mapper.readTree(responseContent).get(0).get("name").textValue()),
-          () -> assertEquals("300g Beef", mapper.readTree(responseContent).get(0).get("description").textValue()),
-          () -> assertEquals(6.69, mapper.readTree(responseContent).get(0).get("price").asDouble()),
-          () -> assertEquals("Fries", mapper.readTree(responseContent).get(1).get("name").textValue())
+              () -> assertFalse(responseContent.isEmpty()),
+              () -> assertEquals(2, mapper.readTree(responseContent).size()),
+              () -> assertEquals("Burger", mapper.readTree(responseContent).get(0).get("name").textValue()),
+              () -> assertEquals("300g Beef", mapper.readTree(responseContent).get(0).get("description").textValue()),
+              () -> assertEquals(6.69, mapper.readTree(responseContent).get(0).get("price").asDouble()),
+              () -> assertEquals("Fries", mapper.readTree(responseContent).get(1).get("name").textValue())
         );
     }
 

@@ -11,11 +11,17 @@ import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsStr
 public class CategoryTestBuilder {
 
     private Long id = 1L;
+
     private String name;
+
     private String description;
+
     private String createdOn;
+
     private String lastUpdated;
+
     private boolean retired;
+
     private Set<Product> products;
 
     public CategoryTestBuilder withDefaultValues() {

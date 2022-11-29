@@ -20,11 +20,12 @@ class CategoryControllerRequestValidatorTest {
     private Validator validator;
 
     private static final String DEFAULT_NAME = "Drinks";
+
     private static final String DEFAULT_DESCRIPTION = "Our selection of drinks";
 
     @BeforeEach
     void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
 
@@ -47,12 +48,12 @@ class CategoryControllerRequestValidatorTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidStringsForAddCategory")
-    void addCategoryWithInvalidRequest(String name, String description) {
+    void addCategoryWithInvalidRequest(final String name, final String description) {
         // given
-        AddCategoryRequest addCategoryRequest = new AddCategoryRequest(name, description);
+        final AddCategoryRequest addCategoryRequest = new AddCategoryRequest(name, description);
 
         // when
-        Set<ConstraintViolation<AddCategoryRequest>> violations = validator.validate(addCategoryRequest);
+        final Set<ConstraintViolation<AddCategoryRequest>> violations = validator.validate(addCategoryRequest);
 
         // then
         assertFalse(violations.isEmpty());
@@ -72,12 +73,12 @@ class CategoryControllerRequestValidatorTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidStringsForUpdateCategory")
-    void updateCategoryWithInvalidRequest(String name, String description) {
+    void updateCategoryWithInvalidRequest(final String name, final String description) {
         // given
-        UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest(name, description);
+        final UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest(name, description);
 
         // when
-        Set<ConstraintViolation<UpdateCategoryRequest>> violations = validator.validate(updateCategoryRequest);
+        final Set<ConstraintViolation<UpdateCategoryRequest>> violations = validator.validate(updateCategoryRequest);
 
         // then
         assertFalse(violations.isEmpty());

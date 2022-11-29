@@ -22,10 +22,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -53,7 +59,7 @@ class CategoryControllerTest {
         doReturn(category).when(categoryService).addProductToCategory(categoryId, productId);
 
         mvc.perform(put("/categories/{categoryId}/addproduct/{productId}", categoryId, productId))
-           .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -65,12 +71,12 @@ class CategoryControllerTest {
         doReturn(category).when(categoryService).removeProductFromCategory(categoryId, productId);
 
         mvc.perform(put("/categories/{categoryId}/removeproduct/{productId}", categoryId, productId))
-           .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     @Test
     void addCategoryTest() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
 
         final String testDate = getDateTimeAsString();
         final var addCategoryRequest =  new AddCategoryRequest("random name", "random description");
@@ -98,7 +104,7 @@ class CategoryControllerTest {
 
     @Test
     void fetchProductsByCategoryTest() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
 
         final var productResponse = ProductResponse.builder()
                                                                   .id(33L)
@@ -148,14 +154,14 @@ class CategoryControllerTest {
 
     @Test
     void updateCategoryTest() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
         final var updateCategoryRequest =  new UpdateCategoryRequest("random name", "random description");
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
         final var category = new Category(newRandomName, newRandomDesc);
         final var categoryId = 112L;
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
-        String testDate = getDateTimeAsString();
+        final String testDate = getDateTimeAsString();
 
         doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
         final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
