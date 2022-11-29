@@ -30,12 +30,15 @@ public class RestResponseEntityExceptionHandler {
             final MethodArgumentNotValidException exception,
             final HttpServletRequest request) {
 
-        Map<String, Collection<String>> errorsMap =
+        final Map<String, Collection<String>> errorsMap =
                 exception.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField,
-                        FieldError->new ArrayList<>(Collections.singletonList(FieldError.getDefaultMessage())),
-                        (l1,l2)->{l1.addAll(l2);return l1;}));
+                        .stream()
+                        .collect(Collectors.toMap(FieldError::getField,
+                                FieldError -> new ArrayList<>(Collections.singletonList(FieldError.getDefaultMessage())),
+                                (l1, l2) -> {
+                                    l1.addAll(l2);
+                                    return l1;
+                                }));
 
         final ErrorResponse response = new ValidationErrorResponse(new ValidationException(errorsMap), request);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
