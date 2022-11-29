@@ -6,6 +6,7 @@ import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,12 +15,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
@@ -46,6 +49,7 @@ class ProductServiceTest {
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
+                .categories(new HashSet<>())
                 .build();
         productRequest = ProductRequest.builder()
                 .name("test")
@@ -60,7 +64,7 @@ class ProductServiceTest {
         when(productRepository.save(any())).thenReturn(product);
         when(productRepository.existsByName(any())).thenReturn(false);
         //when
-        Product actualAddNewProductResult = productService.addNewProduct(
+        ProductResponse actualAddNewProductResult = productService.addNewProduct(
                 productRequest);
         //then
         assertEquals(product.getName(), actualAddNewProductResult.getName());
@@ -105,7 +109,7 @@ class ProductServiceTest {
         //given
         when(productRepository.findAll()).thenReturn(List.of(product));
         //when
-        List<Product> actualResult = productService.findAll();
+        List<ProductResponse> actualResult = productService.findAll();
         //then
         assertFalse(actualResult.isEmpty());
         assertEquals(actualResult.get(0).getName(), product.getName());
@@ -120,7 +124,7 @@ class ProductServiceTest {
         when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
 
         //when
-        Product actualAddNewProductResult = productService.updateProduct(12L,
+        ProductResponse actualAddNewProductResult = productService.updateProduct(12L,
                 productRequest);
 
         //then
@@ -159,7 +163,7 @@ class ProductServiceTest {
                 .thenReturn(product);
 
         // then
-        assertEquals(product, productService.retireProduct(PRODUCT_ID));
+        assertNotEquals(product.isRetired(), productService.retireProduct(PRODUCT_ID).isRetired());
         verify(productRepository).findById(anyLong());
         verify(productRepository).save(any(Product.class));
     }

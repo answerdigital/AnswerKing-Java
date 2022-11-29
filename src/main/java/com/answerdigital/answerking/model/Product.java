@@ -48,11 +48,10 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "products")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "products")
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

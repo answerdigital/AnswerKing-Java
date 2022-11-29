@@ -3,6 +3,7 @@ package com.answerdigital.answerking.controller;
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,8 +46,8 @@ public class ProductController {
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) })
     })
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        final List<Product> products = productService.findAll();
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        final List<ProductResponse> products = productService.findAll();
         return new ResponseEntity<>(products, products.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
@@ -59,8 +60,8 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Product> getProductById(@Valid @PathVariable @NotNull final Long id) {
-        return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getProductById(@Valid @PathVariable @NotNull final Long id) {
+        return new ResponseEntity<>(productService.findByIdResponse(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a new product.")
@@ -72,7 +73,7 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
+    public ResponseEntity<ProductResponse> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.addNewProduct(productRequest), HttpStatus.CREATED);
     }
 
@@ -88,7 +89,7 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final Long id,
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable @NotNull final Long id,
                                               @Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);
     }
@@ -105,7 +106,7 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> retireProduct(@PathVariable @NotNull final Long id) {
+    public ResponseEntity<ProductResponse> retireProduct(@PathVariable @NotNull final Long id) {
         return new ResponseEntity<>(productService.retireProduct(id), HttpStatus.OK);
     }
 }
