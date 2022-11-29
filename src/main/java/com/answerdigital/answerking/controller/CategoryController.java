@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Validated
-@Tag(name = "Categories", description = "The Categories API")
+@Tag(name = "Inventory", description = "Manage the inventory.")
 @RestController
 @RequestMapping(path = "/categories")
 public class CategoryController {

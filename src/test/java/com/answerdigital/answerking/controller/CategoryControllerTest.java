@@ -15,11 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-
+import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,10 +61,9 @@ class CategoryControllerTest {
     @Test
     void addCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        final String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
-                                             .truncatedTo( ChronoUnit.SECONDS )
-                                             .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
-        final var addCategoryRequest = new CategoryRequest("random name", "random description");
+
+        final String testDate = getDateTimeAsString();
+        final var addCategoryRequest =  new CategoryRequest("random name", "random description");
         final var categoryResponse = CategoryResponse.builder()
                                                      .name(addCategoryRequest.name())
                                                      .description(addCategoryRequest.description())
@@ -122,15 +117,13 @@ class CategoryControllerTest {
     @Test
     void updateCategoryTest() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        final var updateCategoryRequest = new CategoryRequest("random name", "random description");
+        final var updateCategoryRequest =  new CategoryRequest("random name", "random description");
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
         final var category = new Category(newRandomName, newRandomDesc);
         final var categoryId = 112L;
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
-        String testDate = ZonedDateTime.now( ZoneId.of( "Etc/UTC" ) )
-                                       .truncatedTo( ChronoUnit.SECONDS )
-                                       .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
+        String testDate = getDateTimeAsString();
 
         doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
         final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
