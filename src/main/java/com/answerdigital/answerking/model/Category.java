@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 
 import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -51,7 +52,7 @@ public class Category {
 
     private boolean retired;
 
-    @OneToMany(mappedBy="category")
+    @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
