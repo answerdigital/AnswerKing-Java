@@ -232,15 +232,14 @@ class OrderServiceTest {
         // Given
         Order order = orderTestBuilder.withDefaultValues().build();
         OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
-        Order expected = orderMapper.orderResponseToOrder(orderResponse);
 
         // Then
         assertAll("Should map successfully",
-            () -> assertEquals(expected.getId(), orderResponse.getId()),
-            () -> assertEquals(expected.getCreatedOn(), orderResponse.getCreatedOn()),
-            () -> assertEquals(expected.getLastUpdated(), orderResponse.getLastUpdated()),
-            () -> assertEquals(expected.getOrderStatus(), orderResponse.getOrderStatus()),
-            () -> assertEquals(expected.getLineItems(), orderResponse.getLineItems())
+            () -> assertEquals(order.getId(), orderResponse.getId()),
+            () -> assertEquals(order.getCreatedOn(), orderResponse.getCreatedOn()),
+            () -> assertEquals(order.getLastUpdated(), orderResponse.getLastUpdated()),
+            () -> assertEquals(order.getOrderStatus(), orderResponse.getOrderStatus()),
+            () -> assertEquals(order.getLineItems(), orderResponse.getLineItems())
         );
     }
 }

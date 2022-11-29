@@ -8,6 +8,4 @@ import java.util.Collections;
 @Mapper(componentModel = "spring", imports = Collections.class)
 public interface OrderMapper {
     OrderResponse orderToOrderResponse(Order order);
-
-    Order orderResponseToOrder(OrderResponse orderResponse);
 }
