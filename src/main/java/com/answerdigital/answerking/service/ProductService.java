@@ -64,11 +64,11 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productRepository.findProductsByCategoryId(categoryId)
                                 .stream()
                                 .map(product -> productMapper.convertProductEntityToProductResponse(product))
                                 .collect(Collectors.toList());
     }
+
 }
