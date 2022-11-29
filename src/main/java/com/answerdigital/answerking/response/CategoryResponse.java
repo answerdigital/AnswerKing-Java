@@ -21,7 +21,7 @@ public class CategoryResponse {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<Long> productIds;
+    private List<Long> products;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdOn;
