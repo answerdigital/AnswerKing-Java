@@ -30,7 +30,7 @@ public interface CategoryMapper {
                                                     ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
     Category updateRequestToCategory(@MappingTarget Category category, UpdateCategoryRequest updateCategoryRequest);
 
-    @Mapping(target = "productIds",
+    @Mapping(target = "products",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")
     CategoryResponse convertCategoryEntityToCategoryResponse(Category category);
 
