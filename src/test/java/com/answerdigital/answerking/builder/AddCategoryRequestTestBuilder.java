@@ -1,6 +1,6 @@
 package com.answerdigital.answerking.builder;
 
-import com.answerdigital.answerking.request.AddCategoryRequest;
+import com.answerdigital.answerking.request.CategoryRequest;
 
 public class AddCategoryRequestTestBuilder {
 
@@ -23,7 +23,7 @@ public class AddCategoryRequestTestBuilder {
         return this;
     }
 
-    public AddCategoryRequest build() {
-        return new AddCategoryRequest(name, description);
+    public CategoryRequest build() {
+        return new CategoryRequest(name, description);
     }
 }
