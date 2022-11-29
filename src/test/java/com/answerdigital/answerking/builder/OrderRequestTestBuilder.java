@@ -7,7 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRequestTestBuilder {
-    private List<LineItemRequest> lineItemRequests = new ArrayList<>();
+    private List<LineItemRequest> lineItemRequests;
+
+    public OrderRequestTestBuilder withDefaultValues() {
+        this.lineItemRequests = new ArrayList<>();
+        return this;
+    }
 
     public OrderRequestTestBuilder withLineItemRequests(List<LineItemRequest> lineItemRequests) {
         this.lineItemRequests = lineItemRequests;

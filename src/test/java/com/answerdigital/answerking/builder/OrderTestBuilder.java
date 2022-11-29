@@ -9,11 +9,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class OrderTestBuilder {
-    private Long id = 1L;
-    private LocalDateTime createdOn = LocalDateTime.now();
-    private LocalDateTime lastUpdated = LocalDateTime.now();
-    private OrderStatus orderStatus = OrderStatus.CREATED;
-    private Set<LineItem> lineItems = new HashSet<>();
+    private Long id;
+    private LocalDateTime createdOn;
+    private LocalDateTime lastUpdated;
+    private OrderStatus orderStatus;
+    private Set<LineItem> lineItems;
+
+    public OrderTestBuilder withDefaultValues() {
+        this.id = 1L;
+        this.createdOn = LocalDateTime.now();
+        this.lastUpdated = LocalDateTime.now();
+        this.orderStatus = OrderStatus.CREATED;
+        this.lineItems = new HashSet<>();
+        return this;
+    }
 
     public OrderTestBuilder withId(final Long id) {
         this.id = id;
