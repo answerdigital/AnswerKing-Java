@@ -55,21 +55,10 @@ public class OrderService {
      * @param orderId The Order ID
      * @return The found Order Response
      */
-    public OrderResponse findOrderResponseById(final Long orderId) {
+    public OrderResponse findById(final Long orderId) {
         return orderRepository
             .findById(orderId)
             .map(orderMapper::orderToOrderResponse)
-            .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
-    }
-
-    /**
-     * Finds an Order by a given ID *
-     * @param orderId The Order ID
-     * @return The found Order
-     */
-    public Order findOrderById(final Long orderId) {
-        return this.orderRepository
-            .findById(orderId)
             .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
     }
 
@@ -91,7 +80,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = findOrderById(orderId);
+        final Order order = convertFromResponse(findById(orderId));
 
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
             throw new OrderCancelledException(
@@ -147,7 +136,7 @@ public class OrderService {
      * @return The order with the status as cancelled
      */
     public OrderResponse cancelOrder(final Long orderId) {
-        final Order order = findOrderById(orderId);
+        final Order order = convertFromResponse(findById(orderId));
         order.setOrderStatus(OrderStatus.CANCELLED);
         return convertToResponse(orderRepository.save(order));
     }
@@ -159,5 +148,14 @@ public class OrderService {
      */
     private OrderResponse convertToResponse(final Order order) {
         return orderMapper.orderToOrderResponse(order);
+    }
+
+    /**
+     * Helper method which converts an Order from an Order Response *
+     * @param orderResponse The Order Response instance to convert
+     * @return The mapped Order
+     */
+    private Order convertFromResponse(final OrderResponse orderResponse) {
+        return orderMapper.orderResponseToOrder(orderResponse);
     }
 }
