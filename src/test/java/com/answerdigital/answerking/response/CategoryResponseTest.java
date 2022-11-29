@@ -52,7 +52,6 @@ class CategoryResponseTest {
         assertEquals(CATEGORY_ID, categoryResponse.getId());
         assertEquals(categoryName, categoryResponse.getName());
         assertEquals(categoryDesc, categoryResponse.getDescription());
-
     }
 
 }

@@ -1,9 +1,11 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.model.Category;
+import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.AddCategoryRequest;
 import com.answerdigital.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,10 +23,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,6 +43,9 @@ class CategoryControllerTest {
 
     @MockBean
     ProductService productService;
+
+    @MockBean
+    ProductRepository productRepository;
 
     @Test
     void addProductToCategoryTest() throws Exception {
@@ -95,6 +99,28 @@ class CategoryControllerTest {
         assertEquals(addCategoryRequest.name(), resultJsonNode.get("name").textValue());
         assertEquals(addCategoryRequest.description(), resultJsonNode.get("description").textValue());
         assertEquals(testDate.split(" ")[0], resultJsonNode.get("createdOn").textValue().split(" ")[0]);
+    }
+
+    @Test
+    void fetchProductsByCategoryTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        final var productResponse = ProductResponse.builder()
+                                                                  .id(33L)
+                                                                  .name("random name")
+                                                                  .description("random description")
+                                                                  .categories(List.of(22L))
+                                                                  .build();
+
+        doReturn(List.of(productResponse)).when(categoryService).findProductsByCategoryId(1L);
+        final var response = mvc.perform(get("/categories//{categoryId}/products", 1L)).andExpect(status().isOk());
+
+        final var responseRecord = mapper.readTree(response.andReturn().getResponse().getContentAsString()).get(0);
+        assertAll(
+                () -> assertEquals(33L, responseRecord.get("id").asLong()),
+                () -> assertEquals("random name", responseRecord.get("name").textValue()),
+                () -> assertEquals(22L, responseRecord.get("categories").get(0).asLong())
+        );
     }
 
     @Test

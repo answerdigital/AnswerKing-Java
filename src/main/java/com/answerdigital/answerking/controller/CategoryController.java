@@ -7,7 +7,6 @@ import com.answerdigital.answerking.request.UpdateCategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.CategoryService;
-import com.answerdigital.answerking.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,12 +38,9 @@ import java.util.Set;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    private final ProductService productService;
-
     @Autowired
-    public CategoryController(final CategoryService categoryService, final ProductService productService) {
+    public CategoryController(final CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.productService = productService;
     }
 
     @Operation(summary = "Create a new category.")

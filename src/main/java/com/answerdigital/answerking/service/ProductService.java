@@ -12,7 +12,6 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -68,6 +67,6 @@ public class ProductService {
         return productRepository.findProductsByCategoryId(categoryId)
                                 .stream()
                                 .map(product -> productMapper.convertProductEntityToProductResponse(product))
-                                .collect(Collectors.toList());
+                                .toList();
     }
 }
