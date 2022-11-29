@@ -55,11 +55,8 @@ public class OrderService {
      * @param orderId The Order ID
      * @return The found Order Response
      */
-    public OrderResponse findById(final Long orderId) {
-        return orderRepository
-            .findById(orderId)
-            .map(orderMapper::orderToOrderResponse)
-            .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
+    public OrderResponse getOrderResponseById(final Long orderId) {
+        return convertToResponse(getOrderById(orderId));
     }
 
     /**
@@ -80,7 +77,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = convertFromResponse(findById(orderId));
+        final Order order = getOrderById(orderId);
 
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
             throw new OrderCancelledException(
@@ -136,7 +133,7 @@ public class OrderService {
      * @return The order with the status as cancelled
      */
     public OrderResponse cancelOrder(final Long orderId) {
-        final Order order = convertFromResponse(findById(orderId));
+        final Order order = getOrderById(orderId);
         order.setOrderStatus(OrderStatus.CANCELLED);
         return convertToResponse(orderRepository.save(order));
     }
@@ -151,11 +148,13 @@ public class OrderService {
     }
 
     /**
-     * Helper method which converts an Order from an Order Response *
-     * @param orderResponse The Order Response instance to convert
-     * @return The mapped Order
+     * Helper method which gets a raw Order by an ID *
+     * @param orderId The ID of the Order
+     * @return The found Order
      */
-    private Order convertFromResponse(final OrderResponse orderResponse) {
-        return orderMapper.orderResponseToOrder(orderResponse);
+    private Order getOrderById(final Long orderId) {
+        return this.orderRepository
+            .findById(orderId)
+            .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
     }
 }

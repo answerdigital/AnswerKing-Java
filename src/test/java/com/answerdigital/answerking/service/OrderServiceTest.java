@@ -95,7 +95,7 @@ class OrderServiceTest {
             .findById(anyLong());
 
         // Then
-        assertThrows(NotFoundException.class, () -> orderService.findById(NONEXISTENT_ORDER_ID));
+        assertThrows(NotFoundException.class, () -> orderService.getOrderResponseById(NONEXISTENT_ORDER_ID));
         verify(orderRepository).findById(anyLong());
     }
 

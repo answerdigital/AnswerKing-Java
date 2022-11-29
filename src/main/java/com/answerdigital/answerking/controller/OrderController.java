@@ -71,7 +71,7 @@ public class OrderController {
             content = {@Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable @NotNull final Long orderId) {
-        return new ResponseEntity<>(orderService.findById(orderId), HttpStatus.CREATED);
+        return new ResponseEntity<>(orderService.getOrderResponseById(orderId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{orderId}")
