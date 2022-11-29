@@ -16,17 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryResponse {
 
-    @NotBlank
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z\s-]*",
-            message = "Category name must only contain letters, spaces and dashes")
     private String name;
 
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
-            message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -38,6 +32,7 @@ public class CategoryResponse {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastUpdated;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
 }
