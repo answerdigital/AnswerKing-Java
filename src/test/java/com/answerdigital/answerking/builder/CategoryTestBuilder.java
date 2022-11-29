@@ -29,45 +29,43 @@ public class CategoryTestBuilder {
         return this;
     }
 
-    public CategoryTestBuilder withId(Long id) {
+    public CategoryTestBuilder withId(final Long id) {
         this.id = id;
         return this;
     }
 
-    public CategoryTestBuilder withName(String name) {
+    public CategoryTestBuilder withName(final String name) {
         this.name = name;
         return this;
     }
 
-    public CategoryTestBuilder withDescription(String description) {
+    public CategoryTestBuilder withDescription(final String description) {
         this.description = description;
         return this;
     }
 
-    public CategoryTestBuilder withCreatedOn(String createdOn) {
+    public CategoryTestBuilder withCreatedOn(final String createdOn) {
         this.createdOn = createdOn;
         return this;
     }
 
-    public CategoryTestBuilder withLastUpdated(String lastUpdated) {
+    public CategoryTestBuilder withLastUpdated(final String lastUpdated) {
         this.lastUpdated = lastUpdated;
         return this;
     }
 
-    public CategoryTestBuilder withRetired(boolean retired) {
+    public CategoryTestBuilder withRetired(final boolean retired) {
         this.retired = retired;
         return this;
     }
 
-    public CategoryTestBuilder withProducts(Set<Product> products) {
+    public CategoryTestBuilder withProducts(final Set<Product> products) {
         this.products = products;
         return this;
     }
 
-    public CategoryTestBuilder withProduct(Product product) {
-        Set<Product> products = new HashSet<>();
+    public CategoryTestBuilder withProduct(final Product product) {
         products.add(product);
-        this.products = products;
         return this;
     }
 

@@ -29,37 +29,37 @@ public class ProductTestBuilder {
         return this;
     }
 
-    public ProductTestBuilder withId(Long id) {
+    public ProductTestBuilder withId(final Long id) {
         this.id = id;
         return this;
     }
 
-    public ProductTestBuilder withName(String name) {
+    public ProductTestBuilder withName(final String name) {
         this.name = name;
         return this;
     }
 
-    public ProductTestBuilder withDescription(String description) {
+    public ProductTestBuilder withDescription(final String description) {
         this.description = description;
         return this;
     }
 
-    public ProductTestBuilder withPrice(BigDecimal price) {
+    public ProductTestBuilder withPrice(final BigDecimal price) {
         this.price = price;
         return this;
     }
 
-    public ProductTestBuilder withRetired(boolean retired) {
+    public ProductTestBuilder withRetired(final boolean retired) {
         this.retired = retired;
         return this;
     }
 
-    public ProductTestBuilder withCategories(Set<Category> categories) {
+    public ProductTestBuilder withCategories(final Set<Category> categories) {
         this.categories = categories;
         return this;
     }
 
-    public ProductTestBuilder withLineItems(Set<LineItem> lineItems) {
+    public ProductTestBuilder withLineItems(final Set<LineItem> lineItems) {
         this.lineItems = lineItems;
         return this;
     }

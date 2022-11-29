@@ -13,12 +13,12 @@ public class UpdateCategoryRequestTestBuilder {
         return this;
     }
 
-    public UpdateCategoryRequestTestBuilder withName(String name) {
+    public UpdateCategoryRequestTestBuilder withName(final String name) {
         this.name = name;
         return this;
     }
 
-    public UpdateCategoryRequestTestBuilder withDescription(String description) {
+    public UpdateCategoryRequestTestBuilder withDescription(final String description) {
         this.description = description;
         return this;
     }
