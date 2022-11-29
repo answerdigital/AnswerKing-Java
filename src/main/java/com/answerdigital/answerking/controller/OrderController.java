@@ -29,7 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/orders")
-@Tag(name = "Orders", description = "The Orders API")
+@Tag(name = "Orders", description = "Create and manage customer orders.")
 public class OrderController {
     private final OrderService orderService;
 

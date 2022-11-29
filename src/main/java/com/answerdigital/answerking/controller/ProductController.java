@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
-@Tag(name = "Products", description = "The Products API")
+@Tag(name = "Inventory", description = "Manage the inventory")
 @RestController
 @RequestMapping(path = "/products")
 public class ProductController {
@@ -50,6 +50,7 @@ public class ProductController {
         return new ResponseEntity<>(products, products.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
+    @Operation(summary = "Get a single product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product with the provided id has been found.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
