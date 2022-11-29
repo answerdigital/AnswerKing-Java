@@ -47,18 +47,30 @@ public class OrderService {
             addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
         );
 
-        return orderMapper.orderToOrderResponse(orderRepository.save(order));
+        return convertToResponse(orderRepository.save(order));
     }
 
     /**
-     * Finds an order by a given ID *
+     * Finds an Order by a given ID and maps it to an Order Response *
+     * @param orderId The Order ID
+     * @return The found Order Response
+     */
+    public OrderResponse findOrderResponseById(final Long orderId) {
+        return orderRepository
+            .findById(orderId)
+            .map(orderMapper::orderToOrderResponse)
+            .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
+    }
+
+    /**
+     * Finds an Order by a given ID *
      * @param orderId The Order ID
      * @return The found Order
      */
-    public OrderResponse findById(final Long orderId) {
-        return orderRepository
-                .findById(orderId).map(orderMapper::orderToOrderResponse)
-                .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
+    public Order findOrderById(final Long orderId) {
+        return this.orderRepository
+            .findById(orderId)
+            .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
     }
 
     /**
@@ -79,7 +91,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse updateOrder(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = orderMapper.orderResponseToOrder(findById(orderId));
+        final Order order = findOrderById(orderId);
 
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
             throw new OrderCancelledException(
@@ -93,7 +105,7 @@ public class OrderService {
             addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
         );
 
-        return orderMapper.orderToOrderResponse(orderRepository.save(order));
+        return convertToResponse(orderRepository.save(order));
     }
 
     /**
@@ -135,8 +147,17 @@ public class OrderService {
      * @return The order with the status as cancelled
      */
     public OrderResponse cancelOrder(final Long orderId) {
-        final Order order = orderMapper.orderResponseToOrder(findById(orderId));
+        final Order order = findOrderById(orderId);
         order.setOrderStatus(OrderStatus.CANCELLED);
-        return orderMapper.orderToOrderResponse(orderRepository.save(order));
+        return convertToResponse(orderRepository.save(order));
+    }
+
+    /**
+     * Helper method which converts an Order to an Order Response *
+     * @param order The Order instance to convert
+     * @return The mapped Order Response
+     */
+    private OrderResponse convertToResponse(final Order order) {
+        return orderMapper.orderToOrderResponse(order);
     }
 }
