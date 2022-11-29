@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -59,22 +56,8 @@ public class Order {
         lineItems.add(lineItem);
     }
 
-    public void removeLineItem(final LineItem lineItem) {
-        lineItems.remove(lineItem);
-    }
-
     public void clearLineItems() {
         lineItems.clear();
-    }
-
-    @JsonInclude
-    public BigDecimal getOrderTotal() {
-        return lineItems.stream()
-                .map(lineItem -> lineItem.getProduct().getPrice()
-                        .multiply(BigDecimal.valueOf(lineItem.getQuantity())))
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO)
-                .setScale(2, RoundingMode.DOWN);
     }
 
     @Override
