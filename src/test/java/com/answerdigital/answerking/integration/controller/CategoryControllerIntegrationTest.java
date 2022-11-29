@@ -30,9 +30,6 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
     private static final Long CATEGORY_ID = 1L;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private MockMvc mvc;
 
     @Test
