@@ -5,6 +5,7 @@ import com.answerdigital.answerking.AnswerKingApplication;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.utility.AbstractContainerBaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,5 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
           () -> assertEquals("Fries", mapper.readTree(responseContent).get(1).get("name").textValue())
         );
     }
-
-
 
 }
