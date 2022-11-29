@@ -113,6 +113,10 @@ public class CategoryService {
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
-        return productService.findProductsByCategoryId(categoryId);
+
+        return productRepository.findProductsByCategoryId(categoryId)
+                                .stream()
+                                .map(product -> productMapper.convertProductEntityToProductResponse(product))
+                                .collect(Collectors.toList());
     }
 }
