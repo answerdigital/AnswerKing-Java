@@ -3,6 +3,7 @@ package com.answerdigital.answerking.controller;
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.request.OrderRequest;
+import com.answerdigital.answerking.response.OrderResponse;
 import com.answerdigital.answerking.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -45,7 +46,7 @@ public class OrderController {
             content = {
                 @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Order.class)))})
     })
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
         return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
     }
 
@@ -57,7 +58,7 @@ public class OrderController {
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
     }
 
@@ -69,7 +70,7 @@ public class OrderController {
         @ApiResponse(responseCode = "404", description = "When the order with the given id does not exist.",
             content = {@Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    public ResponseEntity<Order> getOrderById(@PathVariable @NotNull final Long orderId) {
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable @NotNull final Long orderId) {
         return new ResponseEntity<>(orderService.findById(orderId), HttpStatus.CREATED);
     }
 
@@ -83,7 +84,7 @@ public class OrderController {
         @ApiResponse(responseCode = "404", description = "When the order with the given id does not exist.",
             content = {@Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    public ResponseEntity<Order> updateOrder(@PathVariable @NotNull final Long orderId,
+    public ResponseEntity<OrderResponse> updateOrder(@PathVariable @NotNull final Long orderId,
                                              @Valid @RequestBody final OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
     }
@@ -98,7 +99,7 @@ public class OrderController {
         @ApiResponse(responseCode = "404", description = "When the order with the given id does not exist.",
             content = {@Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    public ResponseEntity<Order> cancelOrder(@PathVariable @NotNull final Long orderId) {
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable @NotNull final Long orderId) {
         return new ResponseEntity<>(orderService.cancelOrder(orderId), HttpStatus.OK);
     }
 }
