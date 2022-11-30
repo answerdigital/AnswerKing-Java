@@ -3,6 +3,7 @@ package com.answerdigital.answerking.integration.controller;
 import com.answerdigital.answerking.AnswerKingApplication;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
+
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.utility.AbstractContainerBaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +34,7 @@ class CategoryControllerIntegrationTest extends AbstractContainerBaseTest {
     @Test
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/category_controller_test_input.sql"})
     void getAllProductsByCategoryTest() throws Exception {
+
         final ObjectMapper mapper = new ObjectMapper();
 
         final var response = mvc.perform(get("/categories/{categoryId}/products", CATEGORY_ID))
