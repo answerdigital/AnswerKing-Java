@@ -49,12 +49,12 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(
             List.of("paul", "john", "ringo", "george")
                                             .stream()
-                                            .map(user -> {
-                                                return User.withUsername(user)
-                                                           .password(COMMON_PASSWORD)
-                                                           .authorities(COMMON_ROLE)
-                                                           .build();
-                                            }).toList()
+                                            .map(user ->
+                                                User.withUsername(user)
+                                                    .password(COMMON_PASSWORD)
+                                                    .authorities(COMMON_ROLE)
+                                                    .build()
+                                            ).toList()
         );
     }
 
