@@ -43,7 +43,7 @@ public class ProductController {
     @Operation(summary = "Get all products.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) })
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) })
     })
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
@@ -54,7 +54,7 @@ public class ProductController {
     @Operation(summary = "Get a single product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product with the provided id has been found.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
@@ -67,7 +67,7 @@ public class ProductController {
     @Operation(summary = "Create a new product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "When the product has been created.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
@@ -80,7 +80,7 @@ public class ProductController {
     @Operation(summary = "Update an existing product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product has been updated.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) }),
@@ -97,7 +97,7 @@ public class ProductController {
     @Operation(summary = "Retire an existing product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product has been retired.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) }),

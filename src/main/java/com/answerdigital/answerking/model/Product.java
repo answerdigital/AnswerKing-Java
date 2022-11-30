@@ -38,7 +38,6 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String name;
@@ -50,12 +49,10 @@ public class Product {
 
     private boolean retired;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "products")
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonIgnore
     private Set<LineItem> lineItems = new HashSet<>();
 
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {

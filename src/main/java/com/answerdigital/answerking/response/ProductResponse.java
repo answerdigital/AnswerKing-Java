@@ -23,7 +23,6 @@ public class ProductResponse {
 
     private BigDecimal price;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Long> categories;
 
     private boolean retired;
