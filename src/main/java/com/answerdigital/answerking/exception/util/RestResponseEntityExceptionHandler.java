@@ -2,10 +2,10 @@ package com.answerdigital.answerking.exception.util;
 
 import com.answerdigital.answerking.exception.AnswerKingException;
 import com.answerdigital.answerking.exception.custom.ValidationException;
-import com.answerdigital.answerking.exception.generic.BadRequestException;
 import com.answerdigital.answerking.exception.generic.InternalServerErrorException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,9 +15,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
@@ -28,14 +30,17 @@ public class RestResponseEntityExceptionHandler {
             final MethodArgumentNotValidException exception,
             final HttpServletRequest request) {
 
-        String detail;
-        try {
-            detail = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        } catch (NullPointerException nullPointerException) {
-            detail = "Unknown error - MethodArgumentNotValidException was thrown with no default message";
-        }
+        final Map<String, Collection<String>> errorsMap =
+                exception.getBindingResult().getFieldErrors()
+                        .stream()
+                        .collect(Collectors.toMap(FieldError::getField,
+                                FieldError -> new ArrayList<>(Collections.singletonList(FieldError.getDefaultMessage())),
+                                (mainList, newList) -> {
+                                    mainList.addAll(newList);
+                                    return mainList;
+                                }));
 
-        final ErrorResponse response = new ErrorResponse(new BadRequestException(detail), request);
+        final ErrorResponse response = new ValidationErrorResponse(new ValidationException(errorsMap), request);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
