@@ -155,7 +155,7 @@ class CategoryControllerTest {
     void updateCategoryTest() throws Exception {
 
         final ObjectMapper mapper = new ObjectMapper();
-        final var updateCategoryRequest =  new UpdateCategoryRequest("random name", "random description");
+        final var updateCategoryRequest =  new CategoryRequest("random name", "random description");
 
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
