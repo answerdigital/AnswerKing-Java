@@ -31,9 +31,12 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
     @InjectMocks
     private ProductService productService;
+
     private Product product;
+
     private ProductRequest productRequest;
 
     private static final long PRODUCT_ID = 55L;
@@ -60,7 +63,7 @@ class ProductServiceTest {
         when(productRepository.save(any())).thenReturn(product);
         when(productRepository.existsByName(any())).thenReturn(false);
         //when
-        Product actualAddNewProductResult = productService.addNewProduct(
+        final Product actualAddNewProductResult = productService.addNewProduct(
                 productRequest);
         //then
         assertEquals(product.getName(), actualAddNewProductResult.getName());
@@ -84,7 +87,7 @@ class ProductServiceTest {
         //given
         when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
         //when
-        Product actualAddNewProductResult = productService.findById(12L);
+        final Product actualAddNewProductResult = productService.findById(12L);
         //then
         assertEquals(product.getName(), actualAddNewProductResult.getName());
         assertEquals(product.getPrice().toString(), actualAddNewProductResult.getPrice().toString());
@@ -105,7 +108,7 @@ class ProductServiceTest {
         //given
         when(productRepository.findAll()).thenReturn(List.of(product));
         //when
-        List<Product> actualResult = productService.findAll();
+        final List<Product> actualResult = productService.findAll();
         //then
         assertFalse(actualResult.isEmpty());
         assertEquals(actualResult.get(0).getName(), product.getName());
@@ -120,8 +123,7 @@ class ProductServiceTest {
         when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
 
         //when
-        Product actualAddNewProductResult = productService.updateProduct(12L,
-                productRequest);
+        final Product actualAddNewProductResult = productService.updateProduct(12L, productRequest);
 
         //then
         assertEquals(product.getName(), actualAddNewProductResult.getName());
@@ -167,7 +169,7 @@ class ProductServiceTest {
     @Test
     void testRetireProductAlreadyRetiredThrowsRetirementException() {
         // given
-        Product expectedProduct = product;
+        final Product expectedProduct = product;
         expectedProduct.setRetired(true);
 
         // when

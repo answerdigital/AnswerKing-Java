@@ -5,6 +5,7 @@ import com.answerdigital.answerking.request.CategoryRequest;
 public class AddCategoryRequestTestBuilder {
 
     private String name;
+
     private String description;
 
     public AddCategoryRequestTestBuilder withDefaultValues() {

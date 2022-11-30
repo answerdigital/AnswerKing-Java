@@ -13,4 +13,7 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     boolean existsByNameAndIdIsNot(String name, Long id);
 
     List<Product> findAll();
+
+    List<Product> findProductsByCategoryId(Long categoryId);
+
 }

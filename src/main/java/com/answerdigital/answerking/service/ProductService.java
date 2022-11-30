@@ -7,6 +7,7 @@ import com.answerdigital.answerking.mapper.ProductMapper;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,7 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    private final ProductMapper productMapper =
-            Mappers.getMapper(ProductMapper.class);
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     @Autowired
     public ProductService(final ProductRepository productRepository) {
@@ -62,4 +62,12 @@ public class ProductService {
         product.setRetired(true);
         return productRepository.save(product);
     }
+
+    public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
+        return productRepository.findProductsByCategoryId(categoryId)
+                                .stream()
+                                .map(product -> productMapper.convertProductEntityToProductResponse(product))
+                                .toList();
+    }
+
 }

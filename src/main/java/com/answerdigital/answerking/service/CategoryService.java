@@ -10,12 +10,14 @@ import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
+import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -99,5 +101,9 @@ public class CategoryService {
         }
         category.setRetired(true);
         return categoryRepository.save(category);
+    }
+
+    public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
+        return productService.findProductsByCategoryId(categoryId);
     }
 }

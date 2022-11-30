@@ -12,7 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CategoryMapperImpl.class, CategoryMapper.class, Product.class, Category.class})
@@ -22,6 +23,7 @@ class CategoryResponseTest {
     CategoryMapper categoryMapper;
 
     private static final Long CATEGORY_ID = 1L;
+
     private static final Long PRODUCT_ID = 1L;
 
     @Test
@@ -48,11 +50,10 @@ class CategoryResponseTest {
         final var categoryResponse = categoryMapper.convertCategoryEntityToCategoryResponse(category);
 
         assertNotNull(categoryResponse);
-        assertEquals(PRODUCT_ID, categoryResponse.getProductIds().get(0));
+        assertEquals(PRODUCT_ID, categoryResponse.getProducts().get(0));
         assertEquals(CATEGORY_ID, categoryResponse.getId());
         assertEquals(categoryName, categoryResponse.getName());
         assertEquals(categoryDesc, categoryResponse.getDescription());
-
     }
 
 }

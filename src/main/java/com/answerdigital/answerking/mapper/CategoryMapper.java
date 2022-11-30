@@ -20,7 +20,7 @@ public interface CategoryMapper {
     @Mapping(target = "lastUpdated", expression = "java(DateTimeUtility.getDateTimeAsString())")
     Category updateRequestToCategory(@MappingTarget Category category, CategoryRequest updateCategoryRequest);
 
-    @Mapping(target = "productIds",
+    @Mapping(target = "products",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")
     CategoryResponse convertCategoryEntityToCategoryResponse(Category category);
 
