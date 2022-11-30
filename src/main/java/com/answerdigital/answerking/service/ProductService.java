@@ -62,4 +62,8 @@ public class ProductService {
         product.setRetired(true);
         return productRepository.save(product);
     }
+
+    public List<Product> findAllProductsInListOfIds(final List<Long> productIds) {
+        return productRepository.findAllByIdIn(productIds);
+    }
 }
