@@ -3,6 +3,7 @@ package com.answerdigital.answerking.service;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
+import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
@@ -15,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,22 +34,30 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
     @InjectMocks
     private ProductService productService;
+
     private Product product;
+
     private ProductRequest productRequest;
 
     private static final long PRODUCT_ID = 55L;
 
     @BeforeEach
     public void generateProduct() {
+        final Category category = Category.builder()
+                .name("test")
+                .description("categoryDesc")
+                .id(1L)
+                .build();
         product = Product.builder()
                 .id(PRODUCT_ID)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
-                .categories(new HashSet<>())
+                .category(category)
                 .build();
         productRequest = ProductRequest.builder()
                 .name("test")
