@@ -1,7 +1,6 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.exception.util.ErrorResponse;
-import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.request.ProductRequest;
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.ProductService;
