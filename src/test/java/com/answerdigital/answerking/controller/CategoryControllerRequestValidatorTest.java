@@ -1,7 +1,6 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.CategoryRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,10 +49,11 @@ class CategoryControllerRequestValidatorTest {
     @MethodSource("provideInvalidStringsForAddCategory")
     void addCategoryWithInvalidRequest(final String name, final String description) {
         // given
-        final AddCategoryRequest addCategoryRequest = new AddCategoryRequest(name, description);
+
+        final CategoryRequest addCategoryRequest = new CategoryRequest(name, description);
 
         // when
-        final Set<ConstraintViolation<AddCategoryRequest>> violations = validator.validate(addCategoryRequest);
+        final Set<ConstraintViolation<CategoryRequest>> violations = validator.validate(addCategoryRequest);
 
         // then
         assertFalse(violations.isEmpty());
@@ -75,10 +75,10 @@ class CategoryControllerRequestValidatorTest {
     @MethodSource("provideInvalidStringsForUpdateCategory")
     void updateCategoryWithInvalidRequest(final String name, final String description) {
         // given
-        final UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest(name, description);
+        final CategoryRequest updateCategoryRequest = new CategoryRequest(name, description);
 
         // when
-        final Set<ConstraintViolation<UpdateCategoryRequest>> violations = validator.validate(updateCategoryRequest);
+        final Set<ConstraintViolation<CategoryRequest>> violations = validator.validate(updateCategoryRequest);
 
         // then
         assertFalse(violations.isEmpty());

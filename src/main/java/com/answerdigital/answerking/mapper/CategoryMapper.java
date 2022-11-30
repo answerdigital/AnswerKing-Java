@@ -1,8 +1,7 @@
 package com.answerdigital.answerking.mapper;
 
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.util.DateTimeUtility;
 import org.mapstruct.Mapper;
@@ -16,10 +15,10 @@ public interface CategoryMapper {
 
     @Mapping(target = "createdOn", expression = "java(DateTimeUtility.getDateTimeAsString())")
     @Mapping(target = "lastUpdated", expression = "java(DateTimeUtility.getDateTimeAsString())")
-    Category addRequestToCategory(AddCategoryRequest addCategoryRequest);
+    Category addRequestToCategory(CategoryRequest addCategoryRequest);
 
     @Mapping(target = "lastUpdated", expression = "java(DateTimeUtility.getDateTimeAsString())")
-    Category updateRequestToCategory(@MappingTarget Category category, UpdateCategoryRequest updateCategoryRequest);
+    Category updateRequestToCategory(@MappingTarget Category category, CategoryRequest updateCategoryRequest);
 
     @Mapping(target = "products",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")

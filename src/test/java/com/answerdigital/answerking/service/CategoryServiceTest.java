@@ -11,9 +11,7 @@ import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
-
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +73,7 @@ final class CategoryServiceTest {
     @Test
     void testAddCategory() {
         // given
-        final AddCategoryRequest addCategoryRequest = addCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest addCategoryRequest = addCategoryRequestTestBuilder.withDefaultValues().build();
         final Category expectedResponse = categoryTestBuilder.withDefaultValues().build();
 
         // when
@@ -96,7 +94,7 @@ final class CategoryServiceTest {
     @Test
     void testAddCategoryThatAlreadyExists() {
         // given
-        final AddCategoryRequest addCategoryRequest = addCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest addCategoryRequest = addCategoryRequestTestBuilder.withDefaultValues().build();
 
         // when
         doReturn(true).when(categoryRepository).existsByName(anyString());
@@ -112,7 +110,7 @@ final class CategoryServiceTest {
     void testUpdateCategory() {
         // given
         final Category existingCategory = categoryTestBuilder.withDefaultValues().build();
-        final UpdateCategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
         final Category expectedResponse = categoryTestBuilder
                 .withDefaultValues()
                 .withName(updateCategoryRequest.name())
@@ -136,7 +134,7 @@ final class CategoryServiceTest {
     @Test
     void testUpdateCategoryThatDoesNotExist() {
         // given
-        final UpdateCategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
 
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
@@ -154,7 +152,7 @@ final class CategoryServiceTest {
     void testUpdateCategoryNameToCategoryThatAlreadyExists() {
         // given
         final Category existingCategory = categoryTestBuilder.withDefaultValues().build();
-        final UpdateCategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
 
         // when
         doReturn(true).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());

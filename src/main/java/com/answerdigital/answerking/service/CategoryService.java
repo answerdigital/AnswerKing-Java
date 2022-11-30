@@ -8,8 +8,7 @@ import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
@@ -37,7 +36,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public CategoryResponse addCategory(final AddCategoryRequest categoryRequest) {
+    public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
         if (categoryRepository.existsByName(categoryRequest.name())) {
             throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryRequest.name()));
         }
@@ -60,7 +59,7 @@ public class CategoryService {
                 .collect(Collectors.toSet());
     }
 
-    public Category updateCategory(final UpdateCategoryRequest updateCategoryRequest, final Long id) {
+    public Category updateCategory(final CategoryRequest updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
             throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));
