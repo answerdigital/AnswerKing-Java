@@ -10,6 +10,7 @@ import com.answerdigital.answerking.model.OrderStatus;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
+import com.answerdigital.answerking.request.LineItemRequest;
 import com.answerdigital.answerking.request.OrderRequest;
 import com.answerdigital.answerking.response.OrderResponse;
 import org.mapstruct.factory.Mappers;
@@ -42,12 +43,8 @@ public class OrderService {
     @Transactional
     public OrderResponse addOrder(final OrderRequest orderRequest) {
         final Order order = new Order();
-
-        orderRequest.lineItemRequests().forEach(lineItemRequest ->
-            addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
-        );
-
-        return convertToResponse(orderRepository.save(order));
+        addLineItemsToOrder(order, orderRequest.lineItemRequests());
+        return convertToResponse(orderRepository.save(order)); // 2nd hit
     }
 
     /**
@@ -85,46 +82,50 @@ public class OrderService {
             );
         }
 
-        order.clearLineItems();
-
-        orderRequest.lineItemRequests().forEach(lineItemRequest ->
-            addLineItemToOrder(order, lineItemRequest.productId(), lineItemRequest.quantity())
-        );
-
+        addLineItemsToOrder(order, orderRequest.lineItemRequests());
         return convertToResponse(orderRepository.save(order));
     }
 
-    /**
-     * Adds a line item to an order *
-     * @param order The Order that the line item should be associated with
-     * @param productId The ID of the product
-     * @param quantity The quantity of the product
-     */
-    private void addLineItemToOrder(final Order order, final Long productId, final Integer quantity) {
-        final Product product = productService.findById(productId);
 
-        if (OrderStatus.CANCELLED.equals(order.getOrderStatus())) {
-            throw new RetirementException(String.format("The product with ID %d has been retired", product.getId()));
+    private void addLineItemsToOrder(final Order order, List<LineItemRequest> lineItemRequests) {
+        final List<Product> products = productService.findAllProductsInListOfIds(
+            lineItemRequests.stream()
+                .map(LineItemRequest::productId)
+                .toList()
+        ); // NEED TO THROW 404 IF NOT FOUND
+
+        final List<Integer> quantities =
+            lineItemRequests.stream()
+                .map(LineItemRequest::quantity)
+                .toList();
+
+        order.clearLineItems();
+
+        for(int i = 0; i < lineItemRequests.size(); i++) {
+            if(products.get(i).isRetired()) {
+                throw new RetirementException(String.format("The product with ID %d is retired", products.get(i).getId()));
+            }
+
+            order.addLineItem(new LineItem(order, products.get(i), quantities.get(i)));
         }
+    }
 
+    /**
+     * Helper method which checks if a line item is already present in an Order *
+     * @param order The Order to check
+     * @param product The Product to check
+     */
+    private void checkLineItemIsAlreadyPresent(Order order, Product product) {
         final Optional<LineItem> existingLineItem = order.getLineItems()
-                .stream()
-                .filter(lineItem -> lineItem.getProduct() == product)
-                .findFirst();
+            .stream()
+            .filter(lineItem -> lineItem.getProduct() == product)
+            .findFirst();
 
         if (existingLineItem.isPresent()) {
             throw new ProductAlreadyPresentException(
                 String.format("The product with ID %d is already in the order", product.getId())
             );
         }
-
-        final LineItem lineItem = LineItem.builder()
-                .quantity(quantity)
-                .product(product)
-                .order(order)
-                .build();
-
-        order.addLineItem(lineItem);
     }
 
     /**
