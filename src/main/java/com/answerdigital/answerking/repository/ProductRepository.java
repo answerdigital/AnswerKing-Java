@@ -8,9 +8,11 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
-    boolean existsByName(String name);
+    boolean existsByName(final String name);
 
-    boolean existsByNameAndIdIsNot(String name, Long id);
+    boolean existsByNameAndIdIsNot(final String name, final Long id);
 
     List<Product> findAll();
+
+    List<Product> findAllByIdIn(final List<Long> productIds);
 }
