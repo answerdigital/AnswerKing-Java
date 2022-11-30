@@ -11,11 +11,17 @@ import java.util.Set;
 public class ProductTestBuilder {
 
     private Long id;
+
     private String name;
+
     private String description;
+
     private BigDecimal price;
+
     private boolean retired;
-    private Set<Category> categories;
+
+    private Category category;
+
     private Set<LineItem> lineItems;
 
     public ProductTestBuilder withDefaultValues() {
@@ -24,7 +30,7 @@ public class ProductTestBuilder {
         this.description = "A beef patty with cheddar cheese.";
         this.price = BigDecimal.valueOf(5.00D);
         this.retired = false;
-        this.categories = new HashSet<>();
+        this.category = Category.builder().build();
         this.lineItems = new HashSet<>();
         return this;
     }
@@ -54,8 +60,8 @@ public class ProductTestBuilder {
         return this;
     }
 
-    public ProductTestBuilder withCategories(final Set<Category> categories) {
-        this.categories = categories;
+    public ProductTestBuilder withCategory(final Category category) {
+        this.category = category;
         return this;
     }
 
@@ -65,6 +71,6 @@ public class ProductTestBuilder {
     }
 
     public Product build() {
-        return new Product(id, name, description, price, retired, categories, lineItems);
+        return new Product(id, name, description, price, retired, category, lineItems);
     }
 }

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class CategoryServiceTest {
+final class CategoryServiceTest {
 
     private CategoryService categoryService;
 
@@ -98,7 +98,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(true).when(categoryRepository).existsByName(anyString());
-        Exception exception = assertThrows(NameUnavailableException.class,
+        final Exception exception = assertThrows(NameUnavailableException.class,
                 () -> categoryService.addCategory(addCategoryRequest));
 
         // then
@@ -122,7 +122,7 @@ class CategoryServiceTest {
         doReturn(Optional.of(existingCategory)).when(categoryRepository).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        Category response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
+        final Category response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
 
         // then
         assertEquals(expectedResponse, response);
@@ -139,7 +139,7 @@ class CategoryServiceTest {
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class,
+        final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.updateCategory(updateCategoryRequest, NONEXISTENT_CATEGORY_ID));
 
         // then
@@ -156,7 +156,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(true).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-        Exception exception = assertThrows(NameUnavailableException.class,
+        final Exception exception = assertThrows(NameUnavailableException.class,
                 () -> categoryService.updateCategory(updateCategoryRequest, existingCategory.getId()));
 
         // then
@@ -179,7 +179,7 @@ class CategoryServiceTest {
         doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        Category response = categoryService.addProductToCategory(category.getId(), product.getId());
+        final Category response = categoryService.addProductToCategory(category.getId(), product.getId());
 
         // then
         assertEquals(expectedResponse.getProducts(), response.getProducts());
@@ -200,7 +200,7 @@ class CategoryServiceTest {
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
         doReturn(product).when(productService).findById(anyLong());
-        Exception exception = assertThrows(ProductAlreadyPresentException.class,
+        final Exception exception = assertThrows(ProductAlreadyPresentException.class,
                 () -> categoryService.addProductToCategory(category.getId(), product.getId()));
 
         // then
@@ -216,7 +216,7 @@ class CategoryServiceTest {
 
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class,
+        final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, product.getId()));
 
         // then
@@ -239,7 +239,7 @@ class CategoryServiceTest {
         doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        Category response = categoryService.removeProductFromCategory(category.getId(), product.getId());
+        final Category response = categoryService.removeProductFromCategory(category.getId(), product.getId());
 
         // then
         assertEquals(0, response.getProducts().size());
@@ -257,7 +257,7 @@ class CategoryServiceTest {
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
         doReturn(product).when(productService).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class,
+        final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.removeProductFromCategory(category.getId(), product.getId()));
 
         // then
@@ -269,11 +269,11 @@ class CategoryServiceTest {
     @Test
     void testRemoveProductFromCategoryThatDoesNotExist() {
         // given
-        Product product = productTestBuilder.withDefaultValues().build();
+        final Product product = productTestBuilder.withDefaultValues().build();
 
         // when
         doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        Exception exception = assertThrows(NotFoundException.class,
+        final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.removeProductFromCategory(NONEXISTENT_CATEGORY_ID, product.getId()));
 
         // then
@@ -284,8 +284,8 @@ class CategoryServiceTest {
     @Test
     void testRetireCategory() {
         // given
-        Category category = categoryTestBuilder.withDefaultValues().build();
-        Category expectedCategory = categoryTestBuilder
+        final Category category = categoryTestBuilder.withDefaultValues().build();
+        final Category expectedCategory = categoryTestBuilder
                 .withDefaultValues()
                 .withRetired(true)
                 .build();
@@ -303,7 +303,7 @@ class CategoryServiceTest {
     @Test
     void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
-        Category retiredCategory = categoryTestBuilder
+        final Category retiredCategory = categoryTestBuilder
                 .withDefaultValues()
                 .withRetired(true)
                 .build();

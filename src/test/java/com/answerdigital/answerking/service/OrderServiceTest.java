@@ -47,13 +47,14 @@ class OrderServiceTest {
     private OrderService orderService;
 
     private static final long PRODUCT_ID = 1L;
+
     private static final long ORDER_ID = 2L;
 
     @Test
     void testAddOrderReturnsSavedOrder() {
         // Given
-        OrderRequest orderRequest = new OrderRequest("42 Main St");
-        Order expectedResult = Order.builder()
+        final OrderRequest orderRequest = new OrderRequest("42 Main St");
+        final Order expectedResult = Order.builder()
                 .address("42 Main Street")
                 .build();
 
@@ -69,7 +70,7 @@ class OrderServiceTest {
     @Test
     void testFindByIdReturnsFoundOrder() {
         // Given
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .address("42 Main Street")
                 .build();
 
@@ -97,13 +98,13 @@ class OrderServiceTest {
     @Test
     void testFindAllReturnsEmptyListOfOrders() {
         // Given
-        List<Order> orders = List.of();
+        final List<Order> orders = List.of();
 
         // When
         when(orderRepository.findAll())
                 .thenReturn(orders);
 
-        List<Order> response = orderService.findAll();
+        final List<Order> response = orderService.findAll();
 
         // Then
         assertSame(orders, response);
@@ -114,7 +115,7 @@ class OrderServiceTest {
     @Test
     void testFindAllReturnsListOfOrders() {
         // Given
-        List<Order> orders = List.of(
+        final List<Order> orders = List.of(
                 new Order("14 Green Street"),
                 new Order("21 1/2 Argument Street"),
                 new Order("Flat 2, 24B Oswald Street")
@@ -124,7 +125,7 @@ class OrderServiceTest {
         when(orderRepository.findAll())
                 .thenReturn(orders);
 
-        List<Order> actualFindAllResult = orderService.findAll();
+        final List<Order> actualFindAllResult = orderService.findAll();
 
         // Then
         assertSame(orders, actualFindAllResult);
@@ -135,9 +136,9 @@ class OrderServiceTest {
     @Test
     void testUpdateOrder() {
         // Given
-        Order originalOrder = new Order("14 Main St");
-        OrderRequest updateOrderRequest = new OrderRequest("14 Green Street");
-        Order expectedOrder = new Order("14 Green Street");
+        final Order originalOrder = new Order("14 Main St");
+        final OrderRequest updateOrderRequest = new OrderRequest("14 Green Street");
+        final Order expectedOrder = new Order("14 Green Street");
 
         // When
         when(orderRepository.findById(anyLong()))
@@ -145,7 +146,7 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedOrder);
 
-        Order response = orderService.updateOrder(ORDER_ID, updateOrderRequest);
+        final Order response = orderService.updateOrder(ORDER_ID, updateOrderRequest);
 
         // Then
         assertEquals(expectedOrder, response);
@@ -156,7 +157,7 @@ class OrderServiceTest {
     @Test
     void testUpdateOrderWhenOrderNotExistsThrowsNotFoundException() {
         // Given
-        OrderRequest orderRequest = new OrderRequest("14 High St");
+        final OrderRequest orderRequest = new OrderRequest("14 High St");
 
         // Then
         assertThrows(NotFoundException.class, () ->
@@ -166,18 +167,18 @@ class OrderServiceTest {
     @Test
     void testAddProductToBasketIsSuccessful() {
         // Given (Setup)
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
 
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
                 .retired(false)
                 .build();
 
-        Order expectedResponse = Order.builder()
+        final Order expectedResponse = Order.builder()
                 .address("42 Main Street")
                 .lineItems(Set.of(new LineItem(order, product, 1)))
                 .build();
@@ -190,7 +191,7 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
-        Order response =
+        final Order response =
                 orderService.addProductToBasket(ORDER_ID, PRODUCT_ID, 1);
 
         // Then (assertions)
@@ -204,7 +205,7 @@ class OrderServiceTest {
     @Test
     void testAddProductToBasketWhenProductDoesNotExistThrowsNotFoundException() {
         // Given
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .address("42 Main Street")
                 .build();
 
@@ -236,10 +237,10 @@ class OrderServiceTest {
     @Test
     void testAddProductToBasketWhenProductIsRetiredThrowsRetirementException() {
         // Given
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
@@ -262,10 +263,10 @@ class OrderServiceTest {
     @Test
     void testAddProductToBasketWhenProductAlreadyExistsInBasketThrowsProductAlreadyPresentException() {
         // Given
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .address("42 Main Street")
                 .build();
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
@@ -289,7 +290,7 @@ class OrderServiceTest {
     @Test
     void testUpdateProductQuantity() {
         // Given
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .id(12L)
                 .name("King Burger")
                 .description("A burger fit for a king")
@@ -297,7 +298,7 @@ class OrderServiceTest {
                 .retired(false)
                 .build();
 
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .id(12L)
                 .address("42 Main Street")
                 .build();
@@ -306,7 +307,7 @@ class OrderServiceTest {
                 new LineItem(order, product, 1)
         ));
 
-        Order expectedResult = Order.builder()
+        final Order expectedResult = Order.builder()
                 .id(12L)
                 .address("42 Main Street")
                 .build();
@@ -322,7 +323,7 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResult);
 
-        Order actualResult =
+        final Order actualResult =
                 orderService.updateProductQuantity(ORDER_ID, PRODUCT_ID, 2);
 
         // Then
@@ -335,7 +336,7 @@ class OrderServiceTest {
     @Test
     void testUpdateProductQuantityProductNotFoundThrowsNotFoundException() {
         // Given
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
 
@@ -367,14 +368,14 @@ class OrderServiceTest {
     @Test
     void testUpdateProductQuantityExistingOrderProductNotPresentThrowsNotFoundException() {
         // Given
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .id(12L)
                 .name("King Burger")
                 .description("A burger fit for a king")
                 .price(new BigDecimal("12.99"))
                 .retired(false)
                 .build();
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
 
@@ -394,23 +395,23 @@ class OrderServiceTest {
     @Test
     void testDeleteProductInBasket() {
         // Given
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .id(12L)
                 .build();
 
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .id(12L)
                 .address("42 Main Street")
                 .lineItems(new HashSet<>())
                 .build();
-        LineItem lineItem = LineItem.builder()
+        final LineItem lineItem = LineItem.builder()
                 .order(order)
                 .product(product)
                 .quantity(5)
                 .build();
         order.getLineItems().add(lineItem);
 
-        Order expectedResponse = Order.builder()
+        final Order expectedResponse = Order.builder()
                 .id(12L)
                 .build();
 
@@ -422,7 +423,7 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedResponse);
 
-        Order response = orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID);
+        final Order response = orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID);
 
         // Then
         assertEquals(expectedResponse, response);
@@ -446,7 +447,7 @@ class OrderServiceTest {
     @Test
     void testDeleteProductInBasketWhenProductNotFoundThrowsNotFoundException() {
         // Given
-        Order order = Order.builder()
+        final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
 
@@ -466,8 +467,8 @@ class OrderServiceTest {
     @Test
     void testDeleteProductInBasketWhenExistingOrderProductIsEmptyThrowNotFoundException() {
         // Given
-        Product product = Product.builder().build();
-        Order order = Order.builder()
+        final Product product = Product.builder().build();
+        final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
 

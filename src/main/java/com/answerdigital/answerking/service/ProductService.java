@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    private final ProductMapper productMapper =
-            Mappers.getMapper(ProductMapper.class);
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     @Autowired
     public ProductService(final ProductRepository productRepository) {
@@ -79,4 +78,12 @@ public class ProductService {
         final Product savedProduct = productRepository.save(product);
         return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
+
+    public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
+        return productRepository.findProductsByCategoryId(categoryId)
+                                .stream()
+                                .map(product -> productMapper.convertProductEntityToProductResponse(product))
+                                .toList();
+    }
+
 }

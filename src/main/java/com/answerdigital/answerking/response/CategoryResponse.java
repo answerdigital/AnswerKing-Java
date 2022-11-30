@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Data
@@ -16,20 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryResponse {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z\s-]*",
-            message = "Category name must only contain letters, spaces and dashes")
     private String name;
 
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
-            message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<Long> productIds;
+    private List<Long> products;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdOn;
@@ -37,6 +29,7 @@ public class CategoryResponse {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastUpdated;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
 }

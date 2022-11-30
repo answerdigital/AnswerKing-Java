@@ -8,16 +8,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.GenerationType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -47,8 +47,9 @@ public class Product {
 
     private boolean retired;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "products")
-    private Set<Category> categories = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable=false)
+    private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<LineItem> lineItems = new HashSet<>();
@@ -57,13 +58,12 @@ public class Product {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.categories = new HashSet<>();
         this.retired = isRetired;
     }
 
     @PreRemove
     private void removeProductsFromCategories() {
-        categories.forEach(category -> category.removeProduct(this));
+        category.removeProduct(this);
     }
 
     public BigDecimal getPrice() {

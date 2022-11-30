@@ -4,6 +4,7 @@ import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -74,6 +75,18 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public ResponseEntity<Category> getCategoryById(@PathVariable @NotNull final Long categoryId) {
         return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all products in a category.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+        @ApiResponse(responseCode = "404", description = "When the category with the given id does not exist.",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+    })
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<Collection<ProductResponse>> fetchProductsByCategory(@PathVariable @NotNull final Long categoryId) {
+        return new ResponseEntity<>(categoryService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 
     @Operation(summary = "Add product to a category.")
