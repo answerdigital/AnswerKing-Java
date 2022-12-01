@@ -1,3 +1,14 @@
+CREATE TABLE IF NOT EXISTS category (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255),
+    description VARCHAR(255) NOT NULL,
+    createdOn VARCHAR(255) NOT NULL,
+    lastUpdated VARCHAR(255) NOT NULL,
+    retired BIT(1) NOT NULL,
+
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS product (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
@@ -9,17 +20,6 @@ CREATE TABLE IF NOT EXISTS product (
     PRIMARY KEY (id),
     KEY `category_id` (`category_id`),
     CONSTRAINT `products_fk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS category (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    description VARCHAR(255) NOT NULL,
-    createdOn VARCHAR(255) NOT NULL,
-    lastUpdated VARCHAR(255) NOT NULL,
-    retired BIT(1) NOT NULL,
-
-    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS product_category (
