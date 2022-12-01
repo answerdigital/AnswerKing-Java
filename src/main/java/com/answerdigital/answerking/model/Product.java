@@ -1,8 +1,6 @@
 package com.answerdigital.answerking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +36,6 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String name;
@@ -48,7 +45,6 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
     @ManyToOne
@@ -56,7 +52,6 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonIgnore
     private Set<LineItem> lineItems = new HashSet<>();
 
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
