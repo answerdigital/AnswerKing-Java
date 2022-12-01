@@ -9,8 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.OneToMany;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,9 +46,11 @@ public class Category {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "created_on")
     private String createdOn;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "last_updated")
     private String lastUpdated;
 
     private boolean retired;
