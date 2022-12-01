@@ -12,9 +12,14 @@ services:
       - MYSQL_PASSWORD=$MYSQLDB_PASSWORD
     ports:
       - "3306:3306"
+
+  flyway:
+    image: flyway/flyway
+    command: -url=$MYSQL_URL -user=$MYSQLDB_USER -password=$MYSQLDB_PASSWORD -baselineOnMigrate=true -connectRetries=60 migrate
     volumes:
-      - db:/var/lib/mysql
-      - ./init_scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./init_scripts:/flyway/sql
+    depends_on:
+      - mysqldb
 
   app:
     container_name: rest-api
