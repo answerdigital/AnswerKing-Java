@@ -1,6 +1,6 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.model.Product;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +20,14 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -49,16 +51,17 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private Product product;
+    private ProductResponse product;
 
     @BeforeEach
     public void generateProduct() {
-        product = Product.builder()
+        product = ProductResponse.builder()
                 .id(55L)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
+                .categories(new ArrayList<>())
                 .build();
     }
 
@@ -91,7 +94,7 @@ class ProductControllerTest {
     @Test
     void getProductByIdReturnsOkStatusIfExist() throws Exception {
         //given
-        when(productService.findById(55L)).thenReturn(product);
+        when(productService.findByIdResponse(55L)).thenReturn(product);
         //when
         final ResultActions actualPerformResult = mvc.perform(get("/products/{id}", 55L)).andExpect(status().isOk());
         final ObjectMapper mapper = new ObjectMapper();
