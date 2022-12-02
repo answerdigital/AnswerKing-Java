@@ -60,7 +60,6 @@ public class Category {
         this.name = name;
         this.description = description;
         this.retired = false;
-        this.lastUpdated = this.createdOn;
     }
 
     public void addProduct(final Product product) {
