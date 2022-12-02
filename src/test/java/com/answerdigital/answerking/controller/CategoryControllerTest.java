@@ -1,7 +1,5 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.model.Category;
-
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -18,19 +16,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.List;
+
 import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -51,7 +50,7 @@ class CategoryControllerTest {
 
     @Test
     void addProductToCategoryTest() throws Exception {
-        final var category = Category.builder().build();
+        final var category = CategoryResponse.builder().build();
         final var productId = 10L;
         final var categoryId = 20L;
 
@@ -63,7 +62,7 @@ class CategoryControllerTest {
 
     @Test
     void removeProductFromCategoryTest() throws Exception {
-        final var category = Category.builder().build();
+        final var category = CategoryResponse.builder().build();
         final var productId = 10L;
         final var categoryId = 20L;
 
@@ -105,11 +104,17 @@ class CategoryControllerTest {
     void fetchProductsByCategoryTest() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
 
+        final var categoryResponse = CategoryResponse.builder()
+                .id(22L)
+                .name("test")
+                .description("testDesc")
+                .products(List.of(33L))
+                .build();
         final var productResponse = ProductResponse.builder()
                                                                   .id(33L)
                                                                   .name("random name")
                                                                   .description("random description")
-                                                                  .categories(List.of(22L))
+                                                                  .category(categoryResponse)
                                                                   .build();
 
         doReturn(List.of(productResponse)).when(categoryService).findProductsByCategoryId(1L);
@@ -119,7 +124,7 @@ class CategoryControllerTest {
         assertAll(
                 () -> assertEquals(33L, responseRecord.get("id").asLong()),
                 () -> assertEquals("random name", responseRecord.get("name").textValue()),
-                () -> assertEquals(22L, responseRecord.get("categories").get(0).asLong())
+                () -> assertEquals(22L, responseRecord.get("category").get("id").asLong())
         );
     }
 
@@ -159,7 +164,11 @@ class CategoryControllerTest {
 
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
-        final var category = new Category(newRandomName, newRandomDesc);
+        final var category = CategoryResponse.builder()
+                .name(newRandomName)
+                .description(newRandomDesc)
+                .lastUpdated(getDateTimeAsString())
+                .build();
         final var categoryId = 112L;
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
         final String testDate = getDateTimeAsString();

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Data
@@ -20,16 +21,12 @@ public class CategoryResponse {
 
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Long> products;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdOn;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastUpdated;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
 }

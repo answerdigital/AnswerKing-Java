@@ -122,7 +122,7 @@ final class CategoryServiceTest {
         doReturn(Optional.of(existingCategory)).when(categoryRepository).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        final Category response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
+        final CategoryResponse response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
 
         // then
         assertEquals(expectedResponse, response);
@@ -179,7 +179,7 @@ final class CategoryServiceTest {
         doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        final Category response = categoryService.addProductToCategory(category.getId(), product.getId());
+        final CategoryResponse response = categoryService.addProductToCategory(category.getId(), product.getId());
 
         // then
         assertEquals(expectedResponse.getProducts(), response.getProducts());
@@ -239,7 +239,7 @@ final class CategoryServiceTest {
         doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        final Category response = categoryService.removeProductFromCategory(category.getId(), product.getId());
+        final CategoryResponse response = categoryService.removeProductFromCategory(category.getId(), product.getId());
 
         // then
         assertEquals(0, response.getProducts().size());

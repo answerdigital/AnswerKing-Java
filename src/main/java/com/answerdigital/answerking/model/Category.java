@@ -1,7 +1,5 @@
 package com.answerdigital.answerking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.OneToMany;
-import javax.persistence.FetchType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.HashSet;
@@ -44,16 +42,13 @@ public class Category {
             message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdOn;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastUpdated;
 
     private boolean retired;
 
     @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
-    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
     public Category(final String name, final String description) {

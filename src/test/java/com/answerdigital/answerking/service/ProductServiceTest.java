@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,11 +35,15 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private CategoryService categoryService;
 
     @InjectMocks
     private ProductService productService;
 
     private Product product;
+
+    private Category category;
 
     private ProductRequest productRequest;
 
@@ -46,10 +51,11 @@ class ProductServiceTest {
 
     @BeforeEach
     public void generateProduct() {
-        final Category category = Category.builder()
+        category = Category.builder()
                 .name("test")
                 .description("categoryDesc")
                 .id(1L)
+                .products(new HashSet<>())
                 .build();
         product = Product.builder()
                 .id(PRODUCT_ID)
@@ -63,6 +69,7 @@ class ProductServiceTest {
                 .name("test")
                 .description("testD")
                 .price(BigDecimal.valueOf(1.99))
+                .categoryId(1L)
                 .build();
     }
 
@@ -71,6 +78,7 @@ class ProductServiceTest {
         //given
         when(productRepository.save(any())).thenReturn(product);
         when(productRepository.existsByName(any())).thenReturn(false);
+        when(categoryService.findById(any())).thenReturn(category);
         //when
         final ProductResponse actualAddNewProductResult = productService.addNewProduct(
                 productRequest);
