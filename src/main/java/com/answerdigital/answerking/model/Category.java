@@ -1,28 +1,27 @@
 package com.answerdigital.answerking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
 
 @Entity
 @Getter
@@ -45,13 +44,11 @@ public class Category {
             message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Column(name = "created_on")
-    private String createdOn;
+    @CreationTimestamp
+    private LocalDateTime createdOn;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Column(name = "last_updated")
-    private String lastUpdated;
+    @UpdateTimestamp
+    private LocalDateTime lastUpdated;
 
     private boolean retired;
 
@@ -63,7 +60,6 @@ public class Category {
         this.name = name;
         this.description = description;
         this.retired = false;
-        this.createdOn = getDateTimeAsString();
         this.lastUpdated = this.createdOn;
     }
 
@@ -91,9 +87,13 @@ public class Category {
     @Override
     public String toString() {
         return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", createdOn=" + createdOn +
+            ", lastUpdated=" + lastUpdated +
+            ", retired=" + retired +
+            ", products=" + products +
+            '}';
     }
 }
