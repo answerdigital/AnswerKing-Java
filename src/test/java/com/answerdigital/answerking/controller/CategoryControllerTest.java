@@ -18,8 +18,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
-import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -77,7 +82,7 @@ class CategoryControllerTest {
     void addCategoryTest() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
 
-        final String testDate = getDateTimeAsString();
+        final LocalDateTime testDate = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         final var addCategoryRequest =  new CategoryRequest("random name", "random description");
         final var categoryResponse = CategoryResponse.builder()
                                                      .name(addCategoryRequest.name())
@@ -98,7 +103,7 @@ class CategoryControllerTest {
         assertFalse(response.getContentAsString().isEmpty());
         assertEquals(addCategoryRequest.name(), resultJsonNode.get("name").textValue());
         assertEquals(addCategoryRequest.description(), resultJsonNode.get("description").textValue());
-        assertEquals(testDate.split(" ")[0], resultJsonNode.get("createdOn").textValue().split(" ")[0]);
+        assertEquals(testDate.toString(), resultJsonNode.get("createdOn").textValue().split(" ")[0]);
     }
 
     @Test
@@ -159,10 +164,17 @@ class CategoryControllerTest {
 
         final var newRandomName = "new random name";
         final var newRandomDesc = "new random description";
-        final var category = new Category(newRandomName, newRandomDesc);
         final var categoryId = 112L;
         final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
-        final String testDate = getDateTimeAsString();
+        final LocalDateTime testDate = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+        final var category = Category.builder()
+            .id(categoryId)
+            .name(newRandomName)
+            .description(newRandomDesc)
+            .createdOn(testDate)
+            .lastUpdated(testDate)
+            .products(new HashSet<>())
+            .build();
 
         doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
         final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
@@ -176,7 +188,7 @@ class CategoryControllerTest {
         assertFalse(response.getContentAsString().isEmpty());
         assertEquals(newRandomName, resultJsonNode.get("name").textValue());
         assertEquals(newRandomDesc, resultJsonNode.get("description").textValue());
-        assertEquals(testDate.split(" ")[0], resultJsonNode.get("lastUpdated").textValue().split(" ")[0]);
+        assertEquals(testDate.toString(), resultJsonNode.get("lastUpdated").textValue());
     }
 
     @Test
