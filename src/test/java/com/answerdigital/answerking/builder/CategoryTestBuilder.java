@@ -3,10 +3,9 @@ package com.answerdigital.answerking.builder;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-import static com.answerdigital.answerking.util.DateTimeUtility.getDateTimeAsString;
 
 public class CategoryTestBuilder {
 
@@ -16,9 +15,9 @@ public class CategoryTestBuilder {
 
     private String description;
 
-    private String createdOn;
+    private LocalDateTime createdOn;
 
-    private String lastUpdated;
+    private LocalDateTime lastUpdated;
 
     private boolean retired;
 
@@ -28,8 +27,8 @@ public class CategoryTestBuilder {
         this.id = 1L;
         this.name = "Burgers";
         this.description = "A selection of delicious burgers.";
-        this.createdOn = getDateTimeAsString();
-        this.lastUpdated = getDateTimeAsString();
+        this.createdOn = LocalDateTime.now();
+        this.lastUpdated = LocalDateTime.now();
         this.retired = false;
         this.products = new HashSet<>();
         return this;
@@ -50,12 +49,12 @@ public class CategoryTestBuilder {
         return this;
     }
 
-    public CategoryTestBuilder withCreatedOn(final String createdOn) {
+    public CategoryTestBuilder withCreatedOn(final LocalDateTime createdOn) {
         this.createdOn = createdOn;
         return this;
     }
 
-    public CategoryTestBuilder withLastUpdated(final String lastUpdated) {
+    public CategoryTestBuilder withLastUpdated(final LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
         return this;
     }
