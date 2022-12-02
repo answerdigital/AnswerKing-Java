@@ -10,14 +10,14 @@ CREATE TABLE `category`  (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
     `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-    `created_on` VARCHAR(255) DEFAULT NULL,
+    `created_on` TIMESTAMP NOT NULL,
     `retired` bit(1) NOT NULL,
-    `last_updated` VARCHAR(255) DEFAULT NULL,
+    `last_updated` TIMESTAMP NOT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 INSERT INTO category (name, description, created_on, retired, last_updated)
-VALUES('CatOne', 'CatOne description', '', 0, '');
+VALUES('CatOne', 'CatOne description', CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP);
 
 -- ----------------------------
 -- Records of category
