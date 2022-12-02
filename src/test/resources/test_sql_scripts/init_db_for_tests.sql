@@ -10,9 +10,9 @@ CREATE TABLE `category`  (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
     `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-    `created_on` VARCHAR(255) DEFAULT NULL,
+    `created_on` TIMESTAMP DEFAULT NOT NULL,
     `retired` bit(1) NOT NULL,
-    `last_updated` VARCHAR(255) DEFAULT NULL,
+    `last_updated` TIMESTAMP DEFAULT NOT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
