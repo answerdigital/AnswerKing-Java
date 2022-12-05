@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,9 +24,9 @@ public class CategoryResponse {
 
     private List<Long> products;
 
-    private String createdOn;
+    private LocalDateTime createdOn;
 
-    private String lastUpdated;
+    private LocalDateTime lastUpdated;
 
     private boolean retired;
 
