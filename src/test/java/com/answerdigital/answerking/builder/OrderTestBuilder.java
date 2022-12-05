@@ -10,9 +10,13 @@ import java.util.Set;
 
 public class OrderTestBuilder {
     private Long id;
+
     private LocalDateTime createdOn;
+
     private LocalDateTime lastUpdated;
+
     private OrderStatus orderStatus;
+
     private Set<LineItem> lineItems;
 
     public OrderTestBuilder withDefaultValues() {

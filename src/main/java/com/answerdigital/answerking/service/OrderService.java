@@ -1,4 +1,3 @@
-
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
@@ -93,7 +92,7 @@ public class OrderService {
 
     private void addLineItemsToOrder(final Order order, final List<LineItemRequest> lineItemRequests) {
         // get line items id list
-        List<Long> lineItemProductIds = lineItemRequests.stream()
+        final List<Long> lineItemProductIds = lineItemRequests.stream()
                 .map(LineItemRequest::productId)
                 .toList();
         // get all products from line Item list from database
@@ -102,17 +101,17 @@ public class OrderService {
         );
 
         // get product id list from database
-        List<Long> foundProductIdsList = products.stream().map(Product::getId).toList();
+        final List<Long> foundProductIdsList = products.stream().map(Product::getId).toList();
 
         // check if any of products did not exist in database, and if so throw Not Found exception
-        List<Long> notFoundProducts = new ArrayList<>(lineItemProductIds);
+        final List<Long> notFoundProducts = new ArrayList<>(lineItemProductIds);
         notFoundProducts.removeAll(foundProductIdsList);
         if(!notFoundProducts.isEmpty()){
             throw new NotFoundException(String.format("Products with ID's %s do not exist", notFoundProducts));
         }
 
         // check if any of products are retired and throw exception
-        List<Long> retiredProducts = products
+        final List<Long> retiredProducts = products
                 .stream()
                 .filter(Product::isRetired)
                 .map(Product::getId)
@@ -123,12 +122,12 @@ public class OrderService {
         }
 
         // create helper map of product ids and products
-        Map<Long, Product> helper = products
+        final Map<Long, Product> helper = products
                 .stream()
                 .collect(Collectors.toMap(Product::getId, Function.identity()));
 
         // create hashmap of product object and line item quantity
-        Map<Product, Integer> lineItems = lineItemRequests
+        final Map<Product, Integer> lineItems = lineItemRequests
                 .stream()
                 .collect(Collectors.toMap(lineItemRequest -> helper.get(lineItemRequest.productId()),
                         LineItemRequest::quantity));
@@ -145,7 +144,7 @@ public class OrderService {
      * @param order The Order to check
      * @param product The Product to check
      */
-    private void checkLineItemIsAlreadyPresent(Order order, Product product) {
+    private void checkLineItemIsAlreadyPresent(final Order order, final Product product) {
         final Optional<LineItem> existingLineItem = order.getLineItems()
             .stream()
             .filter(lineItem -> lineItem.getProduct() == product)

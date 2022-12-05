@@ -14,7 +14,7 @@ public class OrderRequestTestBuilder {
         return this;
     }
 
-    public OrderRequestTestBuilder withLineItemRequests(List<LineItemRequest> lineItemRequests) {
+    public OrderRequestTestBuilder withLineItemRequests(final List<LineItemRequest> lineItemRequests) {
         this.lineItemRequests = lineItemRequests;
         return this;
     }
