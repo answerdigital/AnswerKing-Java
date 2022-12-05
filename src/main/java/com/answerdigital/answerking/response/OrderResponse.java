@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.response;
 
-import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -27,7 +25,7 @@ public class OrderResponse {
 
     private OrderStatus orderStatus;
 
-    private Set<LineItem> lineItems = new HashSet<>();
+    private Set<LineItemResponse> lineItems;
 
     @JsonInclude
     public BigDecimal getOrderTotal() {
@@ -37,17 +35,5 @@ public class OrderResponse {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO)
             .setScale(2, RoundingMode.DOWN);
-    }
-
-    @Override
-    public String toString() {
-        return "OrderResponse{" +
-            "id=" + id +
-            ", createdOn=" + createdOn +
-            ", lastUpdated=" + lastUpdated +
-            ", orderStatus=" + orderStatus +
-            ", lineItems=" + lineItems +
-            ", orderTotal=" + getOrderTotal().toString() +
-            '}';
     }
 }

@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +26,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product")
-@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Getter
 @Setter
 @Builder

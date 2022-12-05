@@ -1,3 +1,4 @@
+
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
@@ -6,9 +7,9 @@ import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
 import com.answerdigital.answerking.model.LineItem;
+import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.model.OrderStatus;
 import com.answerdigital.answerking.model.Product;
-import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
 import com.answerdigital.answerking.request.LineItemRequest;
 import com.answerdigital.answerking.request.OrderRequest;
@@ -20,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -45,7 +49,7 @@ public class OrderService {
     public OrderResponse addOrder(final OrderRequest orderRequest) {
         final Order order = new Order();
         addLineItemsToOrder(order, orderRequest.lineItemRequests());
-        return convertToResponse(orderRepository.save(order)); // 2nd hit
+        return convertToResponse(orderRepository.save(order));
     }
 
     /**
@@ -87,37 +91,53 @@ public class OrderService {
         return convertToResponse(orderRepository.save(order));
     }
 
-
-    private void addLineItemsToOrder(final Order order, List<LineItemRequest> lineItemRequests) {
+    private void addLineItemsToOrder(final Order order, final List<LineItemRequest> lineItemRequests) {
+        // get line items id list
         List<Long> lineItemProductIds = lineItemRequests.stream()
                 .map(LineItemRequest::productId)
                 .toList();
+        // get all products from line Item list from database
         final List<Product> products = productService.findAllProductsInListOfIds(
                 lineItemProductIds
         );
 
+        // get product id list from database
         List<Long> foundProductIdsList = products.stream().map(Product::getId).toList();
 
+        // check if any of products did not exist in database, and if so throw Not Found exception
         List<Long> notFoundProducts = new ArrayList<>(lineItemProductIds);
         notFoundProducts.removeAll(foundProductIdsList);
         if(!notFoundProducts.isEmpty()){
-            throw new NotFoundException(String.format("Products with ID's %s do not exist", notFoundProducts.toString()));
+            throw new NotFoundException(String.format("Products with ID's %s do not exist", notFoundProducts));
         }
 
-        final List<Integer> quantities =
-            lineItemRequests.stream()
-                .map(LineItemRequest::quantity)
+        // check if any of products are retired and throw exception
+        List<Long> retiredProducts = products
+                .stream()
+                .filter(Product::isRetired)
+                .map(Product::getId)
                 .toList();
 
+        if(!retiredProducts.isEmpty()){
+            throw new RetirementException(String.format("Products with ID's %s are retired", retiredProducts));
+        }
+
+        // create helper map of product ids and products
+        Map<Long, Product> helper = products
+                .stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        // create hashmap of product object and line item quantity
+        Map<Product, Integer> lineItems = lineItemRequests
+                .stream()
+                .collect(Collectors.toMap(lineItemRequest -> helper.get(lineItemRequest.productId()),
+                        LineItemRequest::quantity));
+
+        // clear existing order line items
         order.clearLineItems();
 
-        for(int i = 0; i < lineItemRequests.size(); i++) {
-            if(products.get(i).isRetired()) {
-                throw new RetirementException(String.format("The product with ID %d is retired", products.get(i).getId()));
-            }
-
-            order.addLineItem(new LineItem(order, products.get(i), quantities.get(i)));
-        }
+        // add line items to the order.
+        lineItems.forEach((k, v) -> order.addLineItem(new LineItem(order, k, v)));
     }
 
     /**
