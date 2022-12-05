@@ -2,9 +2,9 @@ package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Validated
-@Tag(name = "Inventory", description = "Manage the inventory")
+@Tag(name = "Inventory", description = "Manage the inventory.")
 @RestController
 @RequestMapping(path = "/categories")
 public class CategoryController {
@@ -50,7 +50,7 @@ public class CategoryController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<CategoryResponse> addCategory(@Valid @RequestBody final AddCategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> addCategory(@Valid @RequestBody final CategoryRequest categoryRequest) {
         return new ResponseEntity<>(categoryService.addCategory(categoryRequest), HttpStatus.CREATED);
     }
 
@@ -75,6 +75,18 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public ResponseEntity<Category> getCategoryById(@PathVariable @NotNull final Long categoryId) {
         return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all products in a category.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+        @ApiResponse(responseCode = "404", description = "When the category with the given id does not exist.",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
+    })
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<Collection<ProductResponse>> fetchProductsByCategory(@PathVariable @NotNull final Long categoryId) {
+        return new ResponseEntity<>(categoryService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 
     @Operation(summary = "Add product to a category.")
@@ -109,9 +121,9 @@ public class CategoryController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PutMapping("/{categoryId}")
-    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final UpdateCategoryRequest updateCategoryRequest,
+    public ResponseEntity<Category> updateCategory(@Valid @RequestBody final CategoryRequest categoryRequest,
                                                    @PathVariable @NotNull final Long categoryId) {
-        return new ResponseEntity<>(categoryService.updateCategory(updateCategoryRequest, categoryId), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.updateCategory(categoryRequest, categoryId), HttpStatus.OK);
     }
 
     @Operation(summary = "Retire an existing category.")

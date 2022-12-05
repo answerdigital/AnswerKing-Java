@@ -1,37 +1,24 @@
 package com.answerdigital.answerking.mapper;
 
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.request.AddCategoryRequest;
-import com.answerdigital.answerking.request.UpdateCategoryRequest;
+import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.ZoneOffset;
+
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
-        imports = {DateTimeFormatter.class, ZoneOffset.class, ZonedDateTime.class, ChronoUnit.class, Collectors.class})
+        imports = {Collectors.class, Collections.class})
 public interface CategoryMapper {
+    @Mapping(target = "products", expression = "java(Collections.EMPTY_SET)")
+    Category addRequestToCategory(CategoryRequest addCategoryRequest);
 
-    @Mapping(target = "createdOn", expression = "java( ZonedDateTime.now(ZoneOffset.UTC)" +
-                                                    ".truncatedTo( ChronoUnit.SECONDS )" +
-                                                    ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
-    @Mapping(target = "lastUpdated", expression = "java( ZonedDateTime.now(ZoneOffset.UTC)" +
-                                                        ".truncatedTo( ChronoUnit.SECONDS )" +
-                                                        ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
-    Category addRequestToCategory(AddCategoryRequest addCategoryRequest);
+    Category updateRequestToCategory(@MappingTarget Category category, CategoryRequest updateCategoryRequest);
 
-    @Mapping(target = "lastUpdated", expression = "java( ZonedDateTime.now(ZoneOffset.UTC)" +
-                                                    ".truncatedTo( ChronoUnit.SECONDS )" +
-                                                    ".format( DateTimeFormatter.ofPattern( \"yyyy-MM-dd HH:mm:ss\" ) ) )")
-    Category updateRequestToCategory(@MappingTarget Category category, UpdateCategoryRequest updateCategoryRequest);
-
-    @Mapping(target = "productIds",
+    @Mapping(target = "products",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")
     CategoryResponse convertCategoryEntityToCategoryResponse(Category category);
-
 }

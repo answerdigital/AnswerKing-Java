@@ -1,28 +1,25 @@
 package com.answerdigital.answerking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -48,19 +45,17 @@ public class Category {
             message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String createdOn;
+    @CreationTimestamp
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String lastUpdated;
+    @UpdateTimestamp
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
 
     private boolean retired;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "product_category",
-            joinColumns = {@JoinColumn(name = "category_id")},
-            inverseJoinColumns = {@JoinColumn(name = "product_id")})
+    @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
@@ -68,10 +63,6 @@ public class Category {
         this.name = name;
         this.description = description;
         this.retired = false;
-        this.createdOn = ZonedDateTime.now(ZoneOffset.UTC)
-                                      .truncatedTo( ChronoUnit.SECONDS )
-                                      .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm::ss" ) );
-        this.lastUpdated = this.createdOn;
     }
 
     public void addProduct(final Product product) {
@@ -98,9 +89,13 @@ public class Category {
     @Override
     public String toString() {
         return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", createdOn=" + createdOn +
+            ", lastUpdated=" + lastUpdated +
+            ", retired=" + retired +
+            ", products=" + products +
+            '}';
     }
 }

@@ -1,8 +1,8 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.exception.util.ErrorResponse;
-import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.request.ProductRequest;
+import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
-@Tag(name = "Inventory", description = "Manage the inventory")
+@Tag(name = "Inventory", description = "Manage the inventory.")
 @RestController
 @RequestMapping(path = "/products")
 public class ProductController {
@@ -42,44 +42,44 @@ public class ProductController {
     @Operation(summary = "Get all products.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) })
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) })
     })
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        final List<Product> products = productService.findAll();
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        final List<ProductResponse> products = productService.findAll();
         return new ResponseEntity<>(products, products.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
     @Operation(summary = "Get a single product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product with the provided id has been found.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Product> getProductById(@Valid @PathVariable @NotNull final Long id) {
-        return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getProductById(@Valid @PathVariable @NotNull final Long id) {
+        return new ResponseEntity<>(productService.findByIdResponse(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a new product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "When the product has been created.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PostMapping
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
+    public ResponseEntity<ProductResponse> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.addNewProduct(productRequest), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update an existing product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product has been updated.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) }),
@@ -88,7 +88,7 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable @NotNull final Long id,
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable @NotNull final Long id,
                                               @Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);
     }
@@ -96,7 +96,7 @@ public class ProductController {
     @Operation(summary = "Retire an existing product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product has been retired.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) }),
         @ApiResponse(responseCode = "404", description = "When the product with the given id does not exist.",
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) }),
@@ -105,7 +105,7 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> retireProduct(@PathVariable @NotNull final Long id) {
+    public ResponseEntity<ProductResponse> retireProduct(@PathVariable @NotNull final Long id) {
         return new ResponseEntity<>(productService.retireProduct(id), HttpStatus.OK);
     }
 }
