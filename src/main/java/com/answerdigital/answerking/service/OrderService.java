@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,11 +89,20 @@ public class OrderService {
 
 
     private void addLineItemsToOrder(final Order order, List<LineItemRequest> lineItemRequests) {
-        final List<Product> products = productService.findAllProductsInListOfIds(
-            lineItemRequests.stream()
+        List<Long> lineItemProductIds = lineItemRequests.stream()
                 .map(LineItemRequest::productId)
-                .toList()
-        ); // NEED TO THROW 404 IF NOT FOUND
+                .toList();
+        final List<Product> products = productService.findAllProductsInListOfIds(
+                lineItemProductIds
+        );
+
+        List<Long> foundProductIdsList = products.stream().map(Product::getId).toList();
+
+        List<Long> notFoundProducts = new ArrayList<>(lineItemProductIds);
+        notFoundProducts.removeAll(foundProductIdsList);
+        if(!notFoundProducts.isEmpty()){
+            throw new NotFoundException(String.format("Products with ID's %s do not exist", notFoundProducts.toString()));
+        }
 
         final List<Integer> quantities =
             lineItemRequests.stream()
