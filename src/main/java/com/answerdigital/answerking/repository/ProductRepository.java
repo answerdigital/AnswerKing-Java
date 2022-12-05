@@ -16,6 +16,5 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     List<Product> findProductsByCategoryId(Long categoryId);
 
-
     List<Product> findAllByIdIn(final List<Long> productIds);
 }
