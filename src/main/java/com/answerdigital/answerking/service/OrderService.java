@@ -47,9 +47,8 @@ public class OrderService {
     @Transactional
     public OrderResponse addOrder(final OrderRequest orderRequest) {
         final Order order = new Order();
-        Order createdOrder = orderRepository.save(order);
-        addLineItemsToOrder(createdOrder, orderRequest.lineItemRequests());
-        return convertToResponse(orderRepository.save(createdOrder));
+        addLineItemsToOrder(order, orderRequest.lineItemRequests());
+        return convertToResponse(orderRepository.save(order));
     }
 
     /**
@@ -108,7 +107,7 @@ public class OrderService {
         lineItems.forEach((k, v) -> order.addLineItem(new LineItem(order, k, v)));
     }
 
-    private List<Product> getUnRetiredProductsListFromDatabase(List <Long> productIdsList){
+    private List<Product> getUnRetiredProductsListFromDatabase(final List<Long> productIdsList){
         // get all products from line Item list from database
         final List<Product> products = productService.findAllProductsInListOfIds(
                 productIdsList
@@ -137,7 +136,8 @@ public class OrderService {
         return products;
     }
 
-    private Map<Product, Integer> convertProductsListToMapWithQuantity(List<Product> products, List<LineItemRequest> lineItemRequests){
+    private Map<Product, Integer> convertProductsListToMapWithQuantity(final List<Product> products,
+                                                                       final List<LineItemRequest> lineItemRequests) {
         // create helper map of product ids and products
         final Map<Long, Product> helper = products
                 .stream()
