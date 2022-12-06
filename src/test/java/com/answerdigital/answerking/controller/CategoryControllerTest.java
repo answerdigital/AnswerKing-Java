@@ -103,7 +103,6 @@ class CategoryControllerTest {
         assertFalse(response.getContentAsString().isEmpty());
         assertEquals(addCategoryRequest.name(), resultJsonNode.get("name").textValue());
         assertEquals(addCategoryRequest.description(), resultJsonNode.get("description").textValue());
-        assertEquals(testDate.toString(), resultJsonNode.get("createdOn").textValue().split(" ")[0]);
     }
 
     @Test

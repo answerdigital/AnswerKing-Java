@@ -5,7 +5,6 @@ import com.answerdigital.answerking.builder.OrderTestBuilder;
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
-import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.model.OrderStatus;
 import com.answerdigital.answerking.model.Product;
@@ -21,17 +20,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -53,6 +49,7 @@ class OrderServiceTest {
     private OrderService orderService;
 
     private final OrderTestBuilder orderTestBuilder = new OrderTestBuilder();
+
     private final OrderRequestTestBuilder orderRequestTestBuilder = new OrderRequestTestBuilder();
 
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
@@ -64,10 +61,10 @@ class OrderServiceTest {
     @Test
     void testAddOrderWithNoProductsValidOrderRequestIsSuccessful() {
         // Given
-        Order order = orderTestBuilder
+        final Order order = orderTestBuilder
             .withDefaultValues()
             .build();
-        OrderRequest orderRequest = orderRequestTestBuilder
+        final OrderRequest orderRequest = orderRequestTestBuilder
             .withDefaultValues()
             .build();
 
@@ -76,7 +73,7 @@ class OrderServiceTest {
             .when(orderRepository)
             .save(any(Order.class));
 
-        OrderResponse response = orderService.addOrder(orderRequest);
+        final OrderResponse response = orderService.addOrder(orderRequest);
 
         // Then
         assertEquals(OrderStatus.CREATED, response.getOrderStatus());
@@ -143,7 +140,7 @@ class OrderServiceTest {
             .when(orderRepository)
             .findAll();
 
-        List<OrderResponse> response = orderService.findAll();
+        final List<OrderResponse> response = orderService.findAll();
 
         // Then
         assertEquals(2, response.size());
@@ -154,15 +151,22 @@ class OrderServiceTest {
     @Test
     void testUpdateOrder() {
         // Given
-        final Order originalOrder = new Order();
-        final OrderRequest updateOrderRequest = new OrderRequest(List.of(new LineItemRequest(1L, 1)));
+        final Order originalOrder = orderTestBuilder.withDefaultValues().build();
+        final OrderRequest updateOrderRequest = orderRequestTestBuilder
+                .withLineItemRequests(List.of(new LineItemRequest(1L, 1)))
+                .build();
         final Order expectedOrder = new Order();
+        final Product product = Product.builder()
+                .id(1L)
+                .name("burger")
+                .build();
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(originalOrder));
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(expectedOrder);
+        when(productService.findAllProductsInListOfIds(any())).thenReturn(List.of(product));
 
         final OrderResponse response = orderService.updateOrder(ORDER_ID, updateOrderRequest);
 
@@ -189,7 +193,7 @@ class OrderServiceTest {
             .when(orderRepository)
             .findAll();
 
-        List<OrderResponse> response = orderService.findAll();
+        final List<OrderResponse> response = orderService.findAll();
 
         // When
         assertTrue(response.isEmpty());
@@ -202,7 +206,7 @@ class OrderServiceTest {
         final Order order = Order.builder()
                 .lineItems(new HashSet<>())
                 .build();
-        OrderRequest orderRequest = orderRequestTestBuilder.withDefaultValues().build();
+        final OrderRequest orderRequest = orderRequestTestBuilder.withDefaultValues().build();
 
         // When
         doReturn(Optional.empty())
@@ -217,19 +221,13 @@ class OrderServiceTest {
     @Test
     void testUpdateOrderWithAlreadyCancelledOrderThrowsOrderCancelledException() {
         // Given
-        final Product product = Product.builder()
-                .id(12L)
-                .name("King Burger")
-                .description("A burger fit for a king")
-                .price(new BigDecimal("12.99"))
-                .retired(false)
-                .build();
         final Order order = orderTestBuilder
+                .withDefaultValues()
                 .withOrderStatus(OrderStatus.CANCELLED)
                 .build();
-        OrderRequest orderRequest = orderRequestTestBuilder
-            .withDefaultValues().
-            build();
+        final OrderRequest updateOrderRequest = orderRequestTestBuilder
+                .withLineItemRequests(List.of(new LineItemRequest(1L, 1)))
+                .build();
 
         // When
         doReturn(Optional.of(order))
@@ -237,63 +235,20 @@ class OrderServiceTest {
             .findById(anyLong());
 
         // Then
-        assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(order.getId(), orderRequest));
+        assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(order.getId(), updateOrderRequest));
         verify(orderRepository).findById(anyLong());
-    }
-
-    @Test
-    void testCancelOrderWithValidOrderIdReturnsCancelledOrder() {
-        // Given
-        final Product product = Product.builder()
-                .id(12L)
-                .build();
-        Order order = orderTestBuilder
-            .withDefaultValues()
-            .withOrderStatus(OrderStatus.CANCELLED)
-            .build();
-
-        final LineItem lineItem = LineItem.builder()
-                .order(order)
-                .product(product)
-                .quantity(5)
-                .build();
-        order.getLineItems().add(lineItem);
-
-        final Order expectedResponse = Order.builder()
-                .id(12L)
-                .build();
-
-        // When
-        doReturn(Optional.of(order))
-            .when(orderRepository)
-            .findById(anyLong());
-        doReturn(order)
-            .when(orderRepository)
-            .save(any(Order.class));
-
-        OrderResponse response = orderService.cancelOrder(order.getId());
-
-        // Then
-        assertEquals(order.getOrderStatus(), response.getOrderStatus());
-        verify(orderRepository).findById(anyLong());
-        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
     void testOrderToOrderResponseMapsSuccessfully() {
         // Given
-        final Product product = Product.builder().build();
-        final Order order = Order.builder()
-                .lineItems(new HashSet<>())
-                .build();
+        final Order order = orderTestBuilder.withDefaultValues().build();
 
         // When
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(order));
-        when(productService.findById(anyLong()))
-                .thenReturn(product);
-        OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+        final OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
 
+        System.out.println(orderResponse);
+        System.out.println(order);
         // Then
         assertAll("Should map successfully",
             () -> assertEquals(order.getId(), orderResponse.getId()),
