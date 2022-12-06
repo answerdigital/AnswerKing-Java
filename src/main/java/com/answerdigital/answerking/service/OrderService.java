@@ -47,8 +47,9 @@ public class OrderService {
     @Transactional
     public OrderResponse addOrder(final OrderRequest orderRequest) {
         final Order order = new Order();
-        addLineItemsToOrder(order, orderRequest.lineItemRequests());
-        return convertToResponse(orderRepository.save(order));
+        Order createdOrder = orderRepository.save(order);
+        addLineItemsToOrder(createdOrder, orderRequest.lineItemRequests());
+        return convertToResponse(orderRepository.save(createdOrder));
     }
 
     /**
@@ -95,16 +96,29 @@ public class OrderService {
         final List<Long> lineItemProductIds = lineItemRequests.stream()
                 .map(LineItemRequest::productId)
                 .toList();
+
+        final List<Product> products = getUnRetiredProductsListFromDatabase(lineItemProductIds);
+
+        final Map<Product, Integer> lineItems = convertProductsListToMapWithQuantity(products, lineItemRequests);
+
+        // clear existing order line items
+        order.clearLineItems();
+
+        // add line items to the order.
+        lineItems.forEach((k, v) -> order.addLineItem(new LineItem(order, k, v)));
+    }
+
+    private List<Product> getUnRetiredProductsListFromDatabase(List <Long> productIdsList){
         // get all products from line Item list from database
         final List<Product> products = productService.findAllProductsInListOfIds(
-                lineItemProductIds
+                productIdsList
         );
 
         // get product id list from database
         final List<Long> foundProductIdsList = products.stream().map(Product::getId).toList();
 
         // check if any of products did not exist in database, and if so throw Not Found exception
-        final List<Long> notFoundProducts = new ArrayList<>(lineItemProductIds);
+        final List<Long> notFoundProducts = new ArrayList<>(productIdsList);
         notFoundProducts.removeAll(foundProductIdsList);
         if(!notFoundProducts.isEmpty()){
             throw new NotFoundException(String.format("Products with ID's %s do not exist", notFoundProducts));
@@ -120,23 +134,20 @@ public class OrderService {
         if(!retiredProducts.isEmpty()){
             throw new RetirementException(String.format("Products with ID's %s are retired", retiredProducts));
         }
+        return products;
+    }
 
+    private Map<Product, Integer> convertProductsListToMapWithQuantity(List<Product> products, List<LineItemRequest> lineItemRequests){
         // create helper map of product ids and products
         final Map<Long, Product> helper = products
                 .stream()
                 .collect(Collectors.toMap(Product::getId, Function.identity()));
 
         // create hashmap of product object and line item quantity
-        final Map<Product, Integer> lineItems = lineItemRequests
+        return lineItemRequests
                 .stream()
                 .collect(Collectors.toMap(lineItemRequest -> helper.get(lineItemRequest.productId()),
                         LineItemRequest::quantity));
-
-        // clear existing order line items
-        order.clearLineItems();
-
-        // add line items to the order.
-        lineItems.forEach((k, v) -> order.addLineItem(new LineItem(order, k, v)));
     }
 
     /**
