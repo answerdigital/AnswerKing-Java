@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring",
         imports = {Collectors.class, Collections.class})
 public interface CategoryMapper {
+
     @Mapping(target = "products", expression = "java(Collections.EMPTY_SET)")
     Category addRequestToCategory(CategoryRequest addCategoryRequest);
 
