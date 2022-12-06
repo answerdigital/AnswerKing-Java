@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @Builder
@@ -22,7 +21,7 @@ public class ProductResponse {
 
     private BigDecimal price;
 
-    private List<Long> categories;
+    private CategoryResponse category;
 
     private boolean retired;
 }

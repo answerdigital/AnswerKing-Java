@@ -51,6 +51,13 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
     }
 
+    public CategoryResponse findByIdResponse(final Long categoryId) {
+        final Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+
+        return categoryMapper.convertCategoryEntityToCategoryResponse(category);
+    }
+
     public Set<CategoryResponse> findAll() {
         final var categorySet = categoryRepository.findAll();
         return categorySet
@@ -59,18 +66,19 @@ public class CategoryService {
                 .collect(Collectors.toSet());
     }
 
-    public Category updateCategory(final CategoryRequest updateCategoryRequest, final Long id) {
+    public CategoryResponse updateCategory(final CategoryRequest updateCategoryRequest, final Long id) {
         // check that the category isn't being renamed to a category name that already exists
         if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
             throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));
         }
 
         final Category updatedCategory = categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest);
-        return categoryRepository.save(updatedCategory);
+        final Category savedCategory = categoryRepository.save(updatedCategory);
+        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Category addProductToCategory(final Long categoryId, final Long productId) {
+    public CategoryResponse addProductToCategory(final Long categoryId, final Long productId) {
         final Category category = findById(categoryId);
         final Product product = productService.findById(productId);
 
@@ -79,10 +87,11 @@ public class CategoryService {
         }
 
         category.addProduct(product);
-        return categoryRepository.save(category);
+        final Category savedCategory = categoryRepository.save(category);
+        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
-    public Category removeProductFromCategory(final Long categoryId, final Long productId) {
+    public CategoryResponse removeProductFromCategory(final Long categoryId, final Long productId) {
         final Category category = findById(categoryId);
         final Product product = productService.findById(productId);
 
@@ -91,16 +100,18 @@ public class CategoryService {
         }
 
         category.removeProduct(product);
-        return categoryRepository.save(category);
+        final Category savedCategory = categoryRepository.save(category);
+        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
-    public Category retireCategory(final Long categoryId) {
+    public CategoryResponse retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
             throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
         }
         category.setRetired(true);
-        return categoryRepository.save(category);
+        final Category savedCategory = categoryRepository.save(category);
+        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {

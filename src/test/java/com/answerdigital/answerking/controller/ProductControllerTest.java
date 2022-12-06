@@ -1,5 +1,6 @@
 package com.answerdigital.answerking.controller;
 
+import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +23,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,13 +55,19 @@ class ProductControllerTest {
 
     @BeforeEach
     public void generateProduct() {
+        final var categoryResponse = CategoryResponse.builder()
+                .id(22L)
+                .name("test")
+                .description("testDesc")
+                .products(List.of(33L))
+                .build();
         product = ProductResponse.builder()
                 .id(55L)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
-                .categories(new ArrayList<>())
+                .category(categoryResponse)
                 .build();
     }
 
@@ -113,7 +119,7 @@ class ProductControllerTest {
     @Test
     void addProductWithInvalidNameThrowsException() throws Exception {
         //given
-        final String newProduct = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\"}";
+        final String newProduct = "{\"name\": \"abc12\",\"description\": \"descTest\",\"price\": \"4.75\",\"categoryId\": \"1\"}";
         //when
         final String error = mvc.perform(post("/products")
                         .content(newProduct)
@@ -130,7 +136,7 @@ class ProductControllerTest {
     @Test
     void addProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
-        final String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\"}";
+        final String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"categoryId\": \"1\"}";
         given(productService.addNewProduct(any())).willReturn(product);
 
         //when
@@ -148,7 +154,7 @@ class ProductControllerTest {
     @Test
     void updateProductWithInvalidPriceThrowsException() throws Exception {
         //given
-        final String newProduct = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\"}";
+        final String newProduct = "{\"name\": \"abc\",\"description\": \"descTest\",\"price\": \"4.7587\",\"categoryId\": \"1\"}";
         //when
         final String error = mvc.perform(MockMvcRequestBuilders.put("/products/{id}", 55L)
                         .content(newProduct)
@@ -166,7 +172,7 @@ class ProductControllerTest {
     @Test
     void updateProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
-        final String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\"}";
+        final String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"categoryId\": \"1\"}";
         given(productService.updateProduct(eq(55L), any())).willReturn(product);
         //when
 

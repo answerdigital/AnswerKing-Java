@@ -22,16 +22,12 @@ public class CategoryResponse {
 
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Long> products;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdOn;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime lastUpdated;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean retired;
 
 }
