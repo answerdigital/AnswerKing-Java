@@ -281,9 +281,10 @@ final class CategoryServiceTest {
         doReturn(expectedCategory).when(categoryRepository).save(any(Category.class));
 
         // then
-        assertEquals(categoryResponse.getClass(), categoryService.retireCategory(category.getId()).getClass());
-        verify(categoryRepository).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
+        categoryService.retireCategory(category.getId());
+
+        verify(categoryRepository).findById(category.getId());
+        verify(categoryRepository).save(expectedCategory);
     }
 
     @Test
@@ -299,7 +300,7 @@ final class CategoryServiceTest {
 
         // then
         assertThrows(RetirementException.class, () -> categoryService.retireCategory(retiredCategory.getId()));
-        verify(categoryRepository).findById(anyLong());
+        verify(categoryRepository).findById(retiredCategory.getId());
     }
 
     @Test

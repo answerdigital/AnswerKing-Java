@@ -104,14 +104,13 @@ public class CategoryService {
         return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
-    public CategoryResponse retireCategory(final Long categoryId) {
+    public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
             throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
         }
         category.setRetired(true);
         final Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
