@@ -77,14 +77,13 @@ public class ProductService {
         return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
 
-    public ProductResponse retireProduct(final Long productId) {
+    public void retireProduct(final Long productId) {
         final Product product = findById(productId);
         if (product.isRetired()) {
             throw new RetirementException(String.format("The product with ID %d is already retired", productId));
         }
         product.setRetired(true);
         final Product savedProduct = productRepository.save(product);
-        return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {

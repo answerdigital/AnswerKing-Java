@@ -369,21 +369,17 @@ class OrderServiceTest {
     void testUpdateProductQuantityExistingOrderProductNotPresentThrowsNotFoundException() {
         // Given
         final Product product = Product.builder()
-                .id(12L)
-                .name("King Burger")
-                .description("A burger fit for a king")
-                .price(new BigDecimal("12.99"))
-                .retired(false)
-                .build();
-        final Order order = Order.builder()
-                .lineItems(new HashSet<>())
-                .build();
+                                       .id(12L)
+                                       .name("King Burger")
+                                       .description("A burger fit for a king")
+                                       .price(new BigDecimal("12.99"))
+                                       .retired(false)
+                                       .build();
+        final Order order = Order.builder().lineItems(new HashSet<>()).build();
 
         // When
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(order));
-        when(productService.findById(anyLong()))
-                .thenReturn(product);
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
+        when(productService.findById(anyLong())).thenReturn(product);
 
         // Then
         assertThrows(NotFoundException.class,
@@ -395,9 +391,7 @@ class OrderServiceTest {
     @Test
     void testDeleteProductInBasket() {
         // Given
-        final Product product = Product.builder()
-                .id(12L)
-                .build();
+        final Product product = Product.builder().id(12L).build();
 
         final Order order = Order.builder()
                 .id(12L)
@@ -411,22 +405,17 @@ class OrderServiceTest {
                 .build();
         order.getLineItems().add(lineItem);
 
-        final Order expectedResponse = Order.builder()
-                .id(12L)
-                .build();
+        final Order expectedResponse = Order.builder().id(12L).build();
 
         // When
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-        when(productService.findById(anyLong()))
-                .thenReturn(product);
-        when(orderRepository.save(any(Order.class)))
-                .thenReturn(expectedResponse);
+        when(productService.findById(anyLong())).thenReturn(product);
+        when(orderRepository.save(any(Order.class))).thenReturn(expectedResponse);
 
-        final Order response = orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID);
+        orderService.deleteProductInBasket(ORDER_ID, PRODUCT_ID);
 
         // Then
-        assertEquals(expectedResponse, response);
         verify(orderRepository).findById(anyLong());
         verify(productService).findById(anyLong());
         verify(orderRepository).save(any(Order.class));

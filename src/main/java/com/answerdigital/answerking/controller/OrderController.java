@@ -64,9 +64,10 @@ public class OrderController {
     }
 
     @DeleteMapping(path = "/{orderId}/product/{productId}")
-    public ResponseEntity<Order> deleteProductInBasket(@PathVariable @NotNull final Long orderId,
+    public ResponseEntity<Void> deleteProductInBasket(@PathVariable @NotNull final Long orderId,
                                                        @PathVariable @NotNull final Long productId) {
-        return new ResponseEntity<>(orderService.deleteProductInBasket(orderId, productId), HttpStatus.OK);
+        orderService.deleteProductInBasket(orderId, productId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(path = "/{orderId}/product/{productId}/quantity/{quantity}")

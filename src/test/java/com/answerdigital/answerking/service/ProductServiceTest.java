@@ -23,7 +23,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
@@ -174,15 +173,15 @@ class ProductServiceTest {
     @Test
     void testRetireProduct() {
         // when
-        when(productRepository.findById(anyLong()))
-                .thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class)))
-                .thenReturn(product);
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(product);
 
         // then
-        assertNotEquals(product.isRetired(), productService.retireProduct(PRODUCT_ID).isRetired());
+        productService.retireProduct(PRODUCT_ID);
+        product.setRetired(true);
+
         verify(productRepository).findById(anyLong());
-        verify(productRepository).save(any(Product.class));
+        verify(productRepository).save(product);
     }
 
     @Test
@@ -192,8 +191,7 @@ class ProductServiceTest {
         expectedProduct.setRetired(true);
 
         // when
-        when(productRepository.findById(anyLong()))
-                .thenReturn(Optional.of(expectedProduct));
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(expectedProduct));
 
         // then
         assertThrows(RetirementException.class, () -> productService.retireProduct(PRODUCT_ID));
@@ -203,8 +201,7 @@ class ProductServiceTest {
     @Test
     void testRetireProductDoesNotExistThrowsNotFoundException() {
         // when
-        when(productRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // then
         assertThrows(NotFoundException.class, () -> productService.retireProduct(PRODUCT_ID));

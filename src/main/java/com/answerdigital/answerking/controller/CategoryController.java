@@ -137,7 +137,8 @@ public class CategoryController {
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> retireCategory(@PathVariable @NotNull final Long categoryId) {
-        return new ResponseEntity<>(categoryService.retireCategory(categoryId), HttpStatus.OK);
+    public ResponseEntity<Void> retireCategory(@PathVariable @NotNull final Long categoryId) {
+        categoryService.retireCategory(categoryId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
