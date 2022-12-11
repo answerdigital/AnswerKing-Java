@@ -116,16 +116,21 @@ final class CategoryServiceTest {
                 .withName(updateCategoryRequest.name())
                 .withDescription(updateCategoryRequest.description())
                 .build();
+        final var categoryResponse = CategoryResponse.builder()
+                .id(1L)
+                .name("Pizzas")
+                .description("Italian style stone baked pizzas.")
+                .build();
 
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         doReturn(Optional.of(existingCategory)).when(categoryRepository).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        final Category response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
+        final CategoryResponse response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
 
         // then
-        assertEquals(expectedResponse, response);
+        assertEquals(categoryResponse.getName(), response.getName());
         verify(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         verify(categoryRepository).findById(anyLong());
         verify(categoryRepository).save(any(Category.class));
@@ -162,30 +167,6 @@ final class CategoryServiceTest {
         // then
         assertFalse(exception.getMessage().isEmpty());
         verify(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-    }
-
-    @Test
-    void testAddProductToCategory() {
-        // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-        final Category category = categoryTestBuilder.withDefaultValues().build();
-        final Category expectedResponse = categoryTestBuilder
-                .withDefaultValues()
-                .withProduct(product)
-                .build();
-
-        // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
-
-        final Category response = categoryService.addProductToCategory(category.getId(), product.getId());
-
-        // then
-        assertEquals(expectedResponse.getProducts(), response.getProducts());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
@@ -239,7 +220,7 @@ final class CategoryServiceTest {
         doReturn(product).when(productService).findById(anyLong());
         doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
 
-        final Category response = categoryService.removeProductFromCategory(category.getId(), product.getId());
+        final CategoryResponse response = categoryService.removeProductFromCategory(category.getId(), product.getId());
 
         // then
         assertEquals(0, response.getProducts().size());
@@ -289,15 +270,21 @@ final class CategoryServiceTest {
                 .withDefaultValues()
                 .withRetired(true)
                 .build();
+        final var categoryResponse = CategoryResponse.builder()
+                .id(1L)
+                .name("Pizzas")
+                .description("Italian style stone baked pizzas.")
+                .build();
 
         // when
         doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
         doReturn(expectedCategory).when(categoryRepository).save(any(Category.class));
 
         // then
-        assertEquals(expectedCategory, categoryService.retireCategory(category.getId()));
-        verify(categoryRepository).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
+        categoryService.retireCategory(category.getId());
+
+        verify(categoryRepository).findById(category.getId());
+        verify(categoryRepository).save(expectedCategory);
     }
 
     @Test
@@ -313,7 +300,7 @@ final class CategoryServiceTest {
 
         // then
         assertThrows(RetirementException.class, () -> categoryService.retireCategory(retiredCategory.getId()));
-        verify(categoryRepository).findById(anyLong());
+        verify(categoryRepository).findById(retiredCategory.getId());
     }
 
     @Test

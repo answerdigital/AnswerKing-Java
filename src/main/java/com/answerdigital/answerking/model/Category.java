@@ -1,6 +1,5 @@
 package com.answerdigital.answerking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,7 +55,6 @@ public class Category {
     private boolean retired;
 
     @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
-    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
     public Category(final String name, final String description) {

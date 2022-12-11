@@ -4,12 +4,14 @@ import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.ProductMapper;
+import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
 import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +21,14 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
+    private final CategoryService categoryService;
+
     private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     @Autowired
-    public ProductService(final ProductRepository productRepository) {
+    public ProductService(final ProductRepository productRepository, @Lazy final CategoryService categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
     public ProductResponse addNewProduct(final ProductRequest productRequest) {
@@ -31,7 +36,10 @@ public class ProductService {
             throw new NameUnavailableException(String.format("A Product named '%s' already exists", productRequest.name()));
         }
 
+        final Category category = categoryService.findById(productRequest.categoryId());
+
         final Product newProduct = productMapper.addRequestToProduct(productRequest);
+        newProduct.setCategory(category);
         final Product savedProduct = productRepository.save(newProduct);
         return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
@@ -69,14 +77,13 @@ public class ProductService {
         return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
 
-    public ProductResponse retireProduct(final Long productId) {
+    public void retireProduct(final Long productId) {
         final Product product = findById(productId);
         if (product.isRetired()) {
             throw new RetirementException(String.format("The product with ID %d is already retired", productId));
         }
         product.setRetired(true);
         final Product savedProduct = productRepository.save(product);
-        return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {

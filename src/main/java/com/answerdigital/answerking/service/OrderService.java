@@ -100,7 +100,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order deleteProductInBasket(final Long orderId, final Long productId) {
+    public void deleteProductInBasket(final Long orderId, final Long productId) {
         final Order order = findById(orderId);
         final Product product = productService.findById(productId);
 
@@ -116,6 +116,6 @@ public class OrderService {
         }
 
         order.getLineItems().remove(existingLineItem.get());
-        return orderRepository.save(order);
+        orderRepository.save(order);
     }
 }
