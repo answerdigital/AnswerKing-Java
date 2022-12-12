@@ -16,6 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 final class CategoryServiceTest {
 
+    @InjectMocks
     private CategoryService categoryService;
 
     @Mock
@@ -54,16 +56,6 @@ final class CategoryServiceTest {
         categoryTestBuilder = new CategoryTestBuilder();
         categoryRequestTestBuilder = new CategoryRequestTestBuilder();
         productTestBuilder = new ProductTestBuilder();
-    }
-
-    @BeforeEach
-    void setUp() {
-        categoryService = new CategoryService(productService, categoryRepository);
-    }
-
-    @AfterEach
-    void tearDown() {
-        categoryService = null;
     }
 
     @Test
