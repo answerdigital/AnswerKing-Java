@@ -12,8 +12,6 @@ import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 final class CategoryServiceTest {
@@ -50,7 +48,7 @@ final class CategoryServiceTest {
 
     private final ProductTestBuilder productTestBuilder;
 
-    private static final Long NONEXISTENT_CATEGORY_ID = 2L;
+    private static final Long NONEXISTENT_CATEGORY_ID = 10L;
 
     private CategoryServiceTest() {
         categoryTestBuilder = new CategoryTestBuilder();
@@ -65,8 +63,8 @@ final class CategoryServiceTest {
         final Category expectedResponse = categoryTestBuilder.withDefaultValues().build();
 
         // when
-        doReturn(false).when(categoryRepository).existsByName(anyString());
-        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
+        when(categoryRepository.existsByName(anyString())).thenReturn(false);
+        when(categoryRepository.save(any(Category.class))).thenReturn(expectedResponse);
         final CategoryResponse categoryResponse = categoryService.addCategory(addCategoryRequest);
 
         // then
@@ -85,7 +83,7 @@ final class CategoryServiceTest {
         final CategoryRequest addCategoryRequest = categoryRequestTestBuilder.withDefaultAddRequestValues().build();
 
         // when
-        doReturn(true).when(categoryRepository).existsByName(anyString());
+        when(categoryRepository.existsByName(anyString())).thenReturn(true);
         final Exception exception = assertThrows(NameUnavailableException.class,
                 () -> categoryService.addCategory(addCategoryRequest));
 
@@ -103,16 +101,11 @@ final class CategoryServiceTest {
                 .withName(updateCategoryRequest.name())
                 .withDescription(updateCategoryRequest.description())
                 .build();
-        final var categoryResponse = CategoryResponse.builder()
-                .id(1L)
-                .name("Pizzas")
-                .description("Italian style stone baked pizzas.")
-                .build();
 
         // when
-        doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-        doReturn(Optional.of(existingCategory)).when(categoryRepository).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
+        when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(false);
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(existingCategory));
+        when(categoryRepository.save(any(Category.class))).thenReturn(expectedResponse);
 
         final CategoryResponse response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
 
@@ -129,8 +122,8 @@ final class CategoryServiceTest {
         final CategoryRequest updateCategoryRequest = categoryRequestTestBuilder.withDefaultUpdateRequestValues().build();
 
         // when
-        doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
+        when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(false);
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
         final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.updateCategory(updateCategoryRequest, NONEXISTENT_CATEGORY_ID));
 
@@ -147,7 +140,7 @@ final class CategoryServiceTest {
         final CategoryRequest updateCategoryRequest = categoryRequestTestBuilder.withDefaultUpdateRequestValues().build();
 
         // when
-        doReturn(true).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
+        when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
         final Exception exception = assertThrows(NameUnavailableException.class,
                 () -> categoryService.updateCategory(updateCategoryRequest, existingCategory.getId()));
 
@@ -165,8 +158,8 @@ final class CategoryServiceTest {
                 .build();
 
         // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(productService.findById(anyLong())).thenReturn(product);
         final Exception exception = assertThrows(ProductAlreadyPresentException.class,
                 () -> categoryService.addProductToCategory(category.getId(), product.getId()));
 
@@ -182,7 +175,7 @@ final class CategoryServiceTest {
         final Product product = productTestBuilder.withDefaultValues().build();
 
         // when
-        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
         final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, product.getId()));
 
@@ -201,9 +194,9 @@ final class CategoryServiceTest {
         final Category expectedResponse = categoryTestBuilder.withDefaultValues().build();
 
         // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(productService.findById(anyLong())).thenReturn(product);
+        when(categoryRepository.save(any(Category.class))).thenReturn(expectedResponse);
 
         final CategoryResponse response = categoryService.removeProductFromCategory(category.getId(), product.getId());
 
@@ -221,8 +214,8 @@ final class CategoryServiceTest {
         final Category category = categoryTestBuilder.withDefaultValues().build();
 
         // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(productService.findById(anyLong())).thenReturn(product);
         final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.removeProductFromCategory(category.getId(), product.getId()));
 
@@ -238,7 +231,7 @@ final class CategoryServiceTest {
         final Product product = productTestBuilder.withDefaultValues().build();
 
         // when
-        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
         final Exception exception = assertThrows(NotFoundException.class,
                 () -> categoryService.removeProductFromCategory(NONEXISTENT_CATEGORY_ID, product.getId()));
 
@@ -254,15 +247,10 @@ final class CategoryServiceTest {
         final Category expectedCategory = categoryTestBuilder.withDefaultValues()
                 .withRetired(true)
                 .build();
-        final var categoryResponse = CategoryResponse.builder()
-                .id(1L)
-                .name("Pizzas")
-                .description("Italian style stone baked pizzas.")
-                .build();
 
         // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(expectedCategory).when(categoryRepository).save(any(Category.class));
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
 
         // then
         categoryService.retireCategory(category.getId());
@@ -279,7 +267,7 @@ final class CategoryServiceTest {
                 .build();
 
         // when
-        doReturn(Optional.of(retiredCategory)).when(categoryRepository).findById(anyLong());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(retiredCategory));
 
         // then
         assertThrows(RetirementException.class, () -> categoryService.retireCategory(retiredCategory.getId()));
@@ -289,7 +277,7 @@ final class CategoryServiceTest {
     @Test
     void testRetireCategoryDoesNotExistThrowsNotFoundException() {
         // when
-        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // then
         assertThrows(NotFoundException.class, () -> categoryService.retireCategory(NONEXISTENT_CATEGORY_ID));
