@@ -1,9 +1,8 @@
 package com.answerdigital.answerking.service;
 
-import com.answerdigital.answerking.builder.AddCategoryRequestTestBuilder;
+import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
 import com.answerdigital.answerking.builder.CategoryTestBuilder;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
-import com.answerdigital.answerking.builder.UpdateCategoryRequestTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
@@ -45,9 +44,7 @@ final class CategoryServiceTest {
 
     private final CategoryTestBuilder categoryTestBuilder;
 
-    private final AddCategoryRequestTestBuilder addCategoryRequestTestBuilder;
-
-    private final UpdateCategoryRequestTestBuilder updateCategoryRequestTestBuilder;
+    private final CategoryRequestTestBuilder categoryRequestTestBuilder;
 
     private final ProductTestBuilder productTestBuilder;
 
@@ -55,8 +52,7 @@ final class CategoryServiceTest {
 
     private CategoryServiceTest() {
         categoryTestBuilder = new CategoryTestBuilder();
-        addCategoryRequestTestBuilder = new AddCategoryRequestTestBuilder();
-        updateCategoryRequestTestBuilder = new UpdateCategoryRequestTestBuilder();
+        categoryRequestTestBuilder = new CategoryRequestTestBuilder();
         productTestBuilder = new ProductTestBuilder();
     }
 
@@ -73,7 +69,7 @@ final class CategoryServiceTest {
     @Test
     void testAddCategory() {
         // given
-        final CategoryRequest addCategoryRequest = addCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest addCategoryRequest = categoryRequestTestBuilder.withDefaultAddRequestValues().build();
         final Category expectedResponse = categoryTestBuilder.withDefaultValues().build();
 
         // when
@@ -94,7 +90,7 @@ final class CategoryServiceTest {
     @Test
     void testAddCategoryThatAlreadyExists() {
         // given
-        final CategoryRequest addCategoryRequest = addCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest addCategoryRequest = categoryRequestTestBuilder.withDefaultAddRequestValues().build();
 
         // when
         doReturn(true).when(categoryRepository).existsByName(anyString());
@@ -110,16 +106,10 @@ final class CategoryServiceTest {
     void testUpdateCategory() {
         // given
         final Category existingCategory = categoryTestBuilder.withDefaultValues().build();
-        final CategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
-        final Category expectedResponse = categoryTestBuilder
-                .withDefaultValues()
+        final CategoryRequest updateCategoryRequest = categoryRequestTestBuilder.withDefaultUpdateRequestValues().build();
+        final Category expectedResponse = categoryTestBuilder.withDefaultValues()
                 .withName(updateCategoryRequest.name())
                 .withDescription(updateCategoryRequest.description())
-                .build();
-        final var categoryResponse = CategoryResponse.builder()
-                .id(1L)
-                .name("Pizzas")
-                .description("Italian style stone baked pizzas.")
                 .build();
 
         // when
@@ -130,7 +120,7 @@ final class CategoryServiceTest {
         final CategoryResponse response = categoryService.updateCategory(updateCategoryRequest, existingCategory.getId());
 
         // then
-        assertEquals(categoryResponse.getName(), response.getName());
+        assertEquals(expectedResponse.getName(), response.getName());
         verify(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         verify(categoryRepository).findById(anyLong());
         verify(categoryRepository).save(any(Category.class));
@@ -139,7 +129,7 @@ final class CategoryServiceTest {
     @Test
     void testUpdateCategoryThatDoesNotExist() {
         // given
-        final CategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest updateCategoryRequest = categoryRequestTestBuilder.withDefaultUpdateRequestValues().build();
 
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
@@ -157,7 +147,7 @@ final class CategoryServiceTest {
     void testUpdateCategoryNameToCategoryThatAlreadyExists() {
         // given
         final Category existingCategory = categoryTestBuilder.withDefaultValues().build();
-        final CategoryRequest updateCategoryRequest = updateCategoryRequestTestBuilder.withDefaultValues().build();
+        final CategoryRequest updateCategoryRequest = categoryRequestTestBuilder.withDefaultUpdateRequestValues().build();
 
         // when
         doReturn(true).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
@@ -173,8 +163,7 @@ final class CategoryServiceTest {
     void testAddProductToCategoryThatIsAlreadyInCategory() {
         // given
         final Product product = productTestBuilder.withDefaultValues().build();
-        final Category category = categoryTestBuilder
-                .withDefaultValues()
+        final Category category = categoryTestBuilder.withDefaultValues()
                 .withProduct(product)
                 .build();
 
@@ -209,8 +198,7 @@ final class CategoryServiceTest {
     void testRemoveProductFromCategory() {
         // given
         final Product product = productTestBuilder.withDefaultValues().build();
-        final Category category = categoryTestBuilder
-                .withDefaultValues()
+        final Category category = categoryTestBuilder.withDefaultValues()
                 .withProduct(product)
                 .build();
         final Category expectedResponse = categoryTestBuilder.withDefaultValues().build();
@@ -266,14 +254,8 @@ final class CategoryServiceTest {
     void testRetireCategory() {
         // given
         final Category category = categoryTestBuilder.withDefaultValues().build();
-        final Category expectedCategory = categoryTestBuilder
-                .withDefaultValues()
+        final Category expectedCategory = categoryTestBuilder.withDefaultValues()
                 .withRetired(true)
-                .build();
-        final var categoryResponse = CategoryResponse.builder()
-                .id(1L)
-                .name("Pizzas")
-                .description("Italian style stone baked pizzas.")
                 .build();
 
         // when
@@ -290,8 +272,7 @@ final class CategoryServiceTest {
     @Test
     void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
-        final Category retiredCategory = categoryTestBuilder
-                .withDefaultValues()
+        final Category retiredCategory = categoryTestBuilder.withDefaultValues()
                 .withRetired(true)
                 .build();
 
