@@ -103,6 +103,11 @@ final class CategoryServiceTest {
                 .withName(updateCategoryRequest.name())
                 .withDescription(updateCategoryRequest.description())
                 .build();
+        final var categoryResponse = CategoryResponse.builder()
+                .id(1L)
+                .name("Pizzas")
+                .description("Italian style stone baked pizzas.")
+                .build();
 
         // when
         doReturn(false).when(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
@@ -248,6 +253,11 @@ final class CategoryServiceTest {
         final Category category = categoryTestBuilder.withDefaultValues().build();
         final Category expectedCategory = categoryTestBuilder.withDefaultValues()
                 .withRetired(true)
+                .build();
+        final var categoryResponse = CategoryResponse.builder()
+                .id(1L)
+                .name("Pizzas")
+                .description("Italian style stone baked pizzas.")
                 .build();
 
         // when

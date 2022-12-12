@@ -6,7 +6,6 @@ on:
       - main
       - master
       - develop
-      - v1.0.0-preview.1
     types:
       - completed
 
