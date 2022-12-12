@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.response.SimpleCategoryResponse;
 import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,11 +55,10 @@ class ProductControllerTest {
 
     @BeforeEach
     public void generateProduct() {
-        final var categoryResponse = CategoryResponse.builder()
+        final var categoryResponse = SimpleCategoryResponse.builder()
                 .id(22L)
                 .name("test")
                 .description("testDesc")
-                .products(List.of(33L))
                 .build();
         product = ProductResponse.builder()
                 .id(55L)

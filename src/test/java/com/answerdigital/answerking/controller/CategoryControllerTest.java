@@ -4,6 +4,7 @@ import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.response.SimpleCategoryResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,11 +107,10 @@ class CategoryControllerTest {
     void fetchProductsByCategoryTest() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
 
-        final var categoryResponse = CategoryResponse.builder()
+        final var categoryResponse = SimpleCategoryResponse.builder()
                 .id(22L)
                 .name("test")
                 .description("testDesc")
-                .products(List.of(33L))
                 .build();
         final var productResponse = ProductResponse.builder()
                                                                   .id(33L)
