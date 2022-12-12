@@ -72,6 +72,7 @@ final class ProductServiceTest {
         // then
         assertEquals(expectedProduct.getName(), productResponse.getName());
         assertEquals(expectedProduct.getPrice().toString(), productResponse.getPrice().toString());
+
         verify(productRepository).save(any());
     }
 
