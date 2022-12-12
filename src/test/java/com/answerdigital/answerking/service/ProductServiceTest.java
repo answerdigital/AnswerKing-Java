@@ -32,14 +32,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 final class ProductServiceTest {
 
+    @InjectMocks
+    private ProductService productService;
+
     @Mock
     private ProductRepository productRepository;
 
     @Mock
     private CategoryService categoryService;
-
-    @InjectMocks
-    private ProductService productService;
 
     private final ProductTestBuilder productTestBuilder;
 
