@@ -25,12 +25,14 @@ public class ProductTestBuilder {
     private Set<LineItem> lineItems;
 
     public ProductTestBuilder withDefaultValues() {
+        final CategoryTestBuilder categoryTestBuilder = new CategoryTestBuilder();
+
         this.id = 1L;
         this.name = "Cheeseburger";
         this.description = "A beef patty with cheddar cheese.";
         this.price = BigDecimal.valueOf(5.00D);
         this.retired = false;
-        this.category = Category.builder().build();
+        this.category = categoryTestBuilder.withDefaultValues().build();
         this.lineItems = new HashSet<>();
         return this;
     }

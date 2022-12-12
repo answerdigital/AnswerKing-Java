@@ -1,5 +1,8 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.builder.CategoryTestBuilder;
+import com.answerdigital.answerking.builder.ProductRequestTestBuilder;
+import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
@@ -8,19 +11,16 @@ import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
 import com.answerdigital.answerking.response.ProductResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+final class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
@@ -41,143 +41,150 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product product;
+    private final ProductTestBuilder productTestBuilder;
 
-    private Category category;
+    private final ProductRequestTestBuilder productRequestTestBuilder;
 
-    private ProductRequest productRequest;
+    private final CategoryTestBuilder categoryTestBuilder;
 
-    private static final long PRODUCT_ID = 55L;
+    private static final long NONEXISTENT_PRODUCT_ID = 10L;
 
-    @BeforeEach
-    public void generateProduct() {
-        category = Category.builder()
-                .name("test")
-                .description("categoryDesc")
-                .id(1L)
-                .products(new HashSet<>())
-                .build();
-        product = Product.builder()
-                .id(PRODUCT_ID)
-                .name("test")
-                .description("testDes")
-                .price(BigDecimal.valueOf(2.99))
-                .retired(false)
-                .category(category)
-                .build();
-        productRequest = ProductRequest.builder()
-                .name("test")
-                .description("testD")
-                .price(BigDecimal.valueOf(1.99))
-                .categoryId(1L)
-                .build();
+    private ProductServiceTest() {
+        productTestBuilder = new ProductTestBuilder();
+        productRequestTestBuilder = new ProductRequestTestBuilder();
+        categoryTestBuilder = new CategoryTestBuilder();
     }
 
     @Test
     void addNewProductReturnsProductObjectSuccessfully() {
-        //given
-        when(productRepository.save(any())).thenReturn(product);
+        // given
+        final Product expectedProduct = productTestBuilder.withDefaultValues().build();
+        final ProductRequest productRequest = productRequestTestBuilder.withDefaultValues().build();
+        final Category category = categoryTestBuilder.withDefaultValues().build();
+
+        // when
+        when(productRepository.save(any())).thenReturn(expectedProduct);
         when(productRepository.existsByName(any())).thenReturn(false);
         when(categoryService.findById(any())).thenReturn(category);
-        //when
-        final ProductResponse actualAddNewProductResult = productService.addNewProduct(
-                productRequest);
-        //then
-        assertEquals(product.getName(), actualAddNewProductResult.getName());
-        assertEquals(product.getPrice().toString(), actualAddNewProductResult.getPrice().toString());
+
+        final ProductResponse productResponse = productService.addNewProduct(productRequest);
+
+        // then
+        assertEquals(expectedProduct.getName(), productResponse.getName());
+        assertEquals(expectedProduct.getPrice().toString(), productResponse.getPrice().toString());
         verify(productRepository).save(any());
     }
 
     @Test
     void addNewProductThrowsExceptionIfProductNameAlreadyExist() {
-        //given
+        // given
+        final ProductRequest productRequest = productRequestTestBuilder.withDefaultValues().build();
+
+        // when
         when(productRepository.existsByName(any())).thenReturn(true);
-        //when
-        assertThatThrownBy(() -> productService.addNewProduct(productRequest))
-                //then
-                .isInstanceOf(NameUnavailableException.class)
-                .hasMessageContaining("already exists");
+
+        // then
+        assertThrows(NameUnavailableException.class, () -> productService.addNewProduct(productRequest));
     }
 
     @Test
-    void getProductByIdReturnProductObject() {
-        //given
-        when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
-        //when
-        final Product actualAddNewProductResult = productService.findById(12L);
-        //then
-        assertEquals(product.getName(), actualAddNewProductResult.getName());
-        assertEquals(product.getPrice().toString(), actualAddNewProductResult.getPrice().toString());
+    void getProductByIdReturnsProductObject() {
+        // given
+        final Product expectedProduct = productTestBuilder.withDefaultValues().build();
+
+        // when
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(expectedProduct));
+
+        final Product productResult = productService.findById(expectedProduct.getId());
+
+        // then
+        assertEquals(expectedProduct.getName(), productResult.getName());
+        assertEquals(expectedProduct.getPrice().toString(), productResult.getPrice().toString());
         verify(productRepository).findById(any());
     }
 
     @Test
     void getProductByIdReturnsNotFoundExceptionIfProductIdDoesNotExist() {
-        //when
-        assertThatThrownBy(() -> productService.findById(15L))
-                //then
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("does not exist");
+        assertThrows(NotFoundException.class, () -> productService.findById(NONEXISTENT_PRODUCT_ID));
     }
 
     @Test
-    void getAllProductsReturnListOfProductObjects() {
-        //given
-        when(productRepository.findAll()).thenReturn(List.of(product));
-        //when
-        final List<ProductResponse> actualResult = productService.findAll();
-        //then
-        assertFalse(actualResult.isEmpty());
-        assertEquals(actualResult.get(0).getName(), product.getName());
+    void getAllProductsReturnsListOfProductObjects() {
+        // given
+        final Product expectedProductOne = productTestBuilder.withDefaultValues().build();
+        final Product expectedProductTwo = productTestBuilder.withDefaultValues()
+                .withId(2L)
+                .withName("Fries")
+                .build();
+
+        // when
+        when(productRepository.findAll()).thenReturn(List.of(expectedProductOne, expectedProductTwo));
+
+        final List<ProductResponse> productResponses = productService.findAll();
+
+        // then
+        assertAll(
+                () -> assertFalse(productResponses.isEmpty()),
+                () -> assertEquals(productResponses.get(0).getName(), expectedProductOne.getName()),
+                () -> assertEquals(productResponses.get(1).getName(), expectedProductTwo.getName())
+        );
         verify(productRepository).findAll();
     }
 
     @Test
     void updateProductReturnsProductObjectSuccessfully() {
-        //given
-        when(productRepository.save(any())).thenReturn(product);
+        // given
+        final Product expectedProduct = productTestBuilder.withDefaultValues().build();
+        final ProductRequest productRequest = productRequestTestBuilder.withDefaultValues().build();
+
+        // when
+        when(productRepository.save(any())).thenReturn(expectedProduct);
         when(productRepository.existsByNameAndIdIsNot(any(), anyLong())).thenReturn(false);
-        when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(expectedProduct));
 
-        //when
-        final ProductResponse actualAddNewProductResult = productService.updateProduct(12L,
-                productRequest);
+        final ProductResponse productResponse = productService.updateProduct(expectedProduct.getId(), productRequest);
 
-        //then
-        assertEquals(product.getName(), actualAddNewProductResult.getName());
-        assertEquals(product.getPrice().toString(), actualAddNewProductResult.getPrice().toString());
+        // then
+        assertEquals(expectedProduct.getName(), productResponse.getName());
+        assertEquals(expectedProduct.getPrice().toString(), productResponse.getPrice().toString());
         verify(productRepository).save(any());
     }
 
     @Test
     void updateProductThrowsExceptionIfProductIdDoesNotExist() {
-        //when
-        assertThatThrownBy(() -> productService.updateProduct(12L, productRequest))
-                //then
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("does not exist");
+        // given
+        final ProductRequest productRequest = productRequestTestBuilder.withDefaultValues().build();
+
+        // then
+        assertThrows(NotFoundException.class,
+                () -> productService.updateProduct(NONEXISTENT_PRODUCT_ID, productRequest));
     }
 
     @Test
     void updateProductThrowsExceptionIfProductNameAlreadyExist() {
-        //given
-        when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
+        // given
+        final Product existingProduct = productTestBuilder.withDefaultValues().build();
+        final ProductRequest productRequest = productRequestTestBuilder.withDefaultValues().build();
+
+        // when
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(existingProduct));
         when(productRepository.existsByNameAndIdIsNot(any(), anyLong())).thenReturn(true);
-        //when
-        assertThatThrownBy(() -> productService.updateProduct(12L, productRequest))
-                //then
-                .isInstanceOf(NameUnavailableException.class)
-                .hasMessageContaining("already exists");
+
+        //then
+        assertThrows(NameUnavailableException.class,
+                () -> productService.updateProduct(existingProduct.getId(), productRequest));
     }
 
     @Test
     void testRetireProduct() {
         // when
+        final Product product = productTestBuilder.withDefaultValues().build();
+
+        // then
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        // then
-        productService.retireProduct(PRODUCT_ID);
+        productService.retireProduct(product.getId());
         product.setRetired(true);
 
         verify(productRepository).findById(anyLong());
@@ -187,14 +194,13 @@ class ProductServiceTest {
     @Test
     void testRetireProductAlreadyRetiredThrowsRetirementException() {
         // given
-        final Product expectedProduct = product;
-        expectedProduct.setRetired(true);
+        final Product product = productTestBuilder.withDefaultValues().withRetired(true).build();
 
         // when
-        when(productRepository.findById(anyLong())).thenReturn(Optional.of(expectedProduct));
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
 
         // then
-        assertThrows(RetirementException.class, () -> productService.retireProduct(PRODUCT_ID));
+        assertThrows(RetirementException.class, () -> productService.retireProduct(product.getId()));
         verify(productRepository).findById(anyLong());
     }
 
@@ -204,7 +210,7 @@ class ProductServiceTest {
         when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // then
-        assertThrows(NotFoundException.class, () -> productService.retireProduct(PRODUCT_ID));
+        assertThrows(NotFoundException.class, () -> productService.retireProduct(NONEXISTENT_PRODUCT_ID));
         verify(productRepository).findById(anyLong());
     }
 }
