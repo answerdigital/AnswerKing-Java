@@ -105,7 +105,8 @@ public class ProductController {
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductResponse> retireProduct(@PathVariable @NotNull final Long id) {
-        return new ResponseEntity<>(productService.retireProduct(id), HttpStatus.OK);
+    public ResponseEntity<Void> retireProduct(@PathVariable @NotNull final Long id) {
+        productService.retireProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
