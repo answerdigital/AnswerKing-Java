@@ -53,30 +53,6 @@ class CategoryControllerTest {
     ProductRepository productRepository;
 
     @Test
-    void addProductToCategoryTest() throws Exception {
-        final var category = CategoryResponse.builder().build();
-        final var productId = 10L;
-        final var categoryId = 20L;
-
-        doReturn(category).when(categoryService).addProductToCategory(categoryId, productId);
-
-        mvc.perform(put("/categories/{categoryId}/addproduct/{productId}", categoryId, productId))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    void removeProductFromCategoryTest() throws Exception {
-        final var category = CategoryResponse.builder().build();
-        final var productId = 10L;
-        final var categoryId = 20L;
-
-        doReturn(category).when(categoryService).removeProductFromCategory(categoryId, productId);
-
-        mvc.perform(put("/categories/{categoryId}/removeproduct/{productId}", categoryId, productId))
-            .andExpect(status().isOk());
-    }
-
-    @Test
     void addCategoryTest() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
 
