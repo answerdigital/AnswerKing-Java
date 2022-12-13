@@ -163,9 +163,9 @@ final class CategoryServiceTest {
 
         // then
         assertAll(
-                () -> assertEquals(expectedResponse.getId(), categoryResponse.getId()),
-                () -> assertEquals(expectedResponse.getName(), categoryResponse.getName()),
-                () -> assertEquals(expectedResponse.getDescription(), categoryResponse.getDescription())
+            () -> assertEquals(expectedResponse.getId(), categoryResponse.getId()),
+            () -> assertEquals(expectedResponse.getName(), categoryResponse.getName()),
+            () -> assertEquals(expectedResponse.getDescription(), categoryResponse.getDescription())
         );
         verify(categoryRepository).existsByName(anyString());
         verify(categoryRepository, atLeast(2)).save(any(Category.class));
@@ -249,7 +249,7 @@ final class CategoryServiceTest {
         when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(false);
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
         final Exception exception = assertThrows(NotFoundException.class,
-                () -> categoryService.updateCategory(updateCategoryRequest, NONEXISTENT_CATEGORY_ID));
+            () -> categoryService.updateCategory(updateCategoryRequest, NONEXISTENT_CATEGORY_ID));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -271,7 +271,7 @@ final class CategoryServiceTest {
         // when
         when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
         final Exception exception = assertThrows(NameUnavailableException.class,
-                () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
+            () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -283,8 +283,8 @@ final class CategoryServiceTest {
         // given
         final Category category = categoryTestBuilder.withDefaultValues().build();
         final Category expectedCategory = categoryTestBuilder.withDefaultValues()
-                .withRetired(true)
-                .build();
+            .withRetired(true)
+            .build();
 
         // when
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
@@ -301,8 +301,8 @@ final class CategoryServiceTest {
     void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
         final Category retiredCategory = categoryTestBuilder.withDefaultValues()
-                .withRetired(true)
-                .build();
+            .withRetired(true)
+            .build();
         final Long retiredCategoryId = retiredCategory.getId();
 
         // when
