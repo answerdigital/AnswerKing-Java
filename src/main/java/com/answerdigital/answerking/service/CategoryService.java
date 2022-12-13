@@ -65,7 +65,7 @@ public class CategoryService {
      */
     public Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+            .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
     }
 
     /**
@@ -86,9 +86,9 @@ public class CategoryService {
      */
     public Set<CategoryResponse> findAll() {
         return categoryRepository.findAll()
-                .stream()
-                .map(categoryMapper::convertCategoryEntityToCategoryResponse)
-                .collect(Collectors.toSet());
+            .stream()
+            .map(categoryMapper::convertCategoryEntityToCategoryResponse)
+            .collect(Collectors.toSet());
     }
 
     /**
