@@ -5,11 +5,9 @@ import com.answerdigital.answerking.builder.CategoryTestBuilder;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.builder.UpdateCategoryRequestTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
-import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -167,99 +165,6 @@ final class CategoryServiceTest {
         // then
         assertFalse(exception.getMessage().isEmpty());
         verify(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
-    }
-
-    @Test
-    void testAddProductToCategoryThatIsAlreadyInCategory() {
-        // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-        final Category category = categoryTestBuilder
-                .withDefaultValues()
-                .withProduct(product)
-                .build();
-
-        // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
-        final Exception exception = assertThrows(ProductAlreadyPresentException.class,
-                () -> categoryService.addProductToCategory(category.getId(), product.getId()));
-
-        // then
-        assertFalse(exception.getMessage().isEmpty());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-    }
-
-    @Test
-    void testAddProductToCategoryThatDoesNotExist() {
-        // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-
-        // when
-        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        final Exception exception = assertThrows(NotFoundException.class,
-                () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, product.getId()));
-
-        // then
-        assertFalse(exception.getMessage().isEmpty());
-        verify(categoryRepository).findById(anyLong());
-    }
-
-    @Test
-    void testRemoveProductFromCategory() {
-        // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-        final Category category = categoryTestBuilder
-                .withDefaultValues()
-                .withProduct(product)
-                .build();
-        final Category expectedResponse = categoryTestBuilder.withDefaultValues().build();
-
-        // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
-        doReturn(expectedResponse).when(categoryRepository).save(any(Category.class));
-
-        final CategoryResponse response = categoryService.removeProductFromCategory(category.getId(), product.getId());
-
-        // then
-        assertEquals(0, response.getProducts().size());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
-    }
-
-    @Test
-    void testRemoveProductThatIsNotInCategory() {
-        // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-        final Category category = categoryTestBuilder.withDefaultValues().build();
-
-        // when
-        doReturn(Optional.of(category)).when(categoryRepository).findById(anyLong());
-        doReturn(product).when(productService).findById(anyLong());
-        final Exception exception = assertThrows(NotFoundException.class,
-                () -> categoryService.removeProductFromCategory(category.getId(), product.getId()));
-
-        // then
-        assertFalse(exception.getMessage().isEmpty());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-    }
-
-    @Test
-    void testRemoveProductFromCategoryThatDoesNotExist() {
-        // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-
-        // when
-        doReturn(Optional.empty()).when(categoryRepository).findById(anyLong());
-        final Exception exception = assertThrows(NotFoundException.class,
-                () -> categoryService.removeProductFromCategory(NONEXISTENT_CATEGORY_ID, product.getId()));
-
-        // then
-        assertFalse(exception.getMessage().isEmpty());
-        verify(categoryRepository).findById(anyLong());
     }
 
     @Test
