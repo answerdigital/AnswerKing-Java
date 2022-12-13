@@ -5,7 +5,6 @@ import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -14,8 +13,6 @@ import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
