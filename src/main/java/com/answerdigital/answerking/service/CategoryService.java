@@ -1,12 +1,10 @@
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
-import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
-import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -14,8 +12,6 @@ import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -77,40 +73,13 @@ public class CategoryService {
         return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public CategoryResponse addProductToCategory(final Long categoryId, final Long productId) {
-        final Category category = findById(categoryId);
-        final Product product = productService.findById(productId);
-
-        if (category.getProducts().contains(product)) {
-            throw new ProductAlreadyPresentException("Category already has this product");
-        }
-
-        category.addProduct(product);
-        final Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
-    }
-
-    public CategoryResponse removeProductFromCategory(final Long categoryId, final Long productId) {
-        final Category category = findById(categoryId);
-        final Product product = productService.findById(productId);
-
-        if (!category.getProducts().contains(product)) {
-            throw new NotFoundException("Category does not have this product");
-        }
-
-        category.removeProduct(product);
-        final Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
-    }
-
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
             throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
         }
         category.setRetired(true);
-        final Category savedCategory = categoryRepository.save(category);
+        categoryRepository.save(category);
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
