@@ -46,8 +46,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse addOrder(final OrderRequest orderRequest) {
-        final Order order = new Order();
-        addLineItemsToOrder(order, orderRequest.lineItemRequests());
+        final Order order = addLineItemsToOrder(new Order(), orderRequest.lineItemRequests());
         return convertToResponse(orderRepository.save(order));
     }
 
@@ -80,9 +79,9 @@ public class OrderService {
     public OrderResponse updateOrder(final Long orderId, final OrderRequest orderRequest) {
         final Order order = getOrderById(orderId);
 
-        if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
+        if (OrderStatus.CANCELLED.equals(order.getOrderStatus())) {
             throw new OrderCancelledException(
-                String.format("The order with ID %d has been cancelled, not possible to update", orderId)
+                    String.format("The order with ID %d has been cancelled, not possible to update", orderId)
             );
         }
 
@@ -90,7 +89,7 @@ public class OrderService {
         return convertToResponse(orderRepository.save(order));
     }
 
-    private void addLineItemsToOrder(final Order order, final List<LineItemRequest> lineItemRequests) {
+    private Order addLineItemsToOrder(final Order order, final List<LineItemRequest> lineItemRequests) {
         // get line items id list
         final List<Long> lineItemProductIds = lineItemRequests.stream()
                 .map(LineItemRequest::productId)
@@ -105,6 +104,7 @@ public class OrderService {
 
         // add line items to the order.
         lineItems.forEach((k, v) -> order.addLineItem(new LineItem(order, k, v)));
+        return order;
     }
 
     private List<Product> getUnRetiredProductsListFromDatabase(final List<Long> productIdsList){
