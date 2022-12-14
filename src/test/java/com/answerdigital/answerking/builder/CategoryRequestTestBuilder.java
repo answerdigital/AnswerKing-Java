@@ -2,24 +2,30 @@ package com.answerdigital.answerking.builder;
 
 import com.answerdigital.answerking.request.CategoryRequest;
 
-public class AddCategoryRequestTestBuilder {
+public class CategoryRequestTestBuilder {
 
     private String name;
 
     private String description;
 
-    public AddCategoryRequestTestBuilder withDefaultValues() {
+    public CategoryRequestTestBuilder withDefaultAddRequestValues() {
         this.name = "Burgers";
         this.description = "A selection of delicious burgers.";
         return this;
     }
 
-    public AddCategoryRequestTestBuilder withName(final String name) {
+    public CategoryRequestTestBuilder withDefaultUpdateRequestValues() {
+        this.name = "Pizzas";
+        this.description = "Italian style stone baked pizzas.";
+        return this;
+    }
+
+    public CategoryRequestTestBuilder withName(final String name) {
         this.name = name;
         return this;
     }
 
-    public AddCategoryRequestTestBuilder withDescription(final String description) {
+    public CategoryRequestTestBuilder withDescription(final String description) {
         this.description = description;
         return this;
     }
