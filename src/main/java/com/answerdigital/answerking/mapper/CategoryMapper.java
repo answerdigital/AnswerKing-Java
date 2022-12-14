@@ -19,7 +19,7 @@ public interface CategoryMapper {
 
     Category updateRequestToCategory(@MappingTarget Category category, CategoryRequest updateCategoryRequest);
 
-    @Mapping(target = "products",
+    @Mapping(target = "productIds",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")
     CategoryResponse convertCategoryEntityToCategoryResponse(Category category);
 }
