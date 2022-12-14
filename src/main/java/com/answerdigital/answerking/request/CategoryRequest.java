@@ -1,8 +1,13 @@
 package com.answerdigital.answerking.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
+@JsonPropertyOrder({"name", "description", "products"})
 public record CategoryRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s-]*",
@@ -11,5 +16,7 @@ public record CategoryRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
                 message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
-        String description
+        String description,
+        @JsonProperty("products")
+        List<Long> productIds
 ) {}
