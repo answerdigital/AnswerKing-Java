@@ -4,7 +4,7 @@ import com.answerdigital.answerking.exception.AnswerKingException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Getter

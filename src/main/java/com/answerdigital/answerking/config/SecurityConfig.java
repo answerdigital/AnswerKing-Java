@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -31,10 +31,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .authorizeRequests()
-            .antMatchers(PERMITTED_PATTERNS).permitAll()
-            .anyRequest().authenticated()
-            .and()
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(PERMITTED_PATTERNS).permitAll()
+                    .anyRequest().authenticated()
+            )
             .httpBasic()
             .and()
             .sessionManagement()
@@ -45,17 +45,14 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
-
         return new InMemoryUserDetailsManager(
-            List.of("paul", "john", "ringo", "george")
-                                            .stream()
-                                            .map(user ->
-                                                User.withUsername(user)
-                                                    .password(COMMON_PASSWORD)
-                                                    .authorities(COMMON_ROLE)
-                                                    .build()
-                                            ).toList()
+                Stream.of("paul", "john", "ringo", "george")
+                        .map(user ->
+                                User.withUsername(user)
+                                        .password(COMMON_PASSWORD)
+                                        .authorities(COMMON_ROLE)
+                                        .build()
+                        ).toList()
         );
     }
-
 }
