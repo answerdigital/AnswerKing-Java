@@ -93,4 +93,7 @@ public class ProductService {
                                 .toList();
     }
 
+    public List<Product> findAllProductsInListOfIds(final List<Long> productIds) {
+        return productRepository.findAllByIdIn(productIds);
+    }
 }

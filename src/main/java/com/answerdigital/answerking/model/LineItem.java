@@ -1,13 +1,11 @@
 package com.answerdigital.answerking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,12 +30,10 @@ import java.util.Objects;
 public class LineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "order_id")
-    @JsonIgnore
     private Order order;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -53,8 +49,7 @@ public class LineItem {
         this.quantity = quantity;
     }
 
-    @JsonInclude
-    public BigDecimal getProductTotalPrice() {
+    public BigDecimal getSubTotal() {
         return new BigDecimal(quantity).multiply(product.getPrice()).setScale(2, RoundingMode.DOWN);
     }
 
@@ -63,12 +58,15 @@ public class LineItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final LineItem lineItem = (LineItem) o;
-        return id.equals(lineItem.id);
+        return (
+            Objects.equals(order, lineItem.order)
+            && Objects.equals(product, lineItem.product)
+            && Objects.equals(quantity, lineItem.quantity));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(order, product, quantity);
     }
 
     @Override
