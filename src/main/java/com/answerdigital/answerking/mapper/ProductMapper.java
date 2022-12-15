@@ -17,8 +17,5 @@ public interface ProductMapper {
 
     Product updateRequestToProduct(@MappingTarget Product product, ProductRequest productRequest);
 
-    @Mapping(target = "category.productIds",
-            expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")
     ProductResponse convertProductEntityToProductResponse(Product product);
-
 }
