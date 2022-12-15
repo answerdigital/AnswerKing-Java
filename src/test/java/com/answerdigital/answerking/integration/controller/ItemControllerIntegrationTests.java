@@ -24,20 +24,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("integration-test")
 @ExtendWith({SnapshotExtension.class})
-class CategoryControllerIntegrationTests extends AbstractContainerBaseTest {
+class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
 
     private Expect expect;
-
-    private static final Long CATEGORY_ID = 1L;
 
     @Autowired
     private MockMvc mvc;
 
     @Test
-    @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/category_controller_test_input.sql"})
-    void getAllProductsByCategoryTest() throws Exception {
+    @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/product_controller_test_input.sql"})
+    void getAllProductsTest() throws Exception {
 
-        final var response = mvc.perform(get("/categories/{categoryId}/products", CATEGORY_ID))
+        final var response = mvc.perform(get("/products"))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
