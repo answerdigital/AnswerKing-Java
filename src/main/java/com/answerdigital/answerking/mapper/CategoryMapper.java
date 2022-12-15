@@ -3,6 +3,7 @@ package com.answerdigital.answerking.mapper;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
+import com.answerdigital.answerking.response.SimpleCategoryResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -22,4 +23,8 @@ public interface CategoryMapper {
     @Mapping(target = "productIds",
              expression = "java(category.getProducts().stream().map(product -> product.getId()).collect(Collectors.toList()) )")
     CategoryResponse convertCategoryEntityToCategoryResponse(Category category);
+
+    SimpleCategoryResponse categoryToSimpleCategoryResponse(Category category);
+
+
 }
