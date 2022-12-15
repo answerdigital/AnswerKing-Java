@@ -5,6 +5,7 @@ import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.CategoryMapper;
 import com.answerdigital.answerking.model.Category;
+import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -12,8 +13,12 @@ import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,28 +37,51 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    /**
+     * Creates a Category.
+     * @param categoryRequest The CategoryRequest.
+     * @return The newly persisted Category, in the form of a CategoryResponse.
+     * @throws NameUnavailableException When the Category name already exists.
+     */
+    @Transactional
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
-        if (categoryRepository.existsByName(categoryRequest.name())) {
-            throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryRequest.name()));
-        }
+        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.empty());
 
-        final Category newCategory = categoryMapper.addRequestToCategory(categoryRequest);
-        final var category =  categoryRepository.save(newCategory);
-        return categoryMapper.convertCategoryEntityToCategoryResponse(category);
+        final Category newCategory = requestToCategory(categoryRequest);
+        final Category category =  categoryRepository.save(newCategory);
+        addProductsToCategory(category, categoryRequest.productIds());
+        return categoryToResponse(category);
     }
 
+    /**
+     * Finds a Category by an ID.
+     * @param categoryId The ID of the category.
+     * @return The found Category.
+     * @throws NotFoundException When the category cannot be found.
+     */
     public Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
     }
 
+    /**
+     * Finds a Category by ID and maps it to a CategoryResponse object. If
+     * no category
+     * @param categoryId The ID of the Category.
+     * @return The mapped CategoryResponse.
+     * @throws NotFoundException When the category cannot be found.
+     */
     public CategoryResponse findByIdResponse(final Long categoryId) {
         final Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
 
-        return categoryMapper.convertCategoryEntityToCategoryResponse(category);
+        return categoryToResponse(category);
     }
 
+    /**
+     * Finds all the Categories within the database.
+     * @return A List of CategoryResponses.
+     */
     public Set<CategoryResponse> findAll() {
         final var categorySet = categoryRepository.findAll();
         return categorySet
@@ -62,17 +90,28 @@ public class CategoryService {
                 .collect(Collectors.toSet());
     }
 
-    public CategoryResponse updateCategory(final CategoryRequest updateCategoryRequest, final Long id) {
-        // check that the category isn't being renamed to a category name that already exists
-        if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
-            throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));
-        }
+    /**
+     * Updates a Category
+     * @param categoryRequest The CategoryRequest object.
+     * @param id The ID of the Category to update.
+     * @return The updated Category, in the form of a CategoryResponse.
+     * @throws NameUnavailableException When the Category name already exists.
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
+        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.of(id));
 
-        final Category updatedCategory = categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest);
-        final Category savedCategory = categoryRepository.save(updatedCategory);
-        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
+        final Category category = findById(id);
+        final Category updatedCategory = updateRequestToCategory(category, categoryRequest);
+        addProductsToCategory(updatedCategory, categoryRequest.productIds());
+
+        return categoryToResponse(categoryRepository.save(updatedCategory));
     }
 
+    /**
+     * Retires a Category.
+     * @param categoryId The Category ID to retire.
+     */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
@@ -82,7 +121,88 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    /**
+     * Finds a List of all the Products within a Category.
+     * @param categoryId The ID of the Category.
+     * @return A List of ProductResponses.
+     */
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productService.findProductsByCategoryId(categoryId);
+    }
+
+    /**
+     * Adds a list of products to a given category.
+     * @param category The Category entity to add the products to.
+     * @param productIds The List of Product Ids.
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void addProductsToCategory(final Category category, final List<Long> productIds) {
+        final Set<Product> products = new HashSet<>(productService.findAllProductsInListOfIds(productIds));
+        validateNoProductsAreRetired(products);
+        category.setProducts(products);
+        categoryRepository.save(category);
+    }
+
+    /**
+     * Checks if any products within a Set are retired.
+     * @param products The Set of Products to check.
+     * @throws RetirementException When a product is retired.
+     */
+    private void validateNoProductsAreRetired(final Set<Product> products) {
+        final List<Long> retiredProducts = products
+            .stream()
+            .filter(Product::isRetired)
+            .map(Product::getId)
+            .toList();
+
+        if(!retiredProducts.isEmpty()) {
+            throw new RetirementException(String.format("Products with IDs %s are retired", retiredProducts));
+        }
+    }
+
+    /**
+     * Checks if a Category already exists with a given name.
+     * @param categoryName The Category name.
+     * @param id The ID of the Category.
+     * @throws NameUnavailableException When the Category name already exists.
+     */
+    private void validateCategoryNameDoesNotExist(final String categoryName, final Optional<Long> id) {
+        if(id.isEmpty()) {
+            if (categoryRepository.existsByName(categoryName)) {
+                throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryName));
+            }
+        } else {
+            if (categoryRepository.existsByNameAndIdIsNot(categoryName, id.get())) {
+                throw new NameUnavailableException(String.format("A category named %s already exists", categoryName));
+            }
+        }
+    }
+
+    /**
+     * Updates a Category against a CategoryRequest.
+     * @param category The Category to update.
+     * @param categoryRequest The CategoryRequest to map.
+     * @return The updated Category.
+     */
+    private Category updateRequestToCategory(final Category category, final CategoryRequest categoryRequest) {
+        return categoryMapper.updateRequestToCategory(category, categoryRequest);
+    }
+
+    /**
+     * Map a Category entity model to a CategoryResponse.
+     * @param category The Category entity model to map.
+     * @return The mapped CategoryResponse.
+     */
+    private CategoryResponse categoryToResponse(final Category category) {
+        return categoryMapper.convertCategoryEntityToCategoryResponse(category);
+    }
+
+    /**
+     * Map a CategoryRequest to a Category entity model.
+     * @param categoryRequest The CategoryRequest to map.
+     * @return The mapped Category entity model.
+     */
+    private Category requestToCategory(final CategoryRequest categoryRequest) {
+        return categoryMapper.addRequestToCategory(categoryRequest);
     }
 }
