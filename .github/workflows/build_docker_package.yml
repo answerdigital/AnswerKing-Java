@@ -6,6 +6,7 @@ on:
       - main
       - master
       - develop
+      - BENCH-278
     types:
       - completed
 
@@ -48,6 +49,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Set tags
+        id: vars_tags
+        run:  echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
       - name: Build using docker-compose template
         run: docker-compose build
 
@@ -58,7 +63,7 @@ jobs:
       #  run: docker-compose push #--ignore-push-failures
 
       - name: Tag docker image
-        run: docker tag answer-king-rest-api_app ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
+        run: docker tag answer-king-rest-api_app ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:${{ steps.vars_tags.outputs.tag }}
 
       - name: Push images
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars_tags.outputs.tag }}
