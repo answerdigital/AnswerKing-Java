@@ -1,6 +1,10 @@
 package com.answerdigital.answerking.request;
 
-import javax.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record OrderRequest(@NotBlank String address) {
-}
+import java.util.List;
+
+public record OrderRequest(
+        @JsonProperty("lineItems")
+        List<LineItemRequest> lineItemRequests
+) { }

@@ -1,18 +1,13 @@
 package com.answerdigital.answerking.mapper;
 
 import com.answerdigital.answerking.model.Order;
-import com.answerdigital.answerking.request.OrderRequest;
+import com.answerdigital.answerking.response.OrderResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+
 import java.util.Collections;
 
 @Mapper(componentModel = "spring", imports = Collections.class)
 public interface OrderMapper {
 
-    @Mapping(target = "orderStatus", constant = "IN_PROGRESS")
-    @Mapping(target = "lineItems", expression = "java(Collections.EMPTY_SET)")
-    Order addRequestToOrder(OrderRequest orderRequest);
-
-    Order updateOrderRequest(@MappingTarget Order order, OrderRequest orderRequest);
+    OrderResponse orderToOrderResponse(Order order);
 }

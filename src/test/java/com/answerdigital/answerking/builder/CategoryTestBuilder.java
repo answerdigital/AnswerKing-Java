@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class CategoryTestBuilder {
 
-    private Long id = 1L;
+    private Long id;
 
     private String name;
 
@@ -27,8 +27,8 @@ public class CategoryTestBuilder {
         this.id = 1L;
         this.name = "Burgers";
         this.description = "A selection of delicious burgers.";
-        this.createdOn = LocalDateTime.now();
-        this.lastUpdated = LocalDateTime.now();
+        this.createdOn = LocalDateTime.of(2022, 1, 1, 0, 0);
+        this.lastUpdated = LocalDateTime.of(2022, 1, 1, 0, 0);
         this.retired = false;
         this.products = new HashSet<>();
         return this;
