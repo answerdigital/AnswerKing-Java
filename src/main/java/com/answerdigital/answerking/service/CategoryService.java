@@ -47,9 +47,13 @@ public class CategoryService {
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
         validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.empty());
 
+        // Create a new category from the Request and persist the initial category.
         final Category newCategory = requestToCategory(categoryRequest);
         final Category category =  categoryRepository.save(newCategory);
+
+        // Add the products to the category.
         addProductsToCategory(category, categoryRequest.productIds());
+
         return categoryToResponse(category);
     }
 
@@ -72,9 +76,7 @@ public class CategoryService {
      * @throws NotFoundException When the category cannot be found.
      */
     public CategoryResponse findByIdResponse(final Long categoryId) {
-        final Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
-
+        final Category category = findById(categoryId);
         return categoryToResponse(category);
     }
 
@@ -83,8 +85,7 @@ public class CategoryService {
      * @return A List of CategoryResponses.
      */
     public Set<CategoryResponse> findAll() {
-        final var categorySet = categoryRepository.findAll();
-        return categorySet
+        return categoryRepository.findAll()
                 .stream()
                 .map(categoryMapper::convertCategoryEntityToCategoryResponse)
                 .collect(Collectors.toSet());
