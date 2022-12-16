@@ -49,6 +49,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Set tags
+        id: vars_tags
+        run:  echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
+      - name: Check tags output
+        run:  |
+          echo ${{ steps.vars_tags.outputs.tag }}
+
       - name: Build using docker-compose template
         run: docker-compose build
 
