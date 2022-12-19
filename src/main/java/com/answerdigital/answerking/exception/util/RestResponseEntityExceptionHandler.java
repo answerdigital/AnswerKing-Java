@@ -3,9 +3,8 @@ package com.answerdigital.answerking.exception.util;
 import com.answerdigital.answerking.exception.AnswerKingException;
 import com.answerdigital.answerking.exception.custom.ValidationException;
 import com.answerdigital.answerking.exception.generic.InternalServerErrorException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import lombok.SneakyThrows;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,32 +26,32 @@ import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler {
-
+    @SneakyThrows
     @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
-                       HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            HttpMessageNotReadableException.class})
+    public ValidationErrorResponse handleMethodArgumentNotValidException(
             final MethodArgumentNotValidException exception,
-            final HttpServletRequest request) {
-
+            final HttpServletRequest request
+    ) {
         final Map<String, Collection<String>> errorsMap =
                 exception.getBindingResult().getFieldErrors()
                         .stream()
                         .collect(Collectors.toMap(FieldError::getField,
-                                FieldError -> new ArrayList<>(Collections.singletonList(FieldError.getDefaultMessage())),
+                                fieldError -> new ArrayList<>(Collections.singletonList(fieldError.getDefaultMessage())),
                                 (mainList, newList) -> {
                                     mainList.addAll(newList);
                                     return mainList;
                                 }));
 
-        final ErrorResponse response = new ValidationErrorResponse(new ValidationException(errorsMap), request);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ValidationErrorResponse(new ValidationException(errorsMap), request);
     }
 
+    @SneakyThrows
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+    public ValidationErrorResponse handleConstraintViolationException(
             final ConstraintViolationException exception,
-            final HttpServletRequest request) {
-
+            final HttpServletRequest request
+    ) {
         final Map<String, Collection<String>> errorsMap = new HashMap<>();
         for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
             final String mapKey = Objects.requireNonNull(StreamSupport
@@ -68,27 +68,23 @@ public class RestResponseEntityExceptionHandler {
             }
         }
 
-        final ErrorResponse response = new ValidationErrorResponse(new ValidationException(errorsMap), request);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ValidationErrorResponse(new ValidationException(errorsMap), request);
     }
 
+    @SneakyThrows
     @ExceptionHandler(AnswerKingException.class)
-    public ResponseEntity<ErrorResponse> handleAnswerKingException(
+    public ErrorResponse handleAnswerKingException(
             final AnswerKingException exception,
-            final HttpServletRequest request) {
-
-        final ErrorResponse response = new ErrorResponse(exception, request);
-        return new ResponseEntity<>(response, exception.getStatus());
+            final HttpServletRequest request
+    ) {
+        return new ErrorResponse(exception, request);
     }
 
     // if an uncaught exception arrives here, default to a 500 Internal Server Error
+    @SneakyThrows
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
-    public ResponseEntity<ErrorResponse> defaultExceptionHandler(
-            final Exception exception,
-            final HttpServletRequest request) {
-
-        final ErrorResponse response = new ErrorResponse(new InternalServerErrorException(exception.getMessage()), request);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ErrorResponse defaultExceptionHandler(final Exception exception, final HttpServletRequest request) {
+        return new ErrorResponse(new InternalServerErrorException(exception.getMessage()), request);
     }
 
 }
