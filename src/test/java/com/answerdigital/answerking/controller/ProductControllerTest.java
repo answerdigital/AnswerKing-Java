@@ -53,6 +53,7 @@ class ProductControllerTest {
     private MockMvc mvc;
 
     private ProductResponse product;
+
     private SimpleCategoryResponse simpleCategoryResponse;
 
     private SimpleCategoryResponseTestBuilder simpleCategoryResponseTestBuilder;
