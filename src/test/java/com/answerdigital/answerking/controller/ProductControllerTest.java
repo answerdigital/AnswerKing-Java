@@ -1,5 +1,6 @@
 package com.answerdigital.answerking.controller;
 
+import com.answerdigital.answerking.builder.SimpleCategoryResponseTestBuilder;
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.response.SimpleCategoryResponse;
 import com.answerdigital.answerking.service.ProductService;
@@ -52,21 +53,23 @@ class ProductControllerTest {
     private MockMvc mvc;
 
     private ProductResponse product;
+    private SimpleCategoryResponse simpleCategoryResponse;
+
+    private SimpleCategoryResponseTestBuilder simpleCategoryResponseTestBuilder;
 
     @BeforeEach
     public void generateProduct() {
-        final var categoryResponse = SimpleCategoryResponse.builder()
-                .id(22L)
-                .name("test")
-                .description("testDesc")
-                .build();
+        simpleCategoryResponseTestBuilder = new SimpleCategoryResponseTestBuilder();
+        simpleCategoryResponse = simpleCategoryResponseTestBuilder
+            .withDefaultValues()
+            .build();
         product = ProductResponse.builder()
                 .id(55L)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
-                .category(categoryResponse)
+                .category(simpleCategoryResponse)
                 .build();
     }
 
