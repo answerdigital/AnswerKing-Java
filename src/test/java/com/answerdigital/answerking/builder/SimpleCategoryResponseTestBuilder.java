@@ -4,7 +4,9 @@ import com.answerdigital.answerking.response.SimpleCategoryResponse;
 
 public class SimpleCategoryResponseTestBuilder {
     private Long id;
+
     private String name;
+
     private String description;
 
     public SimpleCategoryResponseTestBuilder withDefaultValues() {
