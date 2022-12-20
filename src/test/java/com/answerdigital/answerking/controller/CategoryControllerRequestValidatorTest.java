@@ -1,5 +1,6 @@
 package com.answerdigital.answerking.controller;
 
+import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
 import com.answerdigital.answerking.request.CategoryRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,11 +8,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class CategoryControllerRequestValidatorTest {
@@ -22,10 +25,17 @@ class CategoryControllerRequestValidatorTest {
 
     private static final String DEFAULT_DESCRIPTION = "Our selection of drinks";
 
+    private final CategoryRequestTestBuilder categoryRequestTestBuilder;
+
+    public CategoryControllerRequestValidatorTest() {
+        categoryRequestTestBuilder = new CategoryRequestTestBuilder();
+    }
+
     @BeforeEach
     void setUp() {
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        try (ValidatorFactory factory = buildDefaultValidatorFactory()) {
+            validator = factory.getValidator();
+        }
     }
 
     @AfterEach
@@ -49,8 +59,11 @@ class CategoryControllerRequestValidatorTest {
     @MethodSource("provideInvalidStringsForAddCategory")
     void addCategoryWithInvalidRequest(final String name, final String description) {
         // given
-
-        final CategoryRequest addCategoryRequest = new CategoryRequest(name, description);
+        final CategoryRequest addCategoryRequest = categoryRequestTestBuilder
+            .withName(name)
+            .withDescription(description)
+            .withProductIds(new ArrayList<>())
+            .build();
 
         // when
         final Set<ConstraintViolation<CategoryRequest>> violations = validator.validate(addCategoryRequest);
@@ -75,7 +88,11 @@ class CategoryControllerRequestValidatorTest {
     @MethodSource("provideInvalidStringsForUpdateCategory")
     void updateCategoryWithInvalidRequest(final String name, final String description) {
         // given
-        final CategoryRequest updateCategoryRequest = new CategoryRequest(name, description);
+        final CategoryRequest updateCategoryRequest = categoryRequestTestBuilder
+            .withName(name)
+            .withDescription(description)
+            .withProductIds(new ArrayList<>())
+            .build();
 
         // when
         final Set<ConstraintViolation<CategoryRequest>> violations = validator.validate(updateCategoryRequest);
@@ -84,4 +101,3 @@ class CategoryControllerRequestValidatorTest {
         assertFalse(violations.isEmpty());
     }
 }
-
