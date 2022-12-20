@@ -7,10 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Mapper(componentModel = "spring", imports = {List.class, Collectors.class})
+@Mapper(componentModel = "spring")
 public interface ProductMapper {
     @Mapping(target = "retired", constant = "false")
     Product addRequestToProduct(ProductRequest productRequest);
