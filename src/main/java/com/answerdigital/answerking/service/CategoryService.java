@@ -1,6 +1,7 @@
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.CategoryMapper;
@@ -128,6 +129,43 @@ public class CategoryService {
      */
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productService.findProductsByCategoryId(categoryId);
+    }
+
+    /**
+     * Adds a Product to a Category.
+     * @param categoryId The ID of the Category.
+     * @param productId The ID of the Product.
+     * @return The newly persisted Category, in the form of a CategoryResponse.
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoryResponse addProductToCategory(final Long categoryId, final Long productId) {
+        final Category category = findById(categoryId);
+        final Product product = productService.findById(productId);
+
+        if (category.getProducts().contains(product)) {
+            throw new ProductAlreadyPresentException("Category already has this product");
+        }
+
+        category.addProduct(product);
+        return categoryToResponse(categoryRepository.save(category));
+    }
+
+    /**
+     * Removes a product from a Category.
+     * @param categoryId The ID of the Category.
+     * @param productId The ID of the Product.
+     * @return The newly persisted Category, in the form of a CategoryResponse.
+     */
+    public CategoryResponse removeProductFromCategory(final Long categoryId, final Long productId) {
+        final Category category = findById(categoryId);
+        final Product product = productService.findById(productId);
+
+        if (!category.getProducts().contains(product)) {
+            throw new NotFoundException("Category does not have this product");
+        }
+
+        category.removeProduct(product);
+        return categoryToResponse(categoryRepository.save(category));
     }
 
     /**
