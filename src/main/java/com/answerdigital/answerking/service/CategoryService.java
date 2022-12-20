@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public class CategoryService {
      */
     @Transactional
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
-        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.empty());
+        validateCategoryNameDoesNotExistWhenCreating(categoryRequest.name());
 
         // Create a new category from the Request and persist the initial category.
         Category category = requestToCategory(categoryRequest);
@@ -101,7 +100,7 @@ public class CategoryService {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
-        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.of(id));
+        validateCategoryNameDoesNotExistWhenUpdating(categoryRequest.name(), id);
 
         final Category category = findById(id);
         final Category updatedCategory = updateRequestToCategory(category, categoryRequest);
@@ -164,20 +163,25 @@ public class CategoryService {
     }
 
     /**
-     * Checks if a Category already exists with a given name.
-     * @param categoryName The Category name.
-     * @param id The ID of the Category.
-     * @throws NameUnavailableException When the Category name already exists.
+     * To be used when validating that the category name does not exist
+     * when creating a new category.
+     * @param categoryName The Category name to check.
      */
-    private void validateCategoryNameDoesNotExist(final String categoryName, final Optional<Long> id) {
-        if(id.isEmpty()) {
-            if (categoryRepository.existsByName(categoryName)) {
-                throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryName));
-            }
-        } else {
-            if (categoryRepository.existsByNameAndIdIsNot(categoryName, id.get())) {
-                throw new NameUnavailableException(String.format("A category named %s already exists", categoryName));
-            }
+    private void validateCategoryNameDoesNotExistWhenCreating(final String categoryName) {
+        if (categoryRepository.existsByName(categoryName)) {
+            throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryName));
+        }
+    }
+
+    /**
+     * To be used when validating that the category name does not exist
+     * when renaming an existing category.
+     * @param categoryName The Category Name to check.
+     * @param id The ID of the existing category.
+     */
+    private void validateCategoryNameDoesNotExistWhenUpdating(final String categoryName, final Long id) {
+        if (categoryRepository.existsByNameAndIdIsNot(categoryName, id)) {
+            throw new NameUnavailableException(String.format("A category named %s already exists", categoryName));
         }
     }
 
