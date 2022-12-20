@@ -18,7 +18,6 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class CategoryControllerRequestValidatorTest {
-
     private Validator validator;
 
     private static final String DEFAULT_NAME = "Drinks";
