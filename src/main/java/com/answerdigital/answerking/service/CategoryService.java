@@ -49,8 +49,8 @@ public class CategoryService {
         validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.empty());
 
         // Create a new category from the Request and persist the initial category.
-        final Category newCategory = requestToCategory(categoryRequest);
-        final Category category =  categoryRepository.save(newCategory);
+        Category category = requestToCategory(categoryRequest);
+        category =  categoryRepository.save(category);
 
         // Add the products to the category.
         addProductsToCategory(category, categoryRequest.productIds());
