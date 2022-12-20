@@ -382,7 +382,8 @@ final class CategoryServiceTest {
             .thenReturn(Optional.empty());
 
         // then
-        assertThrows(NotFoundException.class, () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
+        assertThrows(NotFoundException.class,
+            () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
         verify(categoryRepository).findById(anyLong());
     }
 
