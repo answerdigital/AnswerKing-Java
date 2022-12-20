@@ -138,12 +138,12 @@ class CategoryControllerTest {
     void addCategoryWithInvalidCategoryRequestNameTest() throws Exception {
         final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final String error = mvc.perform(post("/categories")
-                        .content(categoryRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResolvedException().getMessage();
+        final String error = Objects.requireNonNull(mvc.perform(post("/categories")
+            .content(categoryRequest)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
     }
@@ -152,12 +152,12 @@ class CategoryControllerTest {
     void addCategoryWithInvalidCategoryRequestDescTest() throws Exception {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final String error = mvc.perform(post("/categories")
-                        .content(categoryRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResolvedException().getMessage();
+        final String error = Objects.requireNonNull(mvc.perform(post("/categories")
+            .content(categoryRequest)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
     }
