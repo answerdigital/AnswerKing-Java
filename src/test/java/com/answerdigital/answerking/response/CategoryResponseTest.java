@@ -50,7 +50,7 @@ class CategoryResponseTest {
         final var categoryResponse = categoryMapper.convertCategoryEntityToCategoryResponse(category);
 
         assertNotNull(categoryResponse);
-        assertEquals(PRODUCT_ID, categoryResponse.getProducts().get(0));
+        assertEquals(PRODUCT_ID, categoryResponse.getProductIds().get(0));
         assertEquals(CATEGORY_ID, categoryResponse.getId());
         assertEquals(categoryName, categoryResponse.getName());
         assertEquals(categoryDesc, categoryResponse.getDescription());

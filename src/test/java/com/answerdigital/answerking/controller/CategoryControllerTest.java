@@ -1,5 +1,9 @@
 package com.answerdigital.answerking.controller;
 
+import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
+import com.answerdigital.answerking.builder.CategoryResponseTestBuilder;
+import com.answerdigital.answerking.builder.ProductResponseTestBuilder;
+import com.answerdigital.answerking.builder.SimpleCategoryResponseTestBuilder;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -21,13 +25,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,9 +46,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
-
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     CategoryService categoryService;
@@ -52,81 +61,76 @@ class CategoryControllerTest {
     @MockBean
     ProductRepository productRepository;
 
-    @Test
-    void addProductToCategoryTest() throws Exception {
-        final var category = CategoryResponse.builder().build();
-        final var productId = 10L;
-        final var categoryId = 20L;
+    private final SimpleCategoryResponseTestBuilder simpleCategoryResponseTestBuilder;
 
-        doReturn(category).when(categoryService).addProductToCategory(categoryId, productId);
+    private final CategoryRequestTestBuilder categoryRequestTestBuilder;
 
-        mvc.perform(put("/categories/{categoryId}/addproduct/{productId}", categoryId, productId))
-            .andExpect(status().isOk());
-    }
+    private final CategoryResponseTestBuilder categoryResponseTestBuilder;
 
-    @Test
-    void removeProductFromCategoryTest() throws Exception {
-        final var category = CategoryResponse.builder().build();
-        final var productId = 10L;
-        final var categoryId = 20L;
+    private final ProductResponseTestBuilder productResponseTestBuilder;
 
-        doReturn(category).when(categoryService).removeProductFromCategory(categoryId, productId);
-
-        mvc.perform(put("/categories/{categoryId}/removeproduct/{productId}", categoryId, productId))
-            .andExpect(status().isOk());
+    public CategoryControllerTest() {
+        simpleCategoryResponseTestBuilder = new SimpleCategoryResponseTestBuilder();
+        categoryRequestTestBuilder = new CategoryRequestTestBuilder();
+        categoryResponseTestBuilder = new CategoryResponseTestBuilder();
+        productResponseTestBuilder = new ProductResponseTestBuilder();
     }
 
     @Test
     void addCategoryTest() throws Exception {
-        final ObjectMapper mapper = new ObjectMapper();
+        final LocalDateTime testDate = LocalDateTime.now();
 
-        final LocalDateTime testDate = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-        final var addCategoryRequest =  new CategoryRequest("random name", "random description");
-        final var categoryResponse = CategoryResponse.builder()
-                                                     .name(addCategoryRequest.name())
-                                                     .description(addCategoryRequest.description())
-                                                     .createdOn(testDate)
-                                                     .build();
-        final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description\"}";
+        final CategoryRequest categoryRequest = categoryRequestTestBuilder
+            .withDefaultValues()
+            .build();
 
-        doReturn(categoryResponse).when(categoryService).addCategory(addCategoryRequest);
+        final CategoryResponse categoryResponse = categoryResponseTestBuilder
+            .withDefaultValues()
+            .withName(categoryRequest.name())
+            .withDescription(categoryRequest.description())
+            .withCreatedOn(testDate)
+            .withLastUpdated(testDate)
+            .build();
+
+        final String categoryRequestJson =
+            "{\"name\": \"" + categoryRequest.name() + "\",\"description\": \"" + categoryRequest.description() + "\"}";
+
+        doReturn(categoryResponse).when(categoryService).addCategory(any(CategoryRequest.class));
         final var response = mvc.perform(post("/categories")
-                        .content(categoryRequest)
+                        .content(categoryRequestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isCreated())
                         .andReturn()
                         .getResponse();
-        final var resultJsonNode = mapper.readTree(response.getContentAsString());
+        final var resultJsonNode = objectMapper.readTree(response.getContentAsString());
 
         assertFalse(response.getContentAsString().isEmpty());
-        assertEquals(addCategoryRequest.name(), resultJsonNode.get("name").textValue());
-        assertEquals(addCategoryRequest.description(), resultJsonNode.get("description").textValue());
+        assertEquals(categoryRequest.name(), resultJsonNode.get("name").textValue());
+        assertEquals(categoryRequest.description(), resultJsonNode.get("description").textValue());
     }
 
     @Test
     void fetchProductsByCategoryTest() throws Exception {
-        final ObjectMapper mapper = new ObjectMapper();
+        final SimpleCategoryResponse simpleCategoryResponse = simpleCategoryResponseTestBuilder
+            .withDefaultValues()
+            .build();
 
-        final var categoryResponse = SimpleCategoryResponse.builder()
-                .id(22L)
-                .name("test")
-                .description("testDesc")
-                .build();
-        final var productResponse = ProductResponse.builder()
-                                                                  .id(33L)
-                                                                  .name("random name")
-                                                                  .description("random description")
-                                                                  .category(categoryResponse)
-                                                                  .build();
+        final ProductResponse productResponse = productResponseTestBuilder
+            .withDefaultValues()
+            .withName(simpleCategoryResponse.getName())
+            .withDescription(simpleCategoryResponse.getDescription())
+            .withCategory(simpleCategoryResponse)
+            .build();
 
-        doReturn(List.of(productResponse)).when(categoryService).findProductsByCategoryId(1L);
+        doReturn(List.of(productResponse)).when(categoryService).findProductsByCategoryId(anyLong());
         final var response = mvc.perform(get("/categories//{categoryId}/products", 1L)).andExpect(status().isOk());
 
-        final var responseRecord = mapper.readTree(response.andReturn().getResponse().getContentAsString()).get(0);
+        final var responseRecord = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).get(0);
+
         assertAll(
-                () -> assertEquals(33L, responseRecord.get("id").asLong()),
-                () -> assertEquals("random name", responseRecord.get("name").textValue()),
-                () -> assertEquals(22L, responseRecord.get("category").get("id").asLong())
+                () -> assertEquals(productResponse.getId(), responseRecord.get("id").asLong()),
+                () -> assertEquals(simpleCategoryResponse.getName(), responseRecord.get("name").textValue()),
+                () -> assertEquals(simpleCategoryResponse.getId(), responseRecord.get("category").get("id").asLong())
         );
     }
 
@@ -134,12 +138,12 @@ class CategoryControllerTest {
     void addCategoryWithInvalidCategoryRequestNameTest() throws Exception {
         final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final String error = mvc.perform(post("/categories")
-                        .content(categoryRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResolvedException().getMessage();
+        final String error = Objects.requireNonNull(mvc.perform(post("/categories")
+            .content(categoryRequest)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
     }
@@ -148,60 +152,70 @@ class CategoryControllerTest {
     void addCategoryWithInvalidCategoryRequestDescTest() throws Exception {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final String error = mvc.perform(post("/categories")
-                        .content(categoryRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResolvedException().getMessage();
+        final String error = Objects.requireNonNull(mvc.perform(post("/categories")
+            .content(categoryRequest)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
     }
 
     @Test
     void updateCategoryTest() throws Exception {
-
+        // given
         final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        final var updateCategoryRequest =  new CategoryRequest("random name", "random description");
-        final var newRandomName = "new random name";
-        final var newRandomDesc = "new random description";
-        final var categoryId = 112L;
-        final var  updateCategoryRequestJson = "{\"name\": \"random name\",\"description\": \"random description\"}";
-        final var testDate = LocalDateTime.now();
-        final var category = CategoryResponse.builder()
-            .id(categoryId)
-            .name(newRandomName)
-            .description(newRandomDesc)
-            .createdOn(testDate)
-            .lastUpdated(testDate)
+
+        final CategoryRequest categoryRequest = categoryRequestTestBuilder
+            .withDefaultValues()
             .build();
 
-        doReturn(category).when(categoryService).updateCategory(updateCategoryRequest, categoryId);
-        final var response = mvc.perform(put("/categories/{categoryId}", categoryId)
-                                                     .content(updateCategoryRequestJson)
+        final LocalDateTime testDate = LocalDateTime.now();
+
+        final CategoryResponse categoryResponse = categoryResponseTestBuilder
+            .withDefaultValues()
+            .withName(categoryRequest.name())
+            .withDescription(categoryRequest.description())
+            .withProductIds(new ArrayList<>())
+            .withLastUpdated(testDate)
+            .withCreatedOn(testDate)
+            .withIsRetired(false)
+            .build();
+
+        final String categoryRequestJson =
+            "{\"name\": \"" + categoryRequest.name() + "\",\"description\": \"" + categoryRequest.description() + "\"}";
+
+        // when
+        doReturn(categoryResponse).when(categoryService).updateCategory(any(CategoryRequest.class), anyLong());
+
+        final var httpResponse = mvc.perform(put("/categories/{categoryId}", categoryResponse.getId())
+                                                     .content(categoryRequestJson)
                                                      .contentType(MediaType.APPLICATION_JSON))
                                                      .andExpect(status().isOk())
                                                      .andReturn()
                                                      .getResponse();
-        final var resultJsonNode = mapper.readTree(response.getContentAsString());
 
-        assertFalse(response.getContentAsString().isEmpty());
-        assertEquals(newRandomName, resultJsonNode.get("name").textValue());
-        assertEquals(newRandomDesc, resultJsonNode.get("description").textValue());
+        final var resultJsonNode = mapper.readTree(httpResponse.getContentAsString());
+
+        // then
+        assertFalse(httpResponse.getContentAsString().isEmpty());
+        assertEquals(categoryRequest.name(), resultJsonNode.get("name").textValue());
+        assertEquals(categoryRequest.description(), resultJsonNode.get("description").textValue());
     }
 
     @Test
     void updateCategoryWithInvalidCategoryRequestNameTest() throws Exception {
-        final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
+        final String categoryRequestJson = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
-        final String error = mvc.perform(put("/categories/{categoryId}", 112L)
-                        .content(categoryRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResolvedException().getMessage();
+        final String error = Objects.requireNonNull(mvc.perform(put("/categories/{categoryId}", 112L)
+            .content(categoryRequestJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
     }
@@ -210,14 +224,13 @@ class CategoryControllerTest {
     void updateCategoryWithInvalidCategoryRequestDescTest() throws Exception {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
-        final String error = mvc.perform(put("/categories/{categoryId}", 112L)
-                        .content(categoryRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResolvedException().getMessage();
+        final String error = Objects.requireNonNull(mvc.perform(put("/categories/{categoryId}", 112L)
+            .content(categoryRequest)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
     }
-
 }
