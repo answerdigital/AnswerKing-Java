@@ -13,15 +13,17 @@ import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = {AnswerKingApplication.class, Category.class, Product.class, ProductResponse.class},
                 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
 
     private Expect expect;
+
     public String uuidRegex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
     @Autowired
@@ -61,7 +64,7 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
             .getResponse()
             .getContentAsString();
 
-        assertThat(response).isEqualTo("[]");
+        assertEquals("[]", response);
     }
 
     @Test
@@ -83,14 +86,16 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/product_controller_test_input.sql"})
     void getProductByIDNotFoundTest() throws Exception {
 
-        final var response = mvc.perform(get("/products/10000")) 
+        final var response = mvc.perform(get("/products/{id}", 10000L))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
-        String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-        expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 
     @Test
@@ -104,8 +109,10 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
             .getResponse()
             .getContentAsString();
 
-        String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-        expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 
     @Test
@@ -114,7 +121,7 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     void postProductTest() throws Exception {
 
         final var response = mvc.perform(post("/products")
-            .contentType("application/json")
+            .contentType(MediaType.APPLICATION_JSON)
             .content("{\"name\": \"Kabab\", \"description\": \"Product 1 desc\", \"price\": 10.34, \"categoryId\": 1}")) 
             // Need to add static fixtures instead of writing this in tests
             .andExpect(status().isCreated())
@@ -131,7 +138,7 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     void postProductTestInvalidBody() throws Exception {
 
         final var response = mvc.perform(post("/products")
-            .contentType("application/json")
+            .contentType(MediaType.APPLICATION_JSON)
             .content("This is not valid JSON")) 
             // Need to add static fixtures and be data driven to check all different ways body can be incorrect
             .andExpect(status().isBadRequest())
@@ -139,8 +146,10 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
             .getResponse()
             .getContentAsString();
 
-        String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-        expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 
     @Test
@@ -149,7 +158,7 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     void putProductTest() throws Exception {
 
         final var response = mvc.perform(put("/products/2")
-            .contentType("application/json")
+            .contentType(MediaType.APPLICATION_JSON)
             .content("{\"name\": \"Kabab\", \"description\": \"Product 1 desc\", \"price\": 10.34, \"categoryId\": 1}")) 
             // Need to add static fixtures instead of writing this in tests
             .andExpect(status().isOk())
@@ -165,8 +174,8 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/product_controller_test_input.sql"})
     void putProductTestInvalidBody() throws Exception {
 
-        final var response = mvc.perform(put("/products/2")
-            .contentType("application/json")
+        final var response = mvc.perform(put("/products/{id}", 2L)
+            .contentType(MediaType.APPLICATION_JSON)
             .content("This is not valid JSON")) 
             // Need to add static fixtures and be data driven to check all different ways body can be incorrect
             .andExpect(status().isBadRequest())
@@ -174,8 +183,10 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
             .getResponse()
             .getContentAsString();
 
-            String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-            expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 
     @Test
@@ -183,14 +194,18 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/product_controller_test_input.sql"})
     void putProductByIDInvalidTest() throws Exception {
 
-        final var response = mvc.perform(put("/products/invalid")) 
+        final var response = mvc.perform(put("/products/{id}", "invalid")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"name\": \"Kabab\", \"description\": \"Product 1 desc\", \"price\": 10.34, \"categoryId\": 1}"))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
-        String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-        expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 
     @Test
@@ -198,7 +213,7 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/product_controller_test_input.sql"})
     void deleteProductByIDTest() throws Exception {
 
-        mvc.perform(delete("/products/2")) // Need to get ID from seed really
+        mvc.perform(delete("/products/2"))
             .andExpect(status().isNoContent())
             .andReturn()
             .getResponse()
@@ -217,8 +232,10 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
             .getResponse()
             .getContentAsString();
 
-        String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-        expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 
     @Test
@@ -232,7 +249,9 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
             .getResponse()
             .getContentAsString();
 
-        String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
-        expect.serializer("json").toMatchSnapshot(sanitisedResponse); // This could be handled much better if the json was serialised. Then we could point to the json field and sanatise using that.
+        final String sanitisedResponse = response.replaceAll(uuidRegex, "{ Sanitised }");
+        // This could be handled much better if the json was serialised.
+        // Then we could point to the json field and sanatise using that.
+        expect.serializer("json").toMatchSnapshot(sanitisedResponse);
     }
 }
