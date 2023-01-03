@@ -1,6 +1,7 @@
 package com.answerdigital.answerking.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,21 +14,20 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonPropertyOrder({"id", "name", "description", "createdOn", "lastUpdated", "products", "retired"})
 public class CategoryResponse {
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String name;
 
     private String description;
 
-    private List<Long> products;
+    @JsonProperty("products")
+    private List<Long> productIds;
 
     private LocalDateTime createdOn;
 
     private LocalDateTime lastUpdated;
 
     private boolean retired;
-
 }

@@ -6,9 +6,8 @@ import com.answerdigital.answerking.response.ProductResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import java.util.List;
 
-@Mapper(componentModel = "spring", imports = {List.class})
+@Mapper(componentModel = "spring")
 public interface ProductMapper {
     @Mapping(target = "retired", constant = "false")
     Product addRequestToProduct(ProductRequest productRequest);
@@ -16,5 +15,4 @@ public interface ProductMapper {
     Product updateRequestToProduct(@MappingTarget Product product, ProductRequest productRequest);
 
     ProductResponse convertProductEntityToProductResponse(Product product);
-
 }

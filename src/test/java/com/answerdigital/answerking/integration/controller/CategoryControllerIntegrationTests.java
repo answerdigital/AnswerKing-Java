@@ -6,7 +6,8 @@ import com.answerdigital.answerking.model.Product;
 
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.utility.AbstractContainerBaseTest;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import au.com.origin.snapshots.Expect;
+import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,9 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,7 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("integration-test")
+@ExtendWith({SnapshotExtension.class})
 class CategoryControllerIntegrationTests extends AbstractContainerBaseTest {
+
+    private Expect expect;
 
     private static final Long CATEGORY_ID = 1L;
 
@@ -35,23 +37,13 @@ class CategoryControllerIntegrationTests extends AbstractContainerBaseTest {
     @Sql({"/test_sql_scripts/clearAll4Test.sql", "/test_sql_scripts/category_controller_test_input.sql"})
     void getAllProductsByCategoryTest() throws Exception {
 
-        final ObjectMapper mapper = new ObjectMapper();
-
         final var response = mvc.perform(get("/categories/{categoryId}/products", CATEGORY_ID))
-                                                    .andExpect(status().isOk())
-                                                    .andReturn()
-                                                    .getResponse();
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
-        final var responseContent = response.getContentAsString();
-
-        assertAll(
-              () -> assertFalse(responseContent.isEmpty()),
-              () -> assertEquals(2, mapper.readTree(responseContent).size()),
-              () -> assertEquals("Burger", mapper.readTree(responseContent).get(0).get("name").textValue()),
-              () -> assertEquals("300g Beef", mapper.readTree(responseContent).get(0).get("description").textValue()),
-              () -> assertEquals(6.69, mapper.readTree(responseContent).get(0).get("price").asDouble()),
-              () -> assertEquals("Fries", mapper.readTree(responseContent).get(1).get("name").textValue())
-        );
+        expect.serializer("json").toMatchSnapshot(response);
     }
 
 }

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +45,7 @@ public class ProductController {
         @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class)) })
     })
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         final List<ProductResponse> products = productService.findAll();
         return new ResponseEntity<>(products, products.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
@@ -58,7 +59,7 @@ public class ProductController {
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> getProductById(@Valid @PathVariable @NotNull final Long id) {
         return new ResponseEntity<>(productService.findByIdResponse(id), HttpStatus.OK);
     }
@@ -71,7 +72,7 @@ public class ProductController {
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> addProduct(@Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.addNewProduct(productRequest), HttpStatus.CREATED);
     }
@@ -87,7 +88,7 @@ public class ProductController {
             content = { @Content(mediaType = "application/problem+json",
                                     schema = @Schema(implementation = ErrorResponse.class)) })
     })
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable @NotNull final Long id,
                                               @Valid @RequestBody final ProductRequest productRequest) {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);

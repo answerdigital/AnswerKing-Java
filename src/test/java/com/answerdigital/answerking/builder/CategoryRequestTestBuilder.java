@@ -2,21 +2,21 @@ package com.answerdigital.answerking.builder;
 
 import com.answerdigital.answerking.request.CategoryRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CategoryRequestTestBuilder {
 
     private String name;
 
     private String description;
 
-    public CategoryRequestTestBuilder withDefaultAddRequestValues() {
+    private List<Long> productIds;
+
+    public CategoryRequestTestBuilder withDefaultValues() {
         this.name = "Burgers";
         this.description = "A selection of delicious burgers.";
-        return this;
-    }
-
-    public CategoryRequestTestBuilder withDefaultUpdateRequestValues() {
-        this.name = "Pizzas";
-        this.description = "Italian style stone baked pizzas.";
+        this.productIds = new ArrayList<>();
         return this;
     }
 
@@ -30,7 +30,12 @@ public class CategoryRequestTestBuilder {
         return this;
     }
 
+    public CategoryRequestTestBuilder withProductIds(final List<Long> productIds) {
+        this.productIds = productIds;
+        return this;
+    }
+
     public CategoryRequest build() {
-        return new CategoryRequest(name, description);
+        return new CategoryRequest(name, description, productIds);
     }
 }
