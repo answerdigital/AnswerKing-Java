@@ -1,7 +1,11 @@
 package com.answerdigital.answerking.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+
+import java.util.List;
 
 @JsonPropertyOrder({"name", "description", "products"})
 public record CategoryRequest(
