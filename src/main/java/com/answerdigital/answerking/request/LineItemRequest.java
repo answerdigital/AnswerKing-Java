@@ -1,6 +1,6 @@
 package com.answerdigital.answerking.request;
 
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.Positive;
 import java.util.Objects;
 
 public record LineItemRequest(
