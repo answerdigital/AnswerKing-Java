@@ -2,6 +2,7 @@ package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.builder.OrderRequestTestBuilder;
 import com.answerdigital.answerking.builder.OrderTestBuilder;
+import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
@@ -52,6 +53,8 @@ class OrderServiceTest {
 
     private final OrderRequestTestBuilder orderRequestTestBuilder = new OrderRequestTestBuilder();
 
+    private final ProductTestBuilder productTestBuilder = new ProductTestBuilder();
+
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
 
     private static final Long NONEXISTENT_ORDER_ID = 10L;
@@ -63,6 +66,7 @@ class OrderServiceTest {
             .withDefaultValues()
             .build();
         final OrderRequest orderRequest = orderRequestTestBuilder
+            .withDefaultValues()
             .withLineItemRequests(new ArrayList<>())
             .build();
 
@@ -163,10 +167,9 @@ class OrderServiceTest {
                 .withLineItemRequests(List.of(new LineItemRequest(1L, 1)))
                 .build();
 
-        final Product product = Product.builder()
-                .id(1L)
-                .name("burger")
-                .build();
+        final Product product = productTestBuilder
+            .withDefaultValues()
+            .build();
 
         final Order expectedOrder = new Order();
 
@@ -240,7 +243,6 @@ class OrderServiceTest {
         // Given
         final Order order = orderTestBuilder
             .withDefaultValues()
-            .withId(1L)
             .withOrderStatus(OrderStatus.CANCELLED)
             .build();
         final OrderRequest updateOrderRequest = orderRequestTestBuilder
@@ -253,7 +255,7 @@ class OrderServiceTest {
             .findById(anyLong());
 
         // Then
-        assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(1L, updateOrderRequest));
+        assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(order.getId(), updateOrderRequest));
         verify(orderRepository).findById(anyLong());
     }
 
