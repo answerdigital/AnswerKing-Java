@@ -6,11 +6,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-import jakarta.servlet.http.HttpServletRequest;
-
 
 @Slf4j
 @Getter
