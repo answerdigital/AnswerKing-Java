@@ -12,7 +12,7 @@
 
 	<groupId>com.answerdigital.academy</groupId>
 	<artifactId>answer-king-rest-api</artifactId>
-	<version>0.0.1</version>
+	<version>1.1.0</version>
 	<name>answer-king-rest-api</name>
 	<description>The AnswerKing project</description>
 
