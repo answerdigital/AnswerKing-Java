@@ -98,10 +98,10 @@ jobs:
             {
             "PR_URL": "${{ github.event_name == 'push' && github.event.repository.html_url || github.event.pull_request.html_url }}",
             "Sonar_Status": "${{ needs.Sonar-Cloud.outputs.job-status }}",
-            "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
-            "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",
+            "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",            
             "Type": "${{ github.event_name == 'push' && 'Merged' || github.event.action }}",
             "Author": "${{ github.actor }}"
             }
+        # "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",    
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
