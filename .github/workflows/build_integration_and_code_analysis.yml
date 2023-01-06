@@ -77,7 +77,7 @@ jobs:
 
       - name: Publish test coverage results
         id: jacoco_reporter
-        uses: PavanMudigonda/jacoco-reporter@v4.7
+        uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
           coverage_results_path: 'target/site/jacoco/jacoco.xml'
           coverage_report_title: 'Test coverage results'
@@ -90,6 +90,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Send Slack Notification
     steps:
+    
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Send GitHub trigger payload to Slack Workflow Builder
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
@@ -99,9 +105,11 @@ jobs:
             "PR_URL": "${{ github.event_name == 'push' && github.event.repository.html_url || github.event.pull_request.html_url }}",
             "Sonar_Status": "${{ needs.Sonar-Cloud.outputs.job-status }}",
             "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
-            "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",
+            "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",  
             "Type": "${{ github.event_name == 'push' && 'Merged' || github.event.action }}",
             "Author": "${{ github.actor }}"
             }
+        # "Title": "GitHub",
+        # "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",    
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

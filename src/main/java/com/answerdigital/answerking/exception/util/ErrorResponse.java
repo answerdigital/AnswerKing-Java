@@ -9,6 +9,8 @@ import org.springframework.http.ProblemDetail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import jakarta.servlet.http.HttpServletRequest;
+
 
 @Slf4j
 @Getter

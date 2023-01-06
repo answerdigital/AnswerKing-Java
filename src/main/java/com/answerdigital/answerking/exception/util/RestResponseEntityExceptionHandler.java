@@ -6,6 +6,8 @@ import com.answerdigital.answerking.exception.generic.InternalServerErrorExcepti
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +29,7 @@ import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler {
+
     @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
         HttpMessageNotReadableException.class})
     public ValidationErrorResponse handleMethodArgumentNotValidException(
