@@ -8,13 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @Slf4j
 @Getter
 public class ErrorResponse extends ProblemDetail {
     private final String traceId;
 
-    @SneakyThrows
+    @SneakyThrows(URISyntaxException.class)
     public ErrorResponse(final AnswerKingException exception, final HttpServletRequest request) {
         setType(new URI(exception.getType()));
         setTitle(exception.getTitle());

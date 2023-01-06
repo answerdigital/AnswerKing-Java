@@ -26,7 +26,6 @@ import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler {
-    @SneakyThrows
     @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
             HttpMessageNotReadableException.class})
     public ValidationErrorResponse handleMethodArgumentNotValidException(
@@ -46,7 +45,6 @@ public class RestResponseEntityExceptionHandler {
         return new ValidationErrorResponse(new ValidationException(errorsMap), request);
     }
 
-    @SneakyThrows
     @ExceptionHandler(ConstraintViolationException.class)
     public ValidationErrorResponse handleConstraintViolationException(
             final ConstraintViolationException exception,
@@ -71,7 +69,6 @@ public class RestResponseEntityExceptionHandler {
         return new ValidationErrorResponse(new ValidationException(errorsMap), request);
     }
 
-    @SneakyThrows
     @ExceptionHandler(AnswerKingException.class)
     public ErrorResponse handleAnswerKingException(
             final AnswerKingException exception,
@@ -81,7 +78,6 @@ public class RestResponseEntityExceptionHandler {
     }
 
     // if an uncaught exception arrives here, default to a 500 Internal Server Error
-    @SneakyThrows
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public ErrorResponse defaultExceptionHandler(final Exception exception, final HttpServletRequest request) {
         return new ErrorResponse(new InternalServerErrorException(exception.getMessage()), request);
