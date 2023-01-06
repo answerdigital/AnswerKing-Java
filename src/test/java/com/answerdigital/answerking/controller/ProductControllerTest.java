@@ -129,7 +129,7 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                         .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                         .andReturn().getResolvedException().getMessage();
 
         assertTrue(error.contains("Product name must only contain letters, spaces and dashes"));
@@ -164,8 +164,7 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
         //then
                         .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                        .andExpect(MockMvcResultMatchers.content()
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                         .andReturn().getResolvedException().getMessage();
 
         assertTrue(error.contains("Product price is invalid"));
