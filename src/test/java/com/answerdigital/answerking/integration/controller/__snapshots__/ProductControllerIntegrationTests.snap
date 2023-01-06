@@ -1,0 +1,53 @@
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.deleteProductByIDInvalidTest=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.deleteProductByIDNotFoundTest=[
+  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"Product with ID 10000 does not exist.\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\"}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getAllProductsTest=[
+  "[{\"id\":1,\"name\":\"Burger\",\"description\":\"300g Beef\",\"price\":6.69,\"category\":{\"id\":1,\"name\":\"CatOne\",\"description\":\"CatOne description\"},\"retired\":false},{\"id\":2,\"name\":\"Cola\",\"description\":\"500ml\",\"price\":2.99,\"category\":{\"id\":2,\"name\":\"CatTwo\",\"description\":\"CatTwo description\"},\"retired\":false},{\"id\":3,\"name\":\"Fries\",\"description\":\"Large Fries\",\"price\":2.99,\"category\":{\"id\":1,\"name\":\"CatOne\",\"description\":\"CatOne description\"},\"retired\":false}]"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDInvalidTest=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDNotFoundTest=[
+  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"Product with ID 10000 does not exist.\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\"}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDTest=[
+  "{\"id\":1,\"name\":\"Burger\",\"description\":\"300g Beef\",\"price\":6.69,\"category\":{\"id\":1,\"name\":\"CatOne\",\"description\":\"CatOne description\"},\"retired\":false}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.postProductTest=[
+  "{\"id\":4,\"name\":\"Kabab\",\"description\":\"Product 1 desc\",\"price\":10.34,\"category\":{\"id\":1,\"name\":\"CatOne\",\"description\":\"CatOne description\"},\"retired\":false}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.postProductTestInvalidBody=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.putProductByIDInvalidTest=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.putProductTest=[
+  "{\"id\":2,\"name\":\"Kabab\",\"description\":\"Product 1 desc\",\"price\":10.34,\"category\":{\"id\":2,\"name\":\"CatTwo\",\"description\":\"CatTwo description\"},\"retired\":false}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.putProductTestInvalidBody=[
+  ""
+]

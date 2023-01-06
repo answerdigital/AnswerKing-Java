@@ -76,3 +76,14 @@ spring:
     username: test_user
     password: GS3ef_fsd^!
     url: jdbc:mysql://mysqldb:3306/answer_king
+
+---
+
+logging:
+  pattern:
+    dateformat: 'yyyy-MM-dd HH:mm:ss.SSS'
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: '*'

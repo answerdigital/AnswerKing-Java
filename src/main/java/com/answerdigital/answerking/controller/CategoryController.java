@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -95,18 +95,18 @@ public class CategoryController {
     })
     @PutMapping("/{categoryId}/addproduct/{productId}")
     public ResponseEntity<CategoryResponse> addProductToCategory(@PathVariable @NotNull final Long categoryId,
-                                                         @PathVariable @NotNull final Long productId) {
+                                                                 @PathVariable @NotNull final Long productId) {
         return new ResponseEntity<>(categoryService.addProductToCategory(categoryId, productId), HttpStatus.OK);
     }
 
     @Operation(summary = "Remove product from a category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Remove product from a category.",
-                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class)) })
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class)) })
     })
     @PutMapping("/{categoryId}/removeproduct/{productId}")
     public ResponseEntity<CategoryResponse> removeProductFromCategory(@PathVariable @NotNull final Long categoryId,
-                                                              @PathVariable @NotNull final Long productId) {
+                                                                      @PathVariable @NotNull final Long productId) {
         return new ResponseEntity<>(categoryService.removeProductFromCategory(categoryId, productId), HttpStatus.OK);
     }
 
