@@ -85,7 +85,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   Notify-Slack:
-    if: github.event_name == 'opened'
+    if: ${{ always() }}
     needs: [ Build-Test, Sonar-Cloud ]
     runs-on: ubuntu-latest
     name: Send Slack Notification
@@ -97,6 +97,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: Send GitHub trigger payload to Slack Workflow Builder
+        if: github.event_name == 'opened'
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
