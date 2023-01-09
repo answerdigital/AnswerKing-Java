@@ -85,7 +85,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   Notify-Slack:
-    if: ${{ always() }}
+    if: github.event_name == 'opened'
     needs: [ Build-Test, Sonar-Cloud ]
     runs-on: ubuntu-latest
     name: Send Slack Notification
