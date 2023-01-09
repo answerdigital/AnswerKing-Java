@@ -31,7 +31,7 @@ jobs:
       run:
         shell: bash
         # We keep Terraform files in the terraform directory.
-        working-directory: .github/workflows/terraform
+        working-directory: ./terraform
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
