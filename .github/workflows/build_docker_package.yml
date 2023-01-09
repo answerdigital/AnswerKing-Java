@@ -7,8 +7,7 @@ on:
       - master
       - develop
       - v1.1.0-preview.3
-    types:
-      - completed
+    types: [opened, synchronize, reopened, completed]
 
 env:
   REGISTRY: ghcr.io/answerconsulting/answerking-java
