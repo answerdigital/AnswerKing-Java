@@ -24,7 +24,9 @@ jobs:
           sonarcloud_organization: your-organization
           project_key: your-project-key
       - name: Print quality gate status
-        run: echo "Quality gate status: ${{ steps.quality_gate_check.outputs.status }}"
+        env:
+            QUALITY_GATE: ${{ steps.quality_gate_check.outputs.status }}
+        run: echo "$QUALITY_GATE"
 
   # Sonar-Cloud:
   #   name: Static Code Analysis - Sonar Cloud
