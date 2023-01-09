@@ -24,9 +24,8 @@ jobs:
           sonarcloud_organization: your-organization
           project_key: your-project-key
       - name: Print quality gate status
-        env:
-            QUALITY_GATE: ${{ steps.quality_gate_check.outputs.status }}
-        run: echo "$QUALITY_GATE"
+        outputs:
+          job-status: ${{ steps.quality_gate_check.outputs.status }}
 
   # Sonar-Cloud:
   #   name: Static Code Analysis - Sonar Cloud
@@ -121,7 +120,7 @@ jobs:
           payload: |
             {
             "PR_URL": "${{ github.event_name == 'push' && github.event.repository.html_url || github.event.pull_request.html_url }}",
-            "Sonar_Status": "temp success",
+            "Sonar_Status": "${{ needs.Quality-Gate-Check.outputs.job-status }}",
         # "Sonar_Status": "${{ needs.Sonar-Cloud.outputs.job-status }}",
             "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
             "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",  
