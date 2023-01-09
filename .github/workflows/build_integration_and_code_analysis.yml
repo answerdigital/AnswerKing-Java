@@ -97,7 +97,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: Send GitHub trigger payload to Slack Workflow Builder
-        if: github.event_name == 'opened'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
