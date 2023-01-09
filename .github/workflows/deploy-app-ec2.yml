@@ -57,3 +57,7 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
+      - name: Terraform Apply
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/v1.1.0-preview.3)  && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
+
