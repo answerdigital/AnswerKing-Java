@@ -7,6 +7,7 @@ on:
       - master
       - develop
       - v1.1.0-preview.2
+      - v1.1.0-preview.3
       - BENCH-280
     types:
       - completed
