@@ -9,8 +9,6 @@ on:
       - v1.1.0-preview.2
   pull_request:
     types: [opened, synchronize, reopened]
-    schedule:
-      - cron: '* 5 * * *'
 jobs:
   Build-Test:
     name: Integration Test
@@ -71,7 +69,6 @@ jobs:
           payload: |
             {
             "PR_URL": "${{ github.event_name == 'push' && github.event.repository.html_url || github.event.pull_request.html_url }}",
-            "Sonar_Status": "success",
             "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
             "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",  
             "Type": "${{ github.event_name == 'push' && 'Merged' || github.event.action }}",
