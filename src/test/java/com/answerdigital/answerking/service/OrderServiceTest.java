@@ -139,8 +139,8 @@ class OrderServiceTest {
     void testFindAllReturnsListOfOrders() {
         // given
         final List<Order> orders = List.of(
-            orderTestBuilder.withId(1L).build(),
-            orderTestBuilder.withId(2L).build()
+            orderTestBuilder.withDefaultValues().build(),
+            orderTestBuilder.withId(1L).build()
         );
 
         // when
