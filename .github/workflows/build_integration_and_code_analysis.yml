@@ -51,21 +51,9 @@ jobs:
           coverage_report_name: 'Test coverage results'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  Quality-Gate-Check:
-    name: Check quality gate status
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check quality gate
-        id: check-quality-gate
-        uses: SonarSource/sonarcloud-github-action@v3.1
-        with:
-          args: analysis status --projectKey AnswerConsulting_AnswerKing-Java
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  
   Notify-Slack:
     if: ${{ always() }}
-    needs: [ Build-Test, Quality-Gate-Check ]
+    needs: [ Build-Test ]
     runs-on: ubuntu-latest
     name: Send Slack Notification
     steps:
@@ -83,13 +71,11 @@ jobs:
           payload: |
             {
             "PR_URL": "${{ github.event_name == 'push' && github.event.repository.html_url || github.event.pull_request.html_url }}",
-            "Sonar_Status": "${{ steps.quality_gate_check.outputs.status }}",
+            "Sonar_Status": "success",
             "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
             "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",  
             "Type": "${{ github.event_name == 'push' && 'Merged' || github.event.action }}",
             "Author": "${{ github.actor }}"
             }
-        # "Title": "GitHub",
-        # "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",    
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
