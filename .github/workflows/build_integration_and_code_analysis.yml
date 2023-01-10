@@ -53,17 +53,15 @@ jobs:
 
   Quality-Gate-Check:
     name: Check quality gate status
-    outputs:
-      job-status: ${{ steps.quality_gate_check.outputs.status }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check quality gate status
-        id: quality_gate_check
-        uses: marketplace/actions/sonarqube-quality-gate-check@v1
+      - name: Check quality gate
+        id: check-quality-gate
+        uses: SonarSource/sonarcloud-github-action@v3.1
         with:
-          sonarcloud_token: ${{ secrets.SONARCLOUD_TOKEN }}
-          sonarcloud_organization: answerdigital
-          project_key: AnswerConsulting_AnswerKing-Java
+          args: analysis status --projectKey AnswerConsulting_AnswerKing-Java
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   
   Notify-Slack:
     if: ${{ always() }}
@@ -85,7 +83,7 @@ jobs:
           payload: |
             {
             "PR_URL": "${{ github.event_name == 'push' && github.event.repository.html_url || github.event.pull_request.html_url }}",
-            "Sonar_Status": "${{ needs.Quality-Gate-Check.job-status }}",
+            "Sonar_Status": "${{ steps.quality_gate_check.outputs.status }}",
             "Test_Status": "${{ needs.Build-Test.outputs.job-status }}",
             "Title": "${{ github.event_name == 'push' && github.event.commits[0].message || github.event.pull_request.title }}",  
             "Type": "${{ github.event_name == 'push' && 'Merged' || github.event.action }}",
