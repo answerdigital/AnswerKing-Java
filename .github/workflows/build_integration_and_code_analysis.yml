@@ -41,7 +41,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -B verify sonar:sonar -Pdev -Dsonar.projectKey=AnswerConsulting_AnswerKing-Java
+        run: mvn -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -B verify sonar:sonar -Dsonar.projectKey=AnswerConsulting_AnswerKing-Java
   Build-Test:
     name: Integration Test
     outputs:
