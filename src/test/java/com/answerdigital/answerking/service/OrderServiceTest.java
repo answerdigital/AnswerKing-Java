@@ -248,6 +248,7 @@ class OrderServiceTest {
         final OrderRequest updateOrderRequest = orderRequestTestBuilder
             .withLineItemRequests(List.of(new LineItemRequest(1L, 1)))
             .build();
+        final long orderId = order.getId();
 
         // When
         doReturn(Optional.of(order))
@@ -255,7 +256,7 @@ class OrderServiceTest {
             .findById(anyLong());
 
         // Then
-        assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(order.getId(), updateOrderRequest));
+        assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(orderId, updateOrderRequest));
         verify(orderRepository).findById(anyLong());
     }
 
