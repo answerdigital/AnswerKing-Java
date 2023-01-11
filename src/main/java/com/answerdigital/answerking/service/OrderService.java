@@ -1,7 +1,6 @@
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
-import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -148,24 +146,6 @@ public class OrderService {
                 .stream()
                 .collect(Collectors.toMap(lineItemRequest -> helper.get(lineItemRequest.productId()),
                         LineItemRequest::quantity));
-    }
-
-    /**
-     * Helper method which checks if a line item is already present in an Order *
-     * @param order The Order to check
-     * @param product The Product to check
-     */
-    private void checkLineItemIsAlreadyPresent(final Order order, final Product product) {
-        final Optional<LineItem> existingLineItem = order.getLineItems()
-            .stream()
-            .filter(lineItem -> lineItem.getProduct() == product)
-            .findFirst();
-
-        if (existingLineItem.isPresent()) {
-            throw new ProductAlreadyPresentException(
-                String.format("The product with ID %d is already in the order", product.getId())
-            );
-        }
     }
 
     /**
