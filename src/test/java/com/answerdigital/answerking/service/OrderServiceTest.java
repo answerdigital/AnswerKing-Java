@@ -4,6 +4,7 @@ import com.answerdigital.answerking.builder.OrderRequestTestBuilder;
 import com.answerdigital.answerking.builder.OrderTestBuilder;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
+import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.OrderMapper;
 import com.answerdigital.answerking.model.Order;
@@ -33,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {OrderService.class})
 @ExtendWith(MockitoExtension.class)
@@ -80,6 +79,43 @@ class OrderServiceTest {
         // then
         assertEquals(OrderStatus.CREATED, response.getOrderStatus());
         verify(orderRepository).save(any(Order.class));
+    }
+
+    @Test
+    void testAddOrderWithNonExistentProductThrowsNotFoundException() {
+        // given
+        final Order order = orderTestBuilder
+            .withDefaultValues()
+            .build();
+        final OrderRequest orderRequest = orderRequestTestBuilder
+            .withDefaultValues()
+            .build();
+
+        // then
+        assertThrows(NotFoundException.class, () -> orderService.addOrder(orderRequest));
+    }
+
+    @Test
+    void testAddOrderWithRetiredProductThrowsRetirementException() {
+        // given
+        final Order order = orderTestBuilder
+            .withDefaultValues()
+            .build();
+        final Product product = productTestBuilder
+            .withDefaultValues()
+            .withRetired(true)
+            .build();
+        final OrderRequest orderRequest = orderRequestTestBuilder
+            .withDefaultValues()
+            .build();
+
+        // when
+        doReturn(List.of(product))
+            .when(productService)
+            .findAllProductsInListOfIds(anyList());
+
+        // then
+        assertThrows(RetirementException.class, () -> orderService.addOrder(orderRequest));
     }
 
     @Test
@@ -258,6 +294,33 @@ class OrderServiceTest {
         // then
         assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(orderId, updateOrderRequest));
         verify(orderRepository).findById(anyLong());
+    }
+
+    @Test
+    void testCancelOrderIsSuccessful() {
+        // given
+        final Order order = orderTestBuilder
+            .withDefaultValues()
+            .build();
+        final Order expected = orderTestBuilder
+            .withDefaultValues()
+            .withOrderStatus(OrderStatus.CANCELLED)
+            .build();
+
+        // when
+        doReturn(Optional.of(order))
+            .when(orderRepository)
+            .findById(anyLong());
+        doReturn(expected)
+            .when(orderRepository)
+            .save(any(Order.class));
+
+        final OrderResponse response = orderService.cancelOrder(order.getId());
+
+        // then
+        assertEquals(expected.getOrderStatus(), response.getOrderStatus());
+        verify(orderRepository).findById(anyLong());
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
