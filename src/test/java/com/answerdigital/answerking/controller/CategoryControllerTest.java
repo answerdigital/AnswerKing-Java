@@ -142,7 +142,7 @@ class CategoryControllerTest {
             .content(categoryRequest)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
@@ -156,7 +156,7 @@ class CategoryControllerTest {
             .content(categoryRequest)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
@@ -214,7 +214,7 @@ class CategoryControllerTest {
             .content(categoryRequestJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
@@ -228,7 +228,7 @@ class CategoryControllerTest {
             .content(categoryRequest)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
