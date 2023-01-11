@@ -11,7 +11,6 @@ import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.model.OrderStatus;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.OrderRepository;
-import com.answerdigital.answerking.request.LineItemRequest;
 import com.answerdigital.answerking.request.OrderRequest;
 import com.answerdigital.answerking.response.OrderResponse;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @ContextConfiguration(classes = {OrderService.class})
 @ExtendWith(MockitoExtension.class)
@@ -83,10 +84,6 @@ class OrderServiceTest {
 
     @Test
     void testAddOrderWithNonExistentProductThrowsNotFoundException() {
-        // given
-        final Order order = orderTestBuilder
-            .withDefaultValues()
-            .build();
         final OrderRequest orderRequest = orderRequestTestBuilder
             .withDefaultValues()
             .build();
@@ -97,10 +94,6 @@ class OrderServiceTest {
 
     @Test
     void testAddOrderWithRetiredProductThrowsRetirementException() {
-        // given
-        final Order order = orderTestBuilder
-            .withDefaultValues()
-            .build();
         final Product product = productTestBuilder
             .withDefaultValues()
             .withRetired(true)
@@ -200,8 +193,8 @@ class OrderServiceTest {
             .build();
 
         final OrderRequest updateOrderRequest = orderRequestTestBuilder
-                .withLineItemRequests(List.of(new LineItemRequest(1L, 1)))
-                .build();
+            .withDefaultValues()
+            .build();
 
         final Product product = productTestBuilder
             .withDefaultValues()
@@ -282,7 +275,7 @@ class OrderServiceTest {
             .withOrderStatus(OrderStatus.CANCELLED)
             .build();
         final OrderRequest updateOrderRequest = orderRequestTestBuilder
-            .withLineItemRequests(List.of(new LineItemRequest(1L, 1)))
+            .withDefaultValues()
             .build();
         final long orderId = order.getId();
 
