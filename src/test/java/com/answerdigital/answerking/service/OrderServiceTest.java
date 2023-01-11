@@ -61,7 +61,7 @@ class OrderServiceTest {
 
     @Test
     void testAddOrderWithNoProductsValidOrderRequestIsSuccessful() {
-        // Given
+        // given
         final Order order = orderTestBuilder
             .withDefaultValues()
             .build();
@@ -70,14 +70,14 @@ class OrderServiceTest {
             .withLineItemRequests(new ArrayList<>())
             .build();
 
-        // When
+        // when
         doReturn(order)
             .when(orderRepository)
             .save(any(Order.class));
 
         final OrderResponse response = orderService.addOrder(orderRequest);
 
-        // Then
+        // then
         assertEquals(OrderStatus.CREATED, response.getOrderStatus());
         verify(orderRepository).save(any(Order.class));
     }
@@ -211,36 +211,36 @@ class OrderServiceTest {
 
     @Test
     void testFindAllWithNoOrdersReturnsEmptyList() {
-        // When
+        // when
         doReturn(Collections.emptyList())
             .when(orderRepository)
             .findAll();
 
         final List<OrderResponse> response = orderService.findAll();
 
-        // When
+        // then
         assertTrue(response.isEmpty());
         verify(orderRepository).findAll();
     }
 
     @Test
     void testUpdateOrderWithInvalidOrderIdThrowsNotFoundException() {
-        // Given
+        // given
         final OrderRequest orderRequest = orderRequestTestBuilder.withDefaultValues().build();
 
-        // When
+        // when
         doReturn(Optional.empty())
             .when(orderRepository)
             .findById(anyLong());
 
-        // Then
+        // then
         assertThrows(NotFoundException.class, () -> orderService.updateOrder(NONEXISTENT_ORDER_ID, orderRequest));
         verify(orderRepository).findById(anyLong());
     }
 
     @Test
     void testUpdateOrderWithAlreadyCancelledOrderThrowsOrderCancelledException() {
-        // Given
+        // given
         final Order order = orderTestBuilder
             .withDefaultValues()
             .withOrderStatus(OrderStatus.CANCELLED)
@@ -250,27 +250,25 @@ class OrderServiceTest {
             .build();
         final long orderId = order.getId();
 
-        // When
+        // when
         doReturn(Optional.of(order))
             .when(orderRepository)
             .findById(anyLong());
 
-        // Then
+        // then
         assertThrows(OrderCancelledException.class, () -> orderService.updateOrder(orderId, updateOrderRequest));
         verify(orderRepository).findById(anyLong());
     }
 
     @Test
     void testOrderToOrderResponseMapsSuccessfully() {
-        // Given
+        // given
         final Order order = orderTestBuilder.withDefaultValues().build();
 
-        // When
+        // when
         final OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
 
-        System.out.println(orderResponse);
-        System.out.println(order);
-        // Then
+        // then
         assertAll("Should map successfully",
             () -> assertEquals(order.getId(), orderResponse.getId()),
             () -> assertEquals(order.getCreatedOn(), orderResponse.getCreatedOn()),
