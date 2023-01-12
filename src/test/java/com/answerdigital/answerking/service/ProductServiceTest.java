@@ -19,12 +19,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
@@ -303,6 +305,68 @@ final class ProductServiceTest {
         // then
         assertThrows(NotFoundException.class, () -> productService.retireProduct(NONEXISTENT_PRODUCT_ID));
         verify(productRepository).findById(anyLong());
+    }
+
+    @Test
+    void testFindProductsByCategoryIdReturnsListOfProductResponses() {
+        // given
+        final Product product = productTestBuilder
+            .withDefaultValues()
+            .build();
+        final Product productTwo = productTestBuilder
+            .withDefaultValues()
+            .withId(2L)
+            .withName("Beans & Toast")
+            .build();
+        final Category category = categoryTestBuilder
+            .withDefaultValues()
+            .withProducts(Set.of(product, productTwo))
+            .build();
+
+        // when
+        doReturn(List.of(product, productTwo))
+            .when(productRepository)
+            .findProductsByCategoryId(anyLong());
+
+        final List<ProductResponse> response = productService.findProductsByCategoryId(category.getId());
+
+        // then
+        assertAll("All should be equal",
+            () -> assertEquals(2, response.size()),
+            () -> assertEquals(response.get(0).getName(), product.getName()),
+            () -> assertEquals(response.get(1).getName(), productTwo.getName())
+        );
+        verify(productRepository).findProductsByCategoryId(category.getId());
+    }
+
+    @Test
+    void testFindAllProductsInListOfIdsReturnsAListOfProducts() {
+        // given
+        final Product product = productTestBuilder
+            .withDefaultValues()
+            .build();
+        final Product productTwo = productTestBuilder
+            .withDefaultValues()
+            .withId(2L)
+            .build();
+
+        // when
+        doReturn(List.of(product, productTwo))
+            .when(productRepository)
+            .findAllByIdIn(anyList());
+
+        final List<Product> response = productService.findAllProductsInListOfIds(List.of(
+            product.getId(),
+            productTwo.getId()
+        ));
+
+        // then
+        assertAll("All should be equal",
+            () -> assertEquals(2, response.size()),
+            () -> assertEquals(response.get(0).getName(), product.getName()),
+            () -> assertEquals(response.get(1).getName(), productTwo.getName())
+        );
+        verify(productRepository).findAllByIdIn(anyList());
     }
 
     /**
