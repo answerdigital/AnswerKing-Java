@@ -317,6 +317,25 @@ class OrderServiceTest {
     }
 
     @Test
+    void testCancelOrderWhenOrderIsAlreadyCancelledThrowsOrderCancelledException() {
+        // given
+        final Order order = orderTestBuilder
+            .withDefaultValues()
+            .withOrderStatus(OrderStatus.CANCELLED)
+            .build();
+        final long orderId = order.getId();
+
+        // when
+        doReturn(Optional.of(order))
+            .when(orderRepository)
+            .findById(anyLong());
+
+        // then
+        assertThrows(OrderCancelledException.class, () -> orderService.cancelOrder(orderId));
+        verify(orderRepository).findById(anyLong());
+    }
+
+    @Test
     void testOrderToOrderResponseMapsSuccessfully() {
         // given
         final Order order = orderTestBuilder.withDefaultValues().build();
