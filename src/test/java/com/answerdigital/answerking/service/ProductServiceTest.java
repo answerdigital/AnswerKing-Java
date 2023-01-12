@@ -223,8 +223,7 @@ final class ProductServiceTest {
             .build();
 
         // then
-        assertThrows(NotFoundException.class,
-                () -> productService.updateProduct(NONEXISTENT_PRODUCT_ID, productRequest));
+        assertThrows(NotFoundException.class, () -> productService.updateProduct(NONEXISTENT_PRODUCT_ID, productRequest));
     }
 
     @Test
