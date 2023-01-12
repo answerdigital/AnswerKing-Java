@@ -323,7 +323,7 @@ final class ProductServiceTest {
     }
 
     /**
-     * Helper method which assets the equality of a Product against a ProductResponse object.
+     * Helper method which asserts the equality of a Product against a ProductResponse object.
      * @param product The Product to compare.
      * @param response The ProductResponse to compare.
      */
