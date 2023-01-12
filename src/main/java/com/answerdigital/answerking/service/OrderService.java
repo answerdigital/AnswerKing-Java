@@ -155,6 +155,9 @@ public class OrderService {
      */
     public OrderResponse cancelOrder(final Long orderId) {
         final Order order = getOrderById(orderId);
+        if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
+            throw new OrderCancelledException(String.format("The Order with ID %d has already been cancelled", order.getId()));
+        }
         order.setOrderStatus(OrderStatus.CANCELLED);
         return convertToResponse(orderRepository.save(order));
     }
