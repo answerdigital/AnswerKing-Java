@@ -1,0 +1,51 @@
+name: AP Elastic Beanstalk deployment
+on:
+  workflow_run:
+    workflows: ["Integration and code analysis"]
+    branches:
+      - main
+      - v1.1.0-preview.3
+    types:
+      - completed
+jobs:     
+  upload-jar:
+    name: Build
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'maven'
+          
+      - name: Build with Maven
+        run: mvn -B package -DskipTests --file pom.xml
+      - name: Upload JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: target/answer-king-rest-api-0.0.1.jar  
+  deploy-jar:
+    needs: upload-jar
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download JAR
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v13
+        with:
+          aws_access_key: ${{ secrets.AP_AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AP_AWS_SECRET_ACCESS_KEY }}
+          use_existing_version_if_available: true
+          application_name: answerKing-java
+          environment_name: Answerkingjava-env
+          version_label: ${{github.SHA}}
+          region: eu-west-2
+          deployment_package: answer-king-rest-api-0.0.1.jar  

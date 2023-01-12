@@ -78,7 +78,17 @@ spring:
     url: jdbc:mysql://mysqldb:3306/answer_king
 
 ---
+spring:
+  config:
+    activate:
+      on-profile: production
 
+  datasource:
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+
+---
 logging:
   pattern:
     dateformat: 'yyyy-MM-dd HH:mm:ss.SSS'
