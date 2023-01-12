@@ -247,8 +247,7 @@ final class ProductServiceTest {
             .existsByNameAndIdIsNot(anyString(), anyLong());
 
         //then
-        assertThrows(NameUnavailableException.class,
-                () -> productService.updateProduct(productId, productRequest));
+        assertThrows(NameUnavailableException.class, () -> productService.updateProduct(productId, productRequest));
         verify(productRepository).findById(anyLong());
         verify(productRepository).existsByNameAndIdIsNot(anyString(), anyLong());
     }
