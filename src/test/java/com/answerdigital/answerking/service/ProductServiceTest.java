@@ -208,8 +208,7 @@ final class ProductServiceTest {
         final ProductResponse response = productService.updateProduct(product.getId(), productRequest);
 
         // then
-        assertEquals(product.getName(), response.getName());
-        assertEquals(product.getPrice().toString(), response.getPrice().toString());
+        assertProductVsProductResponseEquality(product, response);
         verify(productRepository).findById(anyLong());
         verify(productRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         verify(productRepository).save(any(Product.class));
