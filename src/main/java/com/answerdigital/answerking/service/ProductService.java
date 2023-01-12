@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -61,20 +60,20 @@ public class ProductService {
         return productsList
                 .stream()
                 .map(productMapper::convertProductEntityToProductResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ProductResponse updateProduct(final Long productId, final ProductRequest productRequest) {
-        productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
+        final Product product = findById(productId);
 
         if (productRepository.existsByNameAndIdIsNot(productRequest.name(), productId)) {
             throw new NameUnavailableException(String.format("A Product named '%s' already exists", productRequest.name()));
         }
 
-        final Product updatedProduct = productMapper.updateRequestToProduct(findById(productId), productRequest);
-        final Product savedProduct = productRepository.save(updatedProduct);
-        return productMapper.convertProductEntityToProductResponse(savedProduct);
+        final Product updatedProduct = productMapper.updateRequestToProduct(product, productRequest);
+        return productMapper.convertProductEntityToProductResponse(
+            productRepository.save(updatedProduct)
+        );
     }
 
     public void retireProduct(final Long productId) {
@@ -83,13 +82,13 @@ public class ProductService {
             throw new RetirementException(String.format("The product with ID %d is already retired", productId));
         }
         product.setRetired(true);
-        final Product savedProduct = productRepository.save(product);
+        productRepository.save(product);
     }
 
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productRepository.findProductsByCategoryId(categoryId)
                                 .stream()
-                                .map(product -> productMapper.convertProductEntityToProductResponse(product))
+                                .map(productMapper::convertProductEntityToProductResponse)
                                 .toList();
     }
 
