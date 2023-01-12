@@ -141,7 +141,7 @@ final class ProductServiceTest {
         final Product response = productService.findById(product.getId());
 
         // then
-        assertProductVsProductEquality(product, response);
+        assertEquals(product, response);
         verify(productRepository).findById(any());
     }
 
@@ -303,23 +303,6 @@ final class ProductServiceTest {
         // then
         assertThrows(NotFoundException.class, () -> productService.retireProduct(NONEXISTENT_PRODUCT_ID));
         verify(productRepository).findById(anyLong());
-    }
-
-    /**
-     * Helper method which asserts the equality of a Product against another Product object.
-     * @param product The Product to compare.
-     * @param response The Product to compare.
-     */
-    private void assertProductVsProductEquality(final Product product, final Product response) {
-        assertAll("Product vs Product Equality",
-            () -> assertEquals(product.getId(), response.getId()),
-            () -> assertEquals(product.getName(), response.getName()),
-            () -> assertEquals(product.getDescription(), response.getDescription()),
-            () -> assertEquals(product.getPrice(), response.getPrice()),
-            () -> assertEquals(product.isRetired(), response.isRetired()),
-            () -> assertEquals(product.getCategory().getName(), response.getCategory().getName()),
-            () -> assertEquals(product.getLineItems().size(), response.getLineItems().size())
-        );
     }
 
     /**
