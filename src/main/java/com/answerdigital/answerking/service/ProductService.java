@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ALREADY_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
+
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -33,7 +36,7 @@ public class ProductService {
 
     public ProductResponse addNewProduct(final ProductRequest productRequest) {
         if (productRepository.existsByName(productRequest.name())) {
-            throw new NameUnavailableException(String.format("A Product named '%s' already exists", productRequest.name()));
+            throw new NameUnavailableException(String.format(PRODUCTS_ALREADY_EXIST, productRequest.name()));
         }
 
         final Category category = categoryService.findById(productRequest.categoryId());
@@ -69,7 +72,7 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
 
         if (productRepository.existsByNameAndIdIsNot(productRequest.name(), productId)) {
-            throw new NameUnavailableException(String.format("A Product named '%s' already exists", productRequest.name()));
+            throw new NameUnavailableException(String.format(PRODUCTS_ALREADY_EXIST, productRequest.name()));
         }
 
         final Product updatedProduct = productMapper.updateRequestToProduct(findById(productId), productRequest);
@@ -80,7 +83,7 @@ public class ProductService {
     public void retireProduct(final Long productId) {
         final Product product = findById(productId);
         if (product.isRetired()) {
-            throw new RetirementException(String.format("The product with ID %d is already retired", productId));
+            throw new RetirementException(String.format(PRODUCTS_ARE_RETIRED, productId));
         }
         product.setRetired(true);
         final Product savedProduct = productRepository.save(product);

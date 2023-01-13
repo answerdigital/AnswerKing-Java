@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_ALREADY_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_PRODUCTS_ALREADY_PRESENT;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_PRODUCTS_NOT_FOUND;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
+
 @Service
 public class CategoryService {
     private final ProductService productService;
@@ -116,7 +122,7 @@ public class CategoryService {
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
-            throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
+            throw new RetirementException(String.format(CATEGORIES_ARE_RETIRED, categoryId));
         }
         category.setRetired(true);
         categoryRepository.save(category);
@@ -143,7 +149,7 @@ public class CategoryService {
         final Product product = productService.findById(productId);
 
         if (category.getProducts().contains(product)) {
-            throw new ProductAlreadyPresentException("Category already has this product");
+            throw new ProductAlreadyPresentException(String.format(CATEGORIES_PRODUCTS_ALREADY_PRESENT, productId));
         }
 
         category.addProduct(product);
@@ -161,7 +167,7 @@ public class CategoryService {
         final Product product = productService.findById(productId);
 
         if (!category.getProducts().contains(product)) {
-            throw new NotFoundException("Category does not have this product");
+            throw new NotFoundException(String.format(CATEGORIES_PRODUCTS_NOT_FOUND, productId));
         }
 
         category.removeProduct(product);
@@ -194,7 +200,7 @@ public class CategoryService {
             .toList();
 
         if(!retiredProducts.isEmpty()) {
-            throw new RetirementException(String.format("Products with IDs %s are retired", retiredProducts));
+            throw new RetirementException(String.format(PRODUCTS_ARE_RETIRED, retiredProducts));
         }
     }
 
@@ -205,7 +211,7 @@ public class CategoryService {
      */
     private void validateCategoryNameDoesNotExistWhenCreating(final String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
-            throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryName));
+            throw new NameUnavailableException(String.format(CATEGORIES_ALREADY_EXIST, categoryName));
         }
     }
 
@@ -217,7 +223,7 @@ public class CategoryService {
      */
     private void validateCategoryNameDoesNotExistWhenUpdating(final String categoryName, final Long id) {
         if (categoryRepository.existsByNameAndIdIsNot(categoryName, id)) {
-            throw new NameUnavailableException(String.format("A category named %s already exists", categoryName));
+            throw new NameUnavailableException(String.format(CATEGORIES_ALREADY_EXIST, categoryName));
         }
     }
 

@@ -23,6 +23,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.ORDERS_ALREADY_CANCELLED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_DO_NOT_EXIST;
+
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -118,7 +122,7 @@ public class OrderService {
         final List<Long> notFoundProducts = new ArrayList<>(productIdsList);
         notFoundProducts.removeAll(foundProductIdsList);
         if(!notFoundProducts.isEmpty()){
-            throw new NotFoundException(String.format("Products with ID's %s do not exist", notFoundProducts));
+            throw new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, notFoundProducts));
         }
 
         // check if any of products are retired and throw exception
@@ -129,7 +133,7 @@ public class OrderService {
                 .toList();
 
         if(!retiredProducts.isEmpty()){
-            throw new RetirementException(String.format("Products with ID's %s are retired", retiredProducts));
+            throw new RetirementException(String.format(PRODUCTS_ARE_RETIRED, retiredProducts));
         }
         return products;
     }
@@ -156,7 +160,7 @@ public class OrderService {
     public OrderResponse cancelOrder(final Long orderId) {
         final Order order = getOrderById(orderId);
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
-            throw new OrderCancelledException(String.format("The Order with ID %d has already been cancelled", order.getId()));
+            throw new OrderCancelledException(String.format(ORDERS_ALREADY_CANCELLED, order.getId()));
         }
         order.setOrderStatus(OrderStatus.CANCELLED);
         return convertToResponse(orderRepository.save(order));
