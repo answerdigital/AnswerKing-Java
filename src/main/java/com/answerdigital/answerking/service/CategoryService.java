@@ -48,11 +48,8 @@ public class CategoryService {
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
         validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.empty());
 
-        // Create a new category from the Request and persist the initial category.
         final Category newCategory = requestToCategory(categoryRequest);
         final Category category =  categoryRepository.save(newCategory);
-
-        // Add the products to the category.
         addProductsToCategory(category, categoryRequest.productIds());
 
         return categoryToResponse(category);
@@ -77,7 +74,9 @@ public class CategoryService {
      * @throws NotFoundException When the category cannot be found.
      */
     public CategoryResponse findByIdResponse(final Long categoryId) {
-        final Category category = findById(categoryId);
+        final Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+
         return categoryToResponse(category);
     }
 
@@ -92,17 +91,28 @@ public class CategoryService {
                 .collect(Collectors.toSet());
     }
 
-    public CategoryResponse updateCategory(final CategoryRequest updateCategoryRequest, final Long id) {
-        // check that the category isn't being renamed to a category name that already exists
-        if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
-            throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));
-        }
+    /**
+     * Updates a Category
+     * @param categoryRequest The CategoryRequest object.
+     * @param id The ID of the Category to update.
+     * @return The updated Category, in the form of a CategoryResponse.
+     * @throws NameUnavailableException When the Category name already exists.
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
+        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.of(id));
 
-        final Category updatedCategory = categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest);
-        final Category savedCategory = categoryRepository.save(updatedCategory);
-        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
+        final Category category = findById(id);
+        final Category updatedCategory = updateRequestToCategory(category, categoryRequest);
+        addProductsToCategory(updatedCategory, categoryRequest.productIds());
+
+        return categoryToResponse(categoryRepository.save(updatedCategory));
     }
 
+    /**
+     * Retires a Category.
+     * @param categoryId The Category ID to retire.
+     */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
