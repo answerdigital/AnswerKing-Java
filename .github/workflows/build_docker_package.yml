@@ -9,6 +9,7 @@ on:
       - v1.1.0-preview.3
     types: [opened, synchronize, reopened, completed]
 
+
 env:
   REGISTRY: ghcr.io/answerconsulting/answerking-java
   IMAGE_NAME: answer-king-rest-api_app #${{ github.repository }}
