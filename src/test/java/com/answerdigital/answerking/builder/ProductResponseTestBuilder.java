@@ -2,7 +2,6 @@ package com.answerdigital.answerking.builder;
 
 import com.answerdigital.answerking.response.ProductResponse;
 import com.answerdigital.answerking.response.SimpleCategoryResponse;
-
 import java.math.BigDecimal;
 
 public class ProductResponseTestBuilder {
@@ -62,4 +61,5 @@ public class ProductResponseTestBuilder {
     public ProductResponse build() {
         return new ProductResponse(id, name, description, price, category, retired);
     }
+
 }
