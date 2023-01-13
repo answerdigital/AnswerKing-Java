@@ -213,9 +213,9 @@ class CategoryControllerTest {
 
         final String error = Objects.requireNonNull(mvc.perform(put("/categories/{categoryId}", 112L)
             .content(categoryRequestJson)
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
@@ -227,9 +227,9 @@ class CategoryControllerTest {
 
         final String error = Objects.requireNonNull(mvc.perform(put("/categories/{categoryId}", 112L)
             .content(categoryRequest)
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
