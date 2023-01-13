@@ -14,6 +14,7 @@ import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,7 +215,7 @@ class CategoryControllerTest {
             .content(categoryRequestJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
@@ -228,7 +229,7 @@ class CategoryControllerTest {
             .content(categoryRequest)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
