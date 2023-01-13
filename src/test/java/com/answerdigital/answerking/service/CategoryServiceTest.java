@@ -7,6 +7,7 @@ import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
+import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 final class CategoryServiceTest {
+
     @InjectMocks
     private CategoryService categoryService;
 
@@ -55,8 +57,6 @@ final class CategoryServiceTest {
     private final ProductTestBuilder productTestBuilder;
 
     private static final Long NONEXISTENT_CATEGORY_ID = 10L;
-
-    private static final Long NONEXISTENT_PRODUCT_ID = 10L;
 
     private CategoryServiceTest() {
         categoryTestBuilder = new CategoryTestBuilder();
@@ -271,7 +271,7 @@ final class CategoryServiceTest {
         // when
         when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
         final Exception exception = assertThrows(NameUnavailableException.class,
-                () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
+            () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -301,9 +301,8 @@ final class CategoryServiceTest {
     void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
         final Category retiredCategory = categoryTestBuilder.withDefaultValues()
-                .withRetired(true)
-                .build();
-
+            .withRetired(true)
+            .build();
         final Long retiredCategoryId = retiredCategory.getId();
 
         // when
