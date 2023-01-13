@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,13 +47,11 @@ public class CategoryService {
      */
     @Transactional
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
-        validateCategoryNameDoesNotExistWhenCreating(categoryRequest.name());
 
-        // Create a new category from the Request and persist the initial category.
-        Category category = requestToCategory(categoryRequest);
-        category =  categoryRepository.save(category);
+        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.empty());
 
-        // Add the products to the category.
+        final Category newCategory = requestToCategory(categoryRequest);
+        final Category category =  categoryRepository.save(newCategory);
         addProductsToCategory(category, categoryRequest.productIds());
 
         return categoryToResponse(category);
@@ -77,7 +76,10 @@ public class CategoryService {
      * @throws NotFoundException When the category cannot be found.
      */
     public CategoryResponse findByIdResponse(final Long categoryId) {
-        final Category category = findById(categoryId);
+
+        final Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+
         return categoryToResponse(category);
     }
 
@@ -101,7 +103,7 @@ public class CategoryService {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
-        validateCategoryNameDoesNotExistWhenUpdating(categoryRequest.name(), id);
+        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.of(id));
 
         final Category category = findById(id);
         final Category updatedCategory = updateRequestToCategory(category, categoryRequest);
@@ -110,6 +112,10 @@ public class CategoryService {
         return categoryToResponse(categoryRepository.save(updatedCategory));
     }
 
+    /**
+     * Retires a Category.
+     * @param categoryId The Category ID to retire.
+     */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
@@ -130,6 +136,7 @@ public class CategoryService {
     }
 
     /**
+<<<<<<< HEAD
      * Adds a Product to a Category.
      * @param categoryId The ID of the Category.
      * @param productId The ID of the Product.
@@ -167,6 +174,8 @@ public class CategoryService {
     }
 
     /**
+=======
+>>>>>>> 6e31809 (BENCH-256 Refactored CategoryService, added logic and JavaDoc)
      * Adds a list of products to a given category.
      * @param category The Category entity to add the products to.
      * @param productIds The List of Product Ids.
@@ -194,29 +203,23 @@ public class CategoryService {
         if(!retiredProducts.isEmpty()) {
             throw new RetirementException(String.format("Products with IDs %s are retired", retiredProducts));
         }
-
     }
 
     /**
-     * To be used when validating that the category name does not exist
-     * when creating a new category.
-     * @param categoryName The Category name to check.
+     * Checks if a Category already exists with a given name.
+     * @param categoryName The Category name.
+     * @param id The ID of the Category.
+     * @throws NameUnavailableException When the Category name already exists.
      */
-    private void validateCategoryNameDoesNotExistWhenCreating(final String categoryName) {
-        if (categoryRepository.existsByName(categoryName)) {
-            throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryName));
-        }
-    }
-
-    /**
-     * To be used when validating that the category name does not exist
-     * when renaming an existing category.
-     * @param categoryName The Category Name to check.
-     * @param id The ID of the existing category.
-     */
-    private void validateCategoryNameDoesNotExistWhenUpdating(final String categoryName, final Long id) {
-        if (categoryRepository.existsByNameAndIdIsNot(categoryName, id)) {
-            throw new NameUnavailableException(String.format("A category named %s already exists", categoryName));
+    private void validateCategoryNameDoesNotExist(final String categoryName, final Optional<Long> id) {
+        if(id.isEmpty()) {
+            if (categoryRepository.existsByName(categoryName)) {
+                throw new NameUnavailableException(String.format("A category named '%s' already exists", categoryName));
+            }
+        } else {
+            if (categoryRepository.existsByNameAndIdIsNot(categoryName, id.get())) {
+                throw new NameUnavailableException(String.format("A category named %s already exists", categoryName));
+            }
         }
     }
 
