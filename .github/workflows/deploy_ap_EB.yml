@@ -7,7 +7,16 @@ on:
       - v1.1.0-preview.3
     types:
       - completed
-jobs:     
+jobs:
+  print-github-env:
+    name: print
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump GitHub context
+      run: |
+        echo ${{ github.event.workflow_run.conclusion }} &&
+        echo ${{ toJson(github) }}
+        
   upload-jar:
     name: Build
     runs-on: ubuntu-latest
