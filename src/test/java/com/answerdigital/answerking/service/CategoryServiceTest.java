@@ -40,7 +40,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 final class CategoryServiceTest {
-
     @InjectMocks
     private CategoryService categoryService;
 
