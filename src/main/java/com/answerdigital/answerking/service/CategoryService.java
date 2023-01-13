@@ -92,28 +92,17 @@ public class CategoryService {
                 .collect(Collectors.toSet());
     }
 
-    /**
-     * Updates a Category
-     * @param categoryRequest The CategoryRequest object.
-     * @param id The ID of the Category to update.
-     * @return The updated Category, in the form of a CategoryResponse.
-     * @throws NameUnavailableException When the Category name already exists.
-     */
-    @Transactional(propagation = Propagation.REQUIRED)
-    public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
-        validateCategoryNameDoesNotExist(categoryRequest.name(), Optional.of(id));
+    public CategoryResponse updateCategory(final CategoryRequest updateCategoryRequest, final Long id) {
+        // check that the category isn't being renamed to a category name that already exists
+        if (categoryRepository.existsByNameAndIdIsNot(updateCategoryRequest.name(), id)) {
+            throw new NameUnavailableException(String.format("A category named %s already exists", updateCategoryRequest.name()));
+        }
 
-        final Category category = findById(id);
-        final Category updatedCategory = updateRequestToCategory(category, categoryRequest);
-        addProductsToCategory(updatedCategory, categoryRequest.productIds());
-
-        return categoryToResponse(categoryRepository.save(updatedCategory));
+        final Category updatedCategory = categoryMapper.updateRequestToCategory(findById(id), updateCategoryRequest);
+        final Category savedCategory = categoryRepository.save(updatedCategory);
+        return categoryMapper.convertCategoryEntityToCategoryResponse(savedCategory);
     }
 
-    /**
-     * Retires a Category.
-     * @param categoryId The Category ID to retire.
-     */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
