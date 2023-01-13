@@ -57,6 +57,8 @@ final class CategoryServiceTest {
 
     private static final Long NONEXISTENT_CATEGORY_ID = 10L;
 
+    private static final Long NONEXISTENT_PRODUCT_ID = 10L;
+
     private CategoryServiceTest() {
         categoryTestBuilder = new CategoryTestBuilder();
         categoryRequestTestBuilder = new CategoryRequestTestBuilder();
@@ -339,6 +341,49 @@ final class CategoryServiceTest {
         // then
         assertEquals(productResponses, response);
         verify(productService).findProductsByCategoryId(category.getId());
+    }
+
+    @Test
+    void testAddProductToCategoryWithValidCategoryAndProductIdIsSuccessful() {
+        // given
+        final Category category = categoryTestBuilder
+            .withDefaultValues()
+            .build();
+        final Product product = productTestBuilder
+            .withDefaultValues()
+            .build();
+
+        final Category expectedCategory = categoryTestBuilder
+            .withDefaultValues()
+            .withProduct(product)
+            .build();
+
+        // when
+        when(categoryRepository.findById(anyLong()))
+            .thenReturn(Optional.of(category));
+        when(productService.findById(anyLong()))
+            .thenReturn(product);
+        when(categoryRepository.save(any(Category.class)))
+            .thenReturn(expectedCategory);
+
+        final CategoryResponse response = categoryService.addProductToCategory(1L, 1L);
+
+        // then
+        assertEquals(expectedCategory.getProducts().size(), response.getProductIds().size());
+        verify(categoryRepository).findById(anyLong());
+        verify(productService).findById(anyLong());
+        verify(categoryRepository).save(any(Category.class));
+    }
+
+    @Test
+    void testAddProductToCategoryWithInvalidCategoryIdThrowsNotFoundException() {
+        // when
+        when(categoryRepository.findById(anyLong()))
+            .thenReturn(Optional.empty());
+
+        // then
+        assertThrows(NotFoundException.class, () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
+        verify(categoryRepository).findById(anyLong());
     }
 
 }
