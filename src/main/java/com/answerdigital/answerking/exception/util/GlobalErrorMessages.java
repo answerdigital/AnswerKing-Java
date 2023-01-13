@@ -11,10 +11,14 @@ public final class GlobalErrorMessages {
     public static final String PRODUCTS_ALREADY_EXIST = "One or more Products already exist, with ID(s) or name(s) [%s].";
 
     // ORDERS
+    public static final String ORDERS_DO_NOT_EXIST = "One or more Orders do not exist, with ID(s) or name(s) [%s].";
+
     public static final String ORDERS_ALREADY_CANCELLED = "One or more Orders are already cancelled, with ID(s) or name(s)" +
         " [%s].";
 
     // CATEGORIES
+    public static final String CATEGORIES_DO_NOT_EXIST = "One or more Categories do not exist, with ID(s) or name(s) [%s].";
+
     public static final String CATEGORIES_ALREADY_EXIST = "One or more Categories already exist, with ID(s) or name(s) [%s].";
 
     public static final String CATEGORIES_ARE_RETIRED = "One or more Categories are already retired, with ID(s) or name(s) [%s].";
