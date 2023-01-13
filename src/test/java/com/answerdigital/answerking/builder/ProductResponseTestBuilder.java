@@ -61,5 +61,4 @@ public class ProductResponseTestBuilder {
     public ProductResponse build() {
         return new ProductResponse(id, name, description, price, category, retired);
     }
-
 }
