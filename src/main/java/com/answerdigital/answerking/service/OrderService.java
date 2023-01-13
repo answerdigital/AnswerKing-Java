@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.ORDERS_ALREADY_CANCELLED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.ORDERS_DO_NOT_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_DO_NOT_EXIST;
 
@@ -183,6 +184,6 @@ public class OrderService {
     private Order getOrderById(final Long orderId) {
         return this.orderRepository
             .findById(orderId)
-            .orElseThrow(() -> new NotFoundException(String.format("The order with ID %d does not exist.", orderId)));
+            .orElseThrow(() -> new NotFoundException(String.format(ORDERS_DO_NOT_EXIST, orderId)));
     }
 }

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_DO_NOT_EXIST;
 
 @Service
 public class ProductService {
@@ -49,12 +50,12 @@ public class ProductService {
 
     public Product findById(final Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
+                .orElseThrow(() -> new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, productId)));
     }
 
     public ProductResponse findByIdResponse(final Long productId) {
         final Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
+                .orElseThrow(() -> new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, productId)));
 
         return productMapper.convertProductEntityToProductResponse(product);
     }
@@ -69,7 +70,7 @@ public class ProductService {
 
     public ProductResponse updateProduct(final Long productId, final ProductRequest productRequest) {
         productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format("Product with ID %d does not exist.", productId)));
+                .orElseThrow(() -> new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, productId)));
 
         if (productRepository.existsByNameAndIdIsNot(productRequest.name(), productId)) {
             throw new NameUnavailableException(String.format(PRODUCTS_ALREADY_EXIST, productRequest.name()));

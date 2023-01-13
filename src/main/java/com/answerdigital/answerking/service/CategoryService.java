@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_DO_NOT_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_PRODUCTS_ALREADY_PRESENT;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_PRODUCTS_NOT_FOUND;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
@@ -71,7 +72,7 @@ public class CategoryService {
      */
     public Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %d does not exist.", categoryId)));
+                .orElseThrow(() -> new NotFoundException(String.format(CATEGORIES_DO_NOT_EXIST, categoryId)));
     }
 
     /**
