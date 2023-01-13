@@ -272,7 +272,7 @@ final class CategoryServiceTest {
         // when
         when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
         final Exception exception = assertThrows(NameUnavailableException.class,
-                () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
+            () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -302,8 +302,8 @@ final class CategoryServiceTest {
     void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
         final Category retiredCategory = categoryTestBuilder.withDefaultValues()
-                .withRetired(true)
-                .build();
+            .withRetired(true)
+            .build();
 
         final Long retiredCategoryId = retiredCategory.getId();
 
