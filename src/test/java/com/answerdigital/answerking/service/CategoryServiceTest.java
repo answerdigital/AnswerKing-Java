@@ -337,7 +337,7 @@ final class CategoryServiceTest {
         when(productService.findProductsByCategoryId(category.getId()))
             .thenReturn(productResponses);
 
-        List<ProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
+        final List<ProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
 
         // then
         assertEquals(productResponses, response);
