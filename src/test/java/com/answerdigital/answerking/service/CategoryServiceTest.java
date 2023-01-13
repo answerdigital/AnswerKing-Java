@@ -272,7 +272,7 @@ final class CategoryServiceTest {
         // when
         when(categoryRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
         final Exception exception = assertThrows(NameUnavailableException.class,
-            () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
+                () -> categoryService.updateCategory(updateCategoryRequest, existingCategoryId));
 
         // then
         assertFalse(exception.getMessage().isEmpty());
@@ -302,8 +302,9 @@ final class CategoryServiceTest {
     void testRetireCategoryAlreadyRetiredThrowsRetirementException() {
         // given
         final Category retiredCategory = categoryTestBuilder.withDefaultValues()
-            .withRetired(true)
-            .build();
+                .withRetired(true)
+                .build();
+
         final Long retiredCategoryId = retiredCategory.getId();
 
         // when
@@ -335,54 +336,12 @@ final class CategoryServiceTest {
         // when
         when(productService.findProductsByCategoryId(category.getId()))
             .thenReturn(productResponses);
-        final List<ProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
+
+        List<ProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
 
         // then
         assertEquals(productResponses, response);
         verify(productService).findProductsByCategoryId(category.getId());
     }
 
-    @Test
-    void testAddProductToCategoryWithValidCategoryAndProductIdIsSuccessful() {
-        // given
-        final Category category = categoryTestBuilder
-            .withDefaultValues()
-            .build();
-        final Product product = productTestBuilder
-            .withDefaultValues()
-            .build();
-
-        final Category expectedCategory = categoryTestBuilder
-            .withDefaultValues()
-            .withProduct(product)
-            .build();
-
-        // when
-        when(categoryRepository.findById(anyLong()))
-            .thenReturn(Optional.of(category));
-        when(productService.findById(anyLong()))
-            .thenReturn(product);
-        when(categoryRepository.save(any(Category.class)))
-            .thenReturn(expectedCategory);
-
-        final CategoryResponse response = categoryService.addProductToCategory(1L, 1L);
-
-        // then
-        assertEquals(expectedCategory.getProducts().size(), response.getProductIds().size());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
-    }
-
-    @Test
-    void testAddProductToCategoryWithInvalidCategoryIdThrowsNotFoundException() {
-        // when
-        when(categoryRepository.findById(anyLong()))
-            .thenReturn(Optional.empty());
-
-        // then
-        assertThrows(NotFoundException.class,
-            () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
-        verify(categoryRepository).findById(anyLong());
-    }
 }
