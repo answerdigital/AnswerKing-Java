@@ -14,7 +14,6 @@ import jakarta.validation.ValidatorFactory;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -100,4 +99,5 @@ class CategoryControllerRequestValidatorTest {
         // then
         assertFalse(violations.isEmpty());
     }
+
 }

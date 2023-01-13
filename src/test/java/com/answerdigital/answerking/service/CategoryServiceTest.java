@@ -335,6 +335,7 @@ final class CategoryServiceTest {
         // when
         when(productService.findProductsByCategoryId(category.getId()))
             .thenReturn(productResponses);
+
         final List<ProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
 
         // then
@@ -385,4 +386,5 @@ final class CategoryServiceTest {
             () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
         verify(categoryRepository).findById(anyLong());
     }
+
 }

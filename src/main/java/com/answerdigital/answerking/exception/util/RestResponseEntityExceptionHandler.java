@@ -3,6 +3,7 @@ package com.answerdigital.answerking.exception.util;
 import com.answerdigital.answerking.exception.AnswerKingException;
 import com.answerdigital.answerking.exception.custom.ValidationException;
 import com.answerdigital.answerking.exception.generic.InternalServerErrorException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -27,6 +28,7 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
         HttpMessageNotReadableException.class})
     public ValidationErrorResponse handleMethodArgumentNotValidException(
+
             final MethodArgumentNotValidException exception,
             final HttpServletRequest request
     ) {
