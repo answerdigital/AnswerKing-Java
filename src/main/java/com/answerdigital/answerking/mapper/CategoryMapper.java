@@ -25,4 +25,5 @@ public interface CategoryMapper {
     CategoryResponse convertCategoryEntityToCategoryResponse(Category category);
 
     SimpleCategoryResponse categoryToSimpleCategoryResponse(Category category);
+
 }
