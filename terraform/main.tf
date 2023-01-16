@@ -17,6 +17,9 @@ resource "aws_instance" "answer_king_java" {
                 EOF
 
   user_data_replace_on_change = true
+  tags = {
+    Name = "answer-king-java"
+  }
 
 }
 
