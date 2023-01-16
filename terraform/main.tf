@@ -17,7 +17,16 @@ resource "aws_instance" "answer_king_java" {
               EOF
 
   user_data_replace_on_change = true
-  tags = {
-    Name  = "answer-king-java"
+
+}
+
+resource "aws_security_group" "instance" {
+  name = "answer-king-instance"
+
+  ingress {
+    from_port   = 8080
+    protocol    = "tcp"
+    to_port     = 8080
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
