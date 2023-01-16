@@ -6,7 +6,7 @@ on:
       - main
       - master
       - develop
-      - v1.1.0-preview.2
+      - v1.1.0-preview.3
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -74,7 +74,7 @@ jobs:
 
       - name: Publish test coverage results
         id: jacoco_reporter
-        uses: PavanMudigonda/jacoco-reporter@v4.8
+        uses: PavanMudigonda/jacoco-reporter@v4.7
         with:
           coverage_results_path: 'target/site/jacoco/jacoco.xml'
           coverage_report_title: 'Test coverage results'

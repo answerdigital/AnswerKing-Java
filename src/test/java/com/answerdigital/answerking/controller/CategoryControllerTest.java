@@ -102,6 +102,7 @@ class CategoryControllerTest {
                         .andExpect(status().isCreated())
                         .andReturn()
                         .getResponse();
+
         final var resultJsonNode = objectMapper.readTree(response.getContentAsString());
 
         assertFalse(response.getContentAsString().isEmpty());
@@ -139,11 +140,11 @@ class CategoryControllerTest {
         final var categoryRequest = "{\"name\": \"2134214\",\"description\": \"random description\"}";
 
         final String error = Objects.requireNonNull(mvc.perform(post("/categories")
-            .content(categoryRequest)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-            .andReturn().getResolvedException()).getMessage();
+                        .content(categoryRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
     }
@@ -153,11 +154,11 @@ class CategoryControllerTest {
         final var categoryRequest = "{\"name\": \"random name\",\"description\": \"random description #\"}";
 
         final String error = Objects.requireNonNull(mvc.perform(post("/categories")
-            .content(categoryRequest)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-            .andReturn().getResolvedException()).getMessage();
+                        .content(categoryRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
     }
@@ -212,9 +213,9 @@ class CategoryControllerTest {
 
         final String error = Objects.requireNonNull(mvc.perform(put("/categories/{categoryId}", 112L)
             .content(categoryRequestJson)
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
@@ -226,9 +227,9 @@ class CategoryControllerTest {
 
         final String error = Objects.requireNonNull(mvc.perform(put("/categories/{categoryId}", 112L)
             .content(categoryRequest)
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
             .andReturn().getResolvedException()).getMessage();
 
         assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));

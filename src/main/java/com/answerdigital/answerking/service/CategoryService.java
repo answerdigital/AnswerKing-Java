@@ -11,6 +11,7 @@ import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
 import com.answerdigital.answerking.response.ProductResponse;
+
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,6 +118,7 @@ public class CategoryService {
         final Category category = findById(categoryId);
         if(category.isRetired()) {
             throw new RetirementException(String.format("The category with ID %d is already retired", categoryId));
+
         }
         category.setRetired(true);
         categoryRepository.save(category);
@@ -248,4 +250,5 @@ public class CategoryService {
     private Category requestToCategory(final CategoryRequest categoryRequest) {
         return categoryMapper.addRequestToCategory(categoryRequest);
     }
+
 }
