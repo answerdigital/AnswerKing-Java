@@ -1,8 +1,6 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.builder.SimpleCategoryResponseTestBuilder;
 import com.answerdigital.answerking.response.ProductResponse;
-import com.answerdigital.answerking.response.SimpleCategoryResponse;
 import com.answerdigital.answerking.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,25 +50,17 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private ProductResponse product;
-
-    private SimpleCategoryResponse simpleCategoryResponse;
-
-    private SimpleCategoryResponseTestBuilder simpleCategoryResponseTestBuilder;
+    private ProductResponse productResponse;
 
     @BeforeEach
     public void generateProduct() {
-        simpleCategoryResponseTestBuilder = new SimpleCategoryResponseTestBuilder();
-        simpleCategoryResponse = simpleCategoryResponseTestBuilder
-            .withDefaultValues()
-            .build();
-        product = ProductResponse.builder()
+        productResponse = ProductResponse.builder()
                 .id(55L)
                 .name("test")
                 .description("testDes")
                 .price(BigDecimal.valueOf(2.99))
                 .retired(false)
-                .category(simpleCategoryResponse)
+                .category(1L)
                 .build();
     }
 
@@ -78,7 +68,7 @@ class ProductControllerTest {
     @Test
     void getAllProductsReturnListOfProductObjects() throws Exception {
         //given
-        given(productService.findAll()).willReturn(List.of(product));
+        given(productService.findAll()).willReturn(List.of(productResponse));
 
         //when
         final RequestBuilder request = MockMvcRequestBuilders.get("/products");
@@ -89,7 +79,7 @@ class ProductControllerTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertFalse(response.getContentAsString().isEmpty());
         final ObjectMapper mapper = new ObjectMapper();
-        assertEquals(product.getId(), mapper.readTree(response.getContentAsString()).get(0).get("id").asLong());
+        assertEquals(productResponse.getId(), mapper.readTree(response.getContentAsString()).get(0).get("id").asLong());
     }
 
     @WithMockUser("paul")
@@ -103,12 +93,12 @@ class ProductControllerTest {
     @Test
     void getProductByIdReturnsOkStatusIfExist() throws Exception {
         //given
-        when(productService.findByIdResponse(55L)).thenReturn(product);
+        when(productService.findByIdResponse(55L)).thenReturn(productResponse);
         //when
         final ResultActions actualPerformResult = mvc.perform(get("/products/{id}", 55L)).andExpect(status().isOk());
         final ObjectMapper mapper = new ObjectMapper();
         //then
-        assertEquals(product.getId(), mapper.readTree(actualPerformResult.andReturn()
+        assertEquals(productResponse.getId(), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("id").asLong());
     }
 
@@ -140,7 +130,7 @@ class ProductControllerTest {
     void addProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
         final String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"categoryId\": \"1\"}";
-        given(productService.addNewProduct(any())).willReturn(product);
+        given(productService.addNewProduct(any())).willReturn(productResponse);
 
         //when
         final ResultActions actualPerformResult = mvc.perform(post("/products")
@@ -175,7 +165,7 @@ class ProductControllerTest {
     void updateProductWithValidObjectReturnsProductAndOkStatus() throws Exception {
         //given
         final String newProduct = "{\"name\": \"test\",\"description\": \"descTest\",\"price\": \"4.75\",\"categoryId\": \"1\"}";
-        given(productService.updateProduct(eq(55L), any())).willReturn(product);
+        given(productService.updateProduct(eq(55L), any())).willReturn(productResponse);
         //when
 
         final ResultActions actualPerformResult = mvc.perform(put("/products/{id}", 55L)

@@ -1,3 +1,3 @@
 com.answerdigital.answerking.integration.controller.CategoryControllerIntegrationTests.getAllProductsByCategoryTest=[
-  "[{\"id\":1,\"name\":\"Burger\",\"description\":\"300g Beef\",\"price\":6.69,\"category\":{\"id\":1,\"name\":\"CatOne\",\"description\":\"CatOne description\"},\"retired\":false},{\"id\":3,\"name\":\"Fries\",\"description\":\"Large Fries\",\"price\":2.99,\"category\":{\"id\":1,\"name\":\"CatOne\",\"description\":\"CatOne description\"},\"retired\":false}]"
+  "[{\"id\":1,\"name\":\"Burger\",\"description\":\"300g Beef\",\"price\":6.69,\"category\":1,\"retired\":false},{\"id\":3,\"name\":\"Fries\",\"description\":\"Large Fries\",\"price\":2.99,\"category\":1,\"retired\":false}]"
 ]
