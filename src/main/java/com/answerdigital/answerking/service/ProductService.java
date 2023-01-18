@@ -16,9 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ALREADY_EXIST;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ALREADY_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomExceptionMessage;
 
 @Service
 public class ProductService {
@@ -36,7 +37,7 @@ public class ProductService {
 
     public ProductResponse addNewProduct(final ProductRequest productRequest) {
         if (productRepository.existsByName(productRequest.name())) {
-            throw new NameUnavailableException(String.format(PRODUCTS_ALREADY_EXIST, productRequest.name()));
+            throw new NameUnavailableException(getCustomExceptionMessage(PRODUCTS_ALREADY_EXIST, productRequest.name()));
         }
 
         final Category category = categoryService.findById(productRequest.categoryId());
@@ -49,12 +50,12 @@ public class ProductService {
 
     public Product findById(final Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, productId)));
+                .orElseThrow(() -> new NotFoundException(getCustomExceptionMessage(PRODUCTS_DO_NOT_EXIST, productId)));
     }
 
     public ProductResponse findByIdResponse(final Long productId) {
         final Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, productId)));
+                .orElseThrow(() -> new NotFoundException(getCustomExceptionMessage(PRODUCTS_DO_NOT_EXIST, productId)));
 
         return productMapper.convertProductEntityToProductResponse(product);
     }
@@ -71,7 +72,7 @@ public class ProductService {
         final Product product = findById(productId);
         
         if (productRepository.existsByNameAndIdIsNot(productRequest.name(), productId)) {
-            throw new NameUnavailableException(String.format(PRODUCTS_ALREADY_EXIST, productRequest.name()));
+            throw new NameUnavailableException(getCustomExceptionMessage(PRODUCTS_ALREADY_EXIST, productRequest.name()));
         }
 
         final Product updatedProduct = productMapper.updateRequestToProduct(product, productRequest);
@@ -82,9 +83,11 @@ public class ProductService {
 
     public void retireProduct(final Long productId) {
         final Product product = findById(productId);
+
         if (product.isRetired()) {
-            throw new RetirementException(String.format(PRODUCTS_ARE_RETIRED, productId));
+            throw new RetirementException(getCustomExceptionMessage(PRODUCTS_ARE_RETIRED, productId));
         }
+
         product.setRetired(true);
         productRepository.save(product);
     }

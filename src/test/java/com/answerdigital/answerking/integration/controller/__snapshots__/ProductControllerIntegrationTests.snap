@@ -4,7 +4,7 @@ com.answerdigital.answerking.integration.controller.ProductControllerIntegration
 
 
 com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.deleteProductByIDNotFoundTest=[
-  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"One or more Products do not exist, with ID(s) or name(s) [10000].\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\"}"
+  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"One or more Products do not exist with ID(s) or name(s) [10000]. ERROR CODE - PRODUCT1\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\"}"
 ]
 
 
@@ -19,7 +19,7 @@ com.answerdigital.answerking.integration.controller.ProductControllerIntegration
 
 
 com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDNotFoundTest=[
-  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"One or more Products do not exist, with ID(s) or name(s) [10000].\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\"}"
+  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"One or more Products do not exist with ID(s) or name(s) [10000]. ERROR CODE - PRODUCT1\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\"}"
 ]
 
 

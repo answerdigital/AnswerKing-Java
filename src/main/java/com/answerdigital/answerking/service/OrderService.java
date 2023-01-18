@@ -23,10 +23,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.ORDERS_ALREADY_CANCELLED;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.ORDERS_DO_NOT_EXIST;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.ORDERS_ALREADY_CANCELLED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.ORDERS_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomExceptionMessage;
 
 @Service
 public class OrderService {
@@ -83,9 +84,7 @@ public class OrderService {
         final Order order = getOrderById(orderId);
 
         if (OrderStatus.CANCELLED.equals(order.getOrderStatus())) {
-            throw new OrderCancelledException(
-                    String.format("The order with ID %d has been cancelled, not possible to update", orderId)
-            );
+            throw new OrderCancelledException(getCustomExceptionMessage(ORDERS_ALREADY_CANCELLED, orderId));
         }
 
         addLineItemsToOrder(order, orderRequest.lineItemRequests());
@@ -122,8 +121,9 @@ public class OrderService {
         // check if any of products did not exist in database, and if so throw Not Found exception
         final List<Long> notFoundProducts = new ArrayList<>(productIdsList);
         notFoundProducts.removeAll(foundProductIdsList);
+
         if(!notFoundProducts.isEmpty()){
-            throw new NotFoundException(String.format(PRODUCTS_DO_NOT_EXIST, notFoundProducts));
+            throw new NotFoundException(getCustomExceptionMessage(PRODUCTS_DO_NOT_EXIST, notFoundProducts));
         }
 
         // check if any of products are retired and throw exception
@@ -133,8 +133,8 @@ public class OrderService {
                 .map(Product::getId)
                 .toList();
 
-        if(!retiredProducts.isEmpty()){
-            throw new RetirementException(String.format(PRODUCTS_ARE_RETIRED, retiredProducts));
+        if (!retiredProducts.isEmpty()) {
+            throw new RetirementException(getCustomExceptionMessage(PRODUCTS_ARE_RETIRED, retiredProducts));
         }
         return products;
     }
@@ -160,9 +160,11 @@ public class OrderService {
      */
     public OrderResponse cancelOrder(final Long orderId) {
         final Order order = getOrderById(orderId);
+
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
-            throw new OrderCancelledException(String.format(ORDERS_ALREADY_CANCELLED, order.getId()));
+            throw new OrderCancelledException(getCustomExceptionMessage(ORDERS_ALREADY_CANCELLED, order.getId()));
         }
+
         order.setOrderStatus(OrderStatus.CANCELLED);
         return convertToResponse(orderRepository.save(order));
     }
@@ -184,6 +186,6 @@ public class OrderService {
     private Order getOrderById(final Long orderId) {
         return this.orderRepository
             .findById(orderId)
-            .orElseThrow(() -> new NotFoundException(String.format(ORDERS_DO_NOT_EXIST, orderId)));
+            .orElseThrow(() -> new NotFoundException(getCustomExceptionMessage(ORDERS_DO_NOT_EXIST, orderId)));
     }
 }

@@ -23,12 +23,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_ALREADY_EXIST;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_ARE_RETIRED;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_DO_NOT_EXIST;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_PRODUCTS_ALREADY_PRESENT;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.CATEGORIES_PRODUCTS_NOT_FOUND;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessages.PRODUCTS_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ALREADY_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_PRODUCTS_ALREADY_PRESENT;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_PRODUCTS_NOT_FOUND;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomExceptionMessage;
 
 @Service
 public class CategoryService {
@@ -73,7 +74,7 @@ public class CategoryService {
      */
     public Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(String.format(CATEGORIES_DO_NOT_EXIST, categoryId)));
+                .orElseThrow(() -> new NotFoundException(getCustomExceptionMessage(CATEGORIES_DO_NOT_EXIST, categoryId)));
     }
 
     /**
@@ -123,9 +124,11 @@ public class CategoryService {
      */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
+
         if(category.isRetired()) {
-            throw new RetirementException(String.format(CATEGORIES_ARE_RETIRED, categoryId));
+            throw new RetirementException(getCustomExceptionMessage(CATEGORIES_ARE_RETIRED, categoryId));
         }
+
         category.setRetired(true);
         categoryRepository.save(category);
     }
@@ -151,7 +154,7 @@ public class CategoryService {
         final Product product = productService.findById(productId);
 
         if (category.getProducts().contains(product)) {
-            throw new ProductAlreadyPresentException(String.format(CATEGORIES_PRODUCTS_ALREADY_PRESENT, productId));
+            throw new ProductAlreadyPresentException(getCustomExceptionMessage(CATEGORIES_PRODUCTS_ALREADY_PRESENT, productId));
         }
 
         category.addProduct(product);
@@ -169,7 +172,7 @@ public class CategoryService {
         final Product product = productService.findById(productId);
 
         if (!category.getProducts().contains(product)) {
-            throw new NotFoundException(String.format(CATEGORIES_PRODUCTS_NOT_FOUND, productId));
+            throw new NotFoundException(getCustomExceptionMessage(CATEGORIES_PRODUCTS_NOT_FOUND, productId));
         }
 
         category.removeProduct(product);
@@ -202,7 +205,7 @@ public class CategoryService {
             .toList();
 
         if(!retiredProducts.isEmpty()) {
-            throw new RetirementException(String.format(PRODUCTS_ARE_RETIRED, retiredProducts));
+            throw new RetirementException(getCustomExceptionMessage(PRODUCTS_ARE_RETIRED, retiredProducts));
         }
     }
 
@@ -213,7 +216,7 @@ public class CategoryService {
      */
     private void validateCategoryNameDoesNotExistWhenCreating(final String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
-            throw new NameUnavailableException(String.format(CATEGORIES_ALREADY_EXIST, categoryName));
+            throw new NameUnavailableException(getCustomExceptionMessage(CATEGORIES_ALREADY_EXIST, categoryName));
         }
     }
 
@@ -225,7 +228,7 @@ public class CategoryService {
      */
     private void validateCategoryNameDoesNotExistWhenUpdating(final String categoryName, final Long id) {
         if (categoryRepository.existsByNameAndIdIsNot(categoryName, id)) {
-            throw new NameUnavailableException(String.format(CATEGORIES_ALREADY_EXIST, categoryName));
+            throw new NameUnavailableException(getCustomExceptionMessage(CATEGORIES_ALREADY_EXIST, categoryName));
         }
     }
 
