@@ -4,6 +4,7 @@ import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
 import com.answerdigital.answerking.builder.CategoryTestBuilder;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
@@ -384,6 +385,83 @@ final class CategoryServiceTest {
         // then
         assertThrows(NotFoundException.class,
             () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
+        verify(categoryRepository).findById(anyLong());
+    }
+
+    @Test
+    void testAddProductToCategoryWhenProductsAlreadyThere() {
+        final Product product = productTestBuilder
+                .withDefaultValues()
+                .build();
+
+        final Category existingCategory = categoryTestBuilder
+                .withDefaultValues()
+                .withProduct(product)
+                .build();
+
+        // when
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.of(existingCategory));
+
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
+        // then
+        assertThrows(ProductAlreadyPresentException.class,
+                () -> categoryService.addProductToCategory(1L, 1L));
+        verify(categoryRepository).findById(anyLong());
+    }
+
+    @Test
+    void testRemoveProductFromCategoryWithValidCategoryAndProductIdIsSuccessful() {
+        // given
+        final Category category = categoryTestBuilder
+                .withDefaultValues()
+                .build();
+        final Product product = productTestBuilder
+                .withDefaultValues()
+                .build();
+
+        final Category existingCategory = categoryTestBuilder
+                .withDefaultValues()
+                .withProduct(product)
+                .build();
+
+        // when
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.of(existingCategory));
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
+        when(categoryRepository.save(any(Category.class)))
+                .thenReturn(category);
+
+        final CategoryResponse response = categoryService.removeProductFromCategory(1L, 1L);
+
+        // then
+        assertEquals(0, response.getProductIds().size());
+        verify(categoryRepository).findById(anyLong());
+        verify(productService).findById(anyLong());
+        verify(categoryRepository).save(any(Category.class));
+    }
+
+    @Test
+    void testRemoveProductFromCategoryWhenProductsNotThere() {
+        // given
+        final Category category = categoryTestBuilder
+                .withDefaultValues()
+                .build();
+        final Product product = productTestBuilder
+                .withDefaultValues()
+                .build();
+
+        // when
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.of(category));
+        when(productService.findById(anyLong()))
+                .thenReturn(product);
+
+        // then
+        assertThrows(NotFoundException.class,
+                () -> categoryService.removeProductFromCategory(1L, 1L));
         verify(categoryRepository).findById(anyLong());
     }
 
