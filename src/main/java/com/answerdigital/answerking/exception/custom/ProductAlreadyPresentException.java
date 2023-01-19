@@ -4,7 +4,7 @@ import com.answerdigital.answerking.exception.generic.BadRequestException;
 
 public class ProductAlreadyPresentException extends BadRequestException {
 
-    public ProductAlreadyPresentException(final String error) {
-        super(error);
+    public ProductAlreadyPresentException(final String errorMessageId, final String errorMessage) {
+        super(errorMessageId, errorMessage);
     }
 }
