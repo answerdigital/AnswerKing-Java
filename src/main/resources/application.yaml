@@ -73,6 +73,7 @@ spring:
       on-profile: docker
 
   datasource:
+    platform: mysql
     username: test_user
     password: GS3ef_fsd^!
     url: jdbc:mysql://mysqldb:3306/answer_king
