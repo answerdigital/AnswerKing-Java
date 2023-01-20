@@ -12,6 +12,8 @@ on:
 env:
   REGISTRY: ghcr.io/answerconsulting/answerking-java
   IMAGE_NAME: answer-king-rest-api_app #${{ github.repository }}
+  MYSQLDB_ROOT_PASSWORD: ${{ secrets.MYSQLDB_ROOT_PASSWORD }}
+  MYSQLDB_PASSWORD: ${{ secrets.MYSQLDB_PASSWORD }}
 
 jobs:
   on-success:
