@@ -12,18 +12,32 @@ public abstract class AnswerKingException extends RuntimeException {
 
     private final HttpStatus status;
 
+    private final String errorMessageId;
+
     private final String detail;
 
     protected AnswerKingException(
             final String type,
             final String title,
             final HttpStatus status,
-            final String detail
+            final String errorMessageId,
+            final String errorMessage
     ) {
-        super(detail);
+        super(errorMessage);
         this.type = type;
         this.title = title;
         this.status = status;
-        this.detail = detail;
+        this.errorMessageId = errorMessageId;
+        this.detail = errorMessage;
+
+    }
+
+    protected AnswerKingException(
+            final String type,
+            final String title,
+            final HttpStatus status,
+            final String errorMessage
+    ) {
+        this(type, title, status, null, errorMessage);
     }
 }

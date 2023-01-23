@@ -11,7 +11,7 @@ public class NotFoundException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.NOT_FOUND;
 
-    public NotFoundException(final String error) {
-        super(TYPE, TITLE, STATUS, error);
+    public NotFoundException(final String errorMessageId, final String errorMessage) {
+        super(TYPE, TITLE, STATUS, errorMessageId, errorMessage);
     }
 }

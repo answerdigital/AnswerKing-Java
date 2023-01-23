@@ -11,7 +11,11 @@ public class BadRequestException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
 
-    public BadRequestException(final String error) {
-        super(TYPE, TITLE, STATUS, error);
+    public BadRequestException(final String errorMessageId, final String errorMessage) {
+        super(TYPE, TITLE, STATUS, errorMessageId, errorMessage);
+    }
+
+    public BadRequestException(final String errorMessage) {
+        super(TYPE, TITLE, STATUS, errorMessage);
     }
 }
