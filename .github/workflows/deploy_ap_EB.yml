@@ -48,7 +48,7 @@ jobs:
           name: artifact
           
       - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v13
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AP_AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AP_AWS_SECRET_ACCESS_KEY }}
