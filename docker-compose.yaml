@@ -3,6 +3,7 @@ services:
   mysqldb:
     container_name: mysqldb
     image: mysql:8.0.31
+    hostname: mysqldb
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -12,6 +13,8 @@ services:
       - MYSQL_PASSWORD=$MYSQLDB_PASSWORD
     ports:
       - "3306:3306"
+    networks:
+      - ak-bench-java
 
   flyway:
     image: flyway/flyway
@@ -20,6 +23,8 @@ services:
       - ./init_scripts:/flyway/sql
     depends_on:
       - mysqldb
+    networks:
+      - ak-bench-java
 
   app:
     container_name: rest-api
@@ -37,5 +42,10 @@ services:
       - "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     volumes:
       - .m2:/root/.m2
+    networks:
+      - ak-bench-java
 volumes:
   db:
+
+networks:
+  ak-bench-java:

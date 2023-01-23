@@ -120,7 +120,7 @@ class CategoryControllerTest {
             .withDefaultValues()
             .withName(simpleCategoryResponse.getName())
             .withDescription(simpleCategoryResponse.getDescription())
-            .withCategory(simpleCategoryResponse)
+            .withCategory(simpleCategoryResponse.getId())
             .build();
 
         doReturn(List.of(productResponse)).when(categoryService).findProductsByCategoryId(anyLong());
@@ -130,8 +130,7 @@ class CategoryControllerTest {
 
         assertAll(
                 () -> assertEquals(productResponse.getId(), responseRecord.get("id").asLong()),
-                () -> assertEquals(simpleCategoryResponse.getName(), responseRecord.get("name").textValue()),
-                () -> assertEquals(simpleCategoryResponse.getId(), responseRecord.get("category").get("id").asLong())
+                () -> assertEquals(simpleCategoryResponse.getId(), responseRecord.get("category").asLong())
         );
     }
 

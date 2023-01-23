@@ -6,12 +6,14 @@ on:
       - main
       - master
       - develop
-      - v1.1.0-preview.3
+      - v1.1.0-preview.4
     types: [opened, synchronize, reopened, completed]
 
 env:
   REGISTRY: ghcr.io/answerconsulting/answerking-java
   IMAGE_NAME: answer-king-rest-api_app #${{ github.repository }}
+  MYSQLDB_ROOT_PASSWORD: ${{ secrets.MYSQLDB_ROOT_PASSWORD }}
+  MYSQLDB_PASSWORD: ${{ secrets.MYSQLDB_PASSWORD }}
 
 jobs:
   on-success:
