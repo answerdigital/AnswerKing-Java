@@ -14,5 +14,7 @@ public interface ProductMapper {
 
     Product updateRequestToProduct(@MappingTarget Product product, ProductRequest productRequest);
 
+    @Mapping(source = "category.id", target = "category")
     ProductResponse convertProductEntityToProductResponse(Product product);
+
 }

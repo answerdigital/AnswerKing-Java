@@ -1,7 +1,6 @@
 package com.answerdigital.answerking.builder;
 
 import com.answerdigital.answerking.response.ProductResponse;
-import com.answerdigital.answerking.response.SimpleCategoryResponse;
 import java.math.BigDecimal;
 
 public class ProductResponseTestBuilder {
@@ -13,7 +12,7 @@ public class ProductResponseTestBuilder {
 
     private BigDecimal price;
 
-    private SimpleCategoryResponse category;
+    private Long category;
 
     private boolean retired;
 
@@ -22,7 +21,7 @@ public class ProductResponseTestBuilder {
         this.name = "Example Product Response";
         this.description = "This is an example Product Response";
         this.price = new BigDecimal("12.99");
-        this.category = new SimpleCategoryResponse();
+        this.category = 1L;
         this.retired = false;
 
         return this;
@@ -48,7 +47,7 @@ public class ProductResponseTestBuilder {
         return this;
     }
 
-    public ProductResponseTestBuilder withCategory(final SimpleCategoryResponse category) {
+    public ProductResponseTestBuilder withCategory(final Long category) {
         this.category = category;
         return this;
     }

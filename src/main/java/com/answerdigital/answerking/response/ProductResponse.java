@@ -21,7 +21,7 @@ public class ProductResponse {
 
     private BigDecimal price;
 
-    private SimpleCategoryResponse category;
+    private Long category;
 
     private boolean retired;
 }

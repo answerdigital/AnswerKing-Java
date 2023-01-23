@@ -10,17 +10,18 @@ resource "aws_instance" "answer_king_java" {
 
   user_data = <<-EOF
                 #!/bin/bash
-
-                echo "Hello, World" > index.html
-                nohup busybox httpd -f -p 8080 &
-
-                EOF
-
+                
+                sudo yum install docker -y
+                sudo service docker start
+                docker pull ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
+                docker-compose build
+                docker-compose up
+              EOF
+  
   user_data_replace_on_change = true
   tags = {
     Name = "answer-king-java"
   }
-
 }
 
 resource "aws_security_group" "instance" {

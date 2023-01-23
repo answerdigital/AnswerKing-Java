@@ -380,7 +380,7 @@ final class ProductServiceTest {
             () -> assertEquals(product.getName(), response.getName()),
             () -> assertEquals(product.getDescription(), response.getDescription()),
             () -> assertEquals(product.getPrice(), response.getPrice()),
-            () -> assertEquals(product.getCategory().getName(), response.getCategory().getName()),
+            () -> assertEquals(product.getCategory().getId(), response.getCategory()),
             () -> assertEquals(product.isRetired(), response.isRetired())
         );
     }

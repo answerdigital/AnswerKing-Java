@@ -4,7 +4,7 @@ on:
     workflows: ["Integration and code analysis"]
     branches:
       - main
-      - v1.1.0-preview.3
+      - v1.1.0-preview.4
     types:
       - completed
 jobs:
@@ -33,7 +33,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package -DskipTests --file pom.xml
       - name: Upload JAR
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: artifact
           path: target/answer-king-rest-api-1.1.0.jar
@@ -43,12 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download JAR
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: artifact
           
       - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v13
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AP_AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AP_AWS_SECRET_ACCESS_KEY }}

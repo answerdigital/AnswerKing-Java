@@ -10,7 +10,7 @@ public class OrderCancelledException extends AnswerKingException {
 
     private static final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
 
-    public OrderCancelledException(final String error) {
-        super(TYPE, TITLE, STATUS, error);
+    public OrderCancelledException(final String errorMessageId, final String errorMessage) {
+        super(TYPE, TITLE, STATUS, errorMessageId, errorMessage);
     }
 }
