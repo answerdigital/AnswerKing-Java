@@ -74,7 +74,7 @@ jobs:
 
       - name: Publish test coverage results
         id: jacoco_reporter
-        uses: PavanMudigonda/jacoco-reporter@v4.7
+        uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
           coverage_results_path: 'target/site/jacoco/jacoco.xml'
           coverage_report_title: 'Test coverage results'
