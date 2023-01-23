@@ -74,9 +74,9 @@ spring:
 
   datasource:
     platform: mysql
-    username: test_user
-    password: GS3ef_fsd^!
-    url: jdbc:mysql://mysqldb:3306/answer_king?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
+    username: ${MYSQLDB_USER}
+    password: ${MYSQLDB_PASSWORD}
+    url: ${MYSQL_URL}?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
 
 ---
 spring:
