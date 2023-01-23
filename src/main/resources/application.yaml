@@ -33,7 +33,7 @@ spring:
   datasource:
     username: test_user
     password: GS3ef_fsd^!
-    url: jdbc:mysql://localhost:3306/answer_king
+    url: jdbc:mysql://localhost:3306/answer_king?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
 
 ---
 spring:
@@ -44,7 +44,7 @@ spring:
   datasource:
     username: test_user
     password: GS3ef_fsd^!
-    url: jdbc:mysql://localhost:3306/answer_king_test
+    url: jdbc:mysql://localhost:3306/answer_king_test?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
     name: answer_king_test
   sql:
     init:
@@ -74,9 +74,9 @@ spring:
 
   datasource:
     platform: mysql
-    username: test_user
-    password: GS3ef_fsd^!
-    url: jdbc:mysql://mysqldb:3306/answer_king
+    username: ${MYSQLDB_USER}
+    password: ${MYSQLDB_PASSWORD}
+    url: ${MYSQL_URL}?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
 
 ---
 spring:
@@ -87,7 +87,7 @@ spring:
   datasource:
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
-    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
 
 ---
 logging:
