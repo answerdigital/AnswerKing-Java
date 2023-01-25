@@ -76,7 +76,7 @@ spring:
     platform: mysql
     username: ${MYSQLDB_USER}
     password: ${MYSQLDB_PASSWORD}
-    url: ${MYSQL_URL}?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
+    url: jdbc:mysql://${MYSQL_INSTANCE_URL}:3306/answer_king?allowPublicKeyRetrieval=true&autoReconnect=true&sslMode=DISABLED
 
 ---
 spring:
