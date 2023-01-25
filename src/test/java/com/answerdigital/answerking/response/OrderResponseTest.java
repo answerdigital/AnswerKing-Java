@@ -39,7 +39,11 @@ public class OrderResponseTest {
         final OrderResponse orderResponse = new OrderResponse();
         orderResponse.setLineItems(Set.of(lineItemResponse, lineItemResponseTwo));
         assertEquals("142.89", orderResponse.getOrderTotal().toString());
-        assertEquals("12.99", orderResponse.getLineItems().stream().findFirst().get().getSubTotal().toString());
+        assertEquals("12.99", orderResponse.getLineItems()
+                .stream()
+                .filter(lineItemResponse1 -> lineItemResponse1.getQuantity() == 1)
+                .findFirst()
+                .get().getSubTotal().toString());
     }
 }
 
