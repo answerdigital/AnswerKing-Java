@@ -19,7 +19,6 @@ import jakarta.persistence.OneToMany;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -60,10 +59,4 @@ public class Order {
     public void clearLineItems() {
         lineItems.clear();
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
 }
