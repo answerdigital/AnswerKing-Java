@@ -52,13 +52,6 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<LineItem> lineItems = new HashSet<>();
 
-    public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.retired = isRetired;
-    }
-
     @PreRemove
     private void removeProductsFromCategories() {
         category.removeProduct(this);
