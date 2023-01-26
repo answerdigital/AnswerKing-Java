@@ -7,6 +7,7 @@ variable "db_password" {
 variable "db_username" {
   description = "Username to connect to DB"
   type        = string
+  default = "test_user"
   sensitive   = true
 }
 
