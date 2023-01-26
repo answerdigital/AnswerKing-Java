@@ -155,7 +155,7 @@ public class OrderService {
      * @param orderId The ID of the Order to cancel
      * @return The order with the status as cancelled
      */
-    public OrderResponse cancelOrder(final Long orderId) {
+    public void cancelOrder(final Long orderId) {
         final Order order = getOrderById(orderId);
 
         if(order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
@@ -163,7 +163,7 @@ public class OrderService {
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
-        return convertToResponse(orderRepository.save(order));
+        orderRepository.save(order);
     }
 
     /**

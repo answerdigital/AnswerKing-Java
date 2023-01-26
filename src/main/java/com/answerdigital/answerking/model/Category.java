@@ -20,7 +20,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -57,12 +56,6 @@ public class Category {
     @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
     private Set<Product> products = new HashSet<>();
 
-    public Category(final String name, final String description) {
-        this.name = name;
-        this.description = description;
-        this.retired = false;
-    }
-
     public void addProduct(final Product product) {
         products.add(product);
     }
@@ -77,23 +70,5 @@ public class Category {
         if (o == null || getClass() != o.getClass()) return false;
         final Category category = (Category) o;
         return name.equals(category.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", createdOn=" + createdOn +
-            ", lastUpdated=" + lastUpdated +
-            ", retired=" + retired +
-            ", products=" + products +
-            '}';
     }
 }
