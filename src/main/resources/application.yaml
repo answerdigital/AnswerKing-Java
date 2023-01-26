@@ -2,6 +2,13 @@ server:
   servlet:
     context-path: /api
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: "/management"
+
 spring:
   profiles:
     active: dev
