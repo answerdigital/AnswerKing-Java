@@ -88,28 +88,6 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 
-    @Operation(summary = "Add product to a category.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Add product to a category.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class)) })
-    })
-    @PutMapping("/{categoryId}/addproduct/{productId}")
-    public ResponseEntity<CategoryResponse> addProductToCategory(@PathVariable @NotNull final Long categoryId,
-                                                                 @PathVariable @NotNull final Long productId) {
-        return new ResponseEntity<>(categoryService.addProductToCategory(categoryId, productId), HttpStatus.OK);
-    }
-
-    @Operation(summary = "Remove product from a category.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Remove product from a category.",
-            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class)) })
-    })
-    @PutMapping("/{categoryId}/removeproduct/{productId}")
-    public ResponseEntity<CategoryResponse> removeProductFromCategory(@PathVariable @NotNull final Long categoryId,
-                                                                      @PathVariable @NotNull final Long productId) {
-        return new ResponseEntity<>(categoryService.removeProductFromCategory(categoryId, productId), HttpStatus.OK);
-    }
-
     @Operation(summary = "Update an existing category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the category has been updated.",

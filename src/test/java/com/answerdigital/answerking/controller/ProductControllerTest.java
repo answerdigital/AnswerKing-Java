@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -177,6 +178,12 @@ class ProductControllerTest {
         final ObjectMapper mapper = new ObjectMapper();
         assertEquals(mapper.readTree(newProduct).get("name"), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("name"));
+    }
+
+    @Test
+    void retireProductReturnsNoContent() throws Exception {
+        mvc.perform(delete("/products/{d}", 1L))
+                .andExpect(status().isNoContent());
     }
 }
 
