@@ -308,10 +308,9 @@ class OrderServiceTest {
             .when(orderRepository)
             .save(any(Order.class));
 
-        final OrderResponse response = orderService.cancelOrder(order.getId());
+        orderService.cancelOrder(order.getId());
 
         // then
-        assertEquals(expected.getOrderStatus(), response.getOrderStatus());
         verify(orderRepository).findById(anyLong());
         verify(orderRepository).save(any(Order.class));
     }

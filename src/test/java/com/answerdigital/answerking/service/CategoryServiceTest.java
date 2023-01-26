@@ -4,7 +4,6 @@ import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
 import com.answerdigital.answerking.builder.CategoryTestBuilder;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
-import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
@@ -284,19 +283,16 @@ final class CategoryServiceTest {
     void testRetireCategory() {
         // given
         final Category category = categoryTestBuilder.withDefaultValues().build();
-        final Category expectedCategory = categoryTestBuilder.withDefaultValues()
-            .withRetired(true)
-            .build();
 
         // when
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
-        when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
+        when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
         // then
         categoryService.retireCategory(category.getId());
 
         verify(categoryRepository).findById(category.getId());
-        verify(categoryRepository).save(expectedCategory);
+        verify(categoryRepository).save(category);
     }
 
     @Test
@@ -343,126 +339,4 @@ final class CategoryServiceTest {
         assertEquals(productResponses, response);
         verify(productService).findProductsByCategoryId(category.getId());
     }
-
-    @Test
-    void testAddProductToCategoryWithValidCategoryAndProductIdIsSuccessful() {
-        // given
-        final Category category = categoryTestBuilder
-            .withDefaultValues()
-            .build();
-        final Product product = productTestBuilder
-            .withDefaultValues()
-            .build();
-
-        final Category expectedCategory = categoryTestBuilder
-            .withDefaultValues()
-            .withProduct(product)
-            .build();
-
-        // when
-        when(categoryRepository.findById(anyLong()))
-            .thenReturn(Optional.of(category));
-        when(productService.findById(anyLong()))
-            .thenReturn(product);
-        when(categoryRepository.save(any(Category.class)))
-            .thenReturn(expectedCategory);
-
-        final CategoryResponse response = categoryService.addProductToCategory(1L, 1L);
-
-        // then
-        assertEquals(expectedCategory.getProducts().size(), response.getProductIds().size());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
-    }
-
-    @Test
-    void testAddProductToCategoryWithInvalidCategoryIdThrowsNotFoundException() {
-        // when
-        when(categoryRepository.findById(anyLong()))
-            .thenReturn(Optional.empty());
-
-        // then
-        assertThrows(NotFoundException.class,
-            () -> categoryService.addProductToCategory(NONEXISTENT_CATEGORY_ID, NONEXISTENT_PRODUCT_ID));
-        verify(categoryRepository).findById(anyLong());
-    }
-
-    @Test
-    void testAddProductToCategoryWhenProductsAlreadyThere() {
-        final Product product = productTestBuilder
-                .withDefaultValues()
-                .build();
-
-        final Category existingCategory = categoryTestBuilder
-                .withDefaultValues()
-                .withProduct(product)
-                .build();
-
-        // when
-        when(categoryRepository.findById(anyLong()))
-                .thenReturn(Optional.of(existingCategory));
-
-        when(productService.findById(anyLong()))
-                .thenReturn(product);
-        // then
-        assertThrows(ProductAlreadyPresentException.class,
-                () -> categoryService.addProductToCategory(1L, 1L));
-        verify(categoryRepository).findById(anyLong());
-    }
-
-    @Test
-    void testRemoveProductFromCategoryWithValidCategoryAndProductIdIsSuccessful() {
-        // given
-        final Category category = categoryTestBuilder
-                .withDefaultValues()
-                .build();
-        final Product product = productTestBuilder
-                .withDefaultValues()
-                .build();
-
-        final Category existingCategory = categoryTestBuilder
-                .withDefaultValues()
-                .withProduct(product)
-                .build();
-
-        // when
-        when(categoryRepository.findById(anyLong()))
-                .thenReturn(Optional.of(existingCategory));
-        when(productService.findById(anyLong()))
-                .thenReturn(product);
-        when(categoryRepository.save(any(Category.class)))
-                .thenReturn(category);
-
-        final CategoryResponse response = categoryService.removeProductFromCategory(1L, 1L);
-
-        // then
-        assertEquals(0, response.getProductIds().size());
-        verify(categoryRepository).findById(anyLong());
-        verify(productService).findById(anyLong());
-        verify(categoryRepository).save(any(Category.class));
-    }
-
-    @Test
-    void testRemoveProductFromCategoryWhenProductsNotThere() {
-        // given
-        final Category category = categoryTestBuilder
-                .withDefaultValues()
-                .build();
-        final Product product = productTestBuilder
-                .withDefaultValues()
-                .build();
-
-        // when
-        when(categoryRepository.findById(anyLong()))
-                .thenReturn(Optional.of(category));
-        when(productService.findById(anyLong()))
-                .thenReturn(product);
-
-        // then
-        assertThrows(NotFoundException.class,
-                () -> categoryService.removeProductFromCategory(1L, 1L));
-        verify(categoryRepository).findById(anyLong());
-    }
-
 }
