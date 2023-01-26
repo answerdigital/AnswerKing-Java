@@ -283,19 +283,16 @@ final class CategoryServiceTest {
     void testRetireCategory() {
         // given
         final Category category = categoryTestBuilder.withDefaultValues().build();
-        final Category expectedCategory = categoryTestBuilder.withDefaultValues()
-            .withRetired(true)
-            .build();
 
         // when
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
-        when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
+        when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
         // then
         categoryService.retireCategory(category.getId());
 
         verify(categoryRepository).findById(category.getId());
-        verify(categoryRepository).save(expectedCategory);
+        verify(categoryRepository).save(category);
     }
 
     @Test

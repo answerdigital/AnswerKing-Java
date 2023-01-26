@@ -251,10 +251,12 @@ class CategoryControllerTest {
         when(categoryService.findByIdResponse(1L)).thenReturn(categoryResponse);
         //when
         final ResultActions actualPerformResult = mvc.perform(get("/categories/{categoryId}", 1L)).andExpect(status().isOk());
-        final ObjectMapper mapper = new ObjectMapper();
         //then
-        assertEquals(categoryResponse.getId(), mapper.readTree(actualPerformResult.andReturn()
-                .getResponse().getContentAsString()).get("id").asLong());
+        final ObjectMapper mapper = new ObjectMapper();
+        final JsonNode categoryResponseJson = mapper.readTree(actualPerformResult.andReturn()
+                .getResponse().getContentAsString());
+
+        assertEquals(categoryResponse.getId(), categoryResponseJson.get("id").asLong());
     }
 
     @Test
@@ -270,10 +272,11 @@ class CategoryControllerTest {
         final MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 
         //then
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertFalse(response.getContentAsString().isEmpty());
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode jsonNodeResponse = mapper.readTree(response.getContentAsString());
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertFalse(response.getContentAsString().isEmpty());
         assertEquals(categoryResponse.getId(), jsonNodeResponse.get(0).get("id").asLong());
         assertTrue(jsonNodeResponse.isArray());
     }

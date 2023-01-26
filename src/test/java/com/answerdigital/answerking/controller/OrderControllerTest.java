@@ -88,13 +88,14 @@ class OrderControllerTest {
         final MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 
         //then
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertFalse(response.getContentAsString().isEmpty());
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode jsonNodeResponse = mapper.readTree(response.getContentAsString());
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertFalse(response.getContentAsString().isEmpty());
         assertEquals(orderResponse.getId(), jsonNodeResponse.get(0).get("id").asLong());
-        assertTrue(jsonNodeResponse.get(0).get("lineItems").isArray());
         assertTrue(jsonNodeResponse.isArray());
+        assertTrue(jsonNodeResponse.get(0).get("lineItems").isArray());
     }
 
     @Test
