@@ -6,8 +6,7 @@ on:
       - main
       - master
       - develop
-      - v1.1.0-preview.4
-      - BENCH-280
+      - v1.1.0-preview.5
     types: [opened, synchronize, reopened, completed]
 
 env:
@@ -15,7 +14,7 @@ env:
   IMAGE_NAME: answer-king-rest-api_app
 
 jobs:
-  terraform:
+  terraform_apply:
     runs-on: ubuntu-latest
     name: Terraform
     permissions:
