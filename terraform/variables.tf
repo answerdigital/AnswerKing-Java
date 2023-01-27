@@ -78,9 +78,3 @@ variable "private_subnet_cidr_blocks" {
     "10.0.104.0/24",
   ]
 }
-
-variable "my_ip" {
-  description = "Your IP address"
-  type        = string
-  sensitive   = true
-}
