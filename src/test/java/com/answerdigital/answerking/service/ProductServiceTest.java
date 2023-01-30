@@ -59,6 +59,10 @@ final class ProductServiceTest {
         categoryTestBuilder = new CategoryTestBuilder();
     }
 
+    /* TODO
+        Add product with nonexistent Tag throws exception
+     */
+
     @Test
     void addNewProductReturnsProductObjectSuccessfully() {
         // given

@@ -3,6 +3,7 @@ package com.answerdigital.answerking.builder;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.Product;
+import com.answerdigital.answerking.model.Tag;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ public class ProductTestBuilder {
 
     private Set<LineItem> lineItems;
 
+    private Set<Tag> tags;
+
     public ProductTestBuilder withDefaultValues() {
         final CategoryTestBuilder categoryTestBuilder = new CategoryTestBuilder();
 
@@ -34,6 +37,7 @@ public class ProductTestBuilder {
         this.retired = false;
         this.category = categoryTestBuilder.withDefaultValues().build();
         this.lineItems = new HashSet<>();
+        this.tags = new HashSet<>();
         return this;
     }
 
@@ -72,7 +76,12 @@ public class ProductTestBuilder {
         return this;
     }
 
+    public ProductTestBuilder withTags(final Set<Tag> tags) {
+        this.tags = tags;
+        return this;
+    }
+
     public Product build() {
-        return new Product(id, name, description, price, retired, category, lineItems);
+        return new Product(id, name, description, price, retired, category, lineItems, tags);
     }
 }

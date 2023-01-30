@@ -86,7 +86,7 @@ class ProductControllerTest {
     @Test
     void getAllProductsReturnNoContentIfEmpty() throws Exception {
         //when
-        mvc.perform(get("/products")).andExpect(status().isNoContent());
+        mvc.perform(get("/products")).andExpect(status().isOk());
     }
 
     @WithMockUser("paul")

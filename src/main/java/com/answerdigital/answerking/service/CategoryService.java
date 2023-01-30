@@ -32,11 +32,12 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.get
 
 @Service
 public class CategoryService {
-    private final ProductService productService;
 
     private final CategoryRepository categoryRepository;
 
     private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
+
+    private final ProductService productService;
 
     @Autowired
     public CategoryService(final ProductService productService,

@@ -30,9 +30,9 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.get
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    private final ProductService productService;
-
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
+
+    private final ProductService productService;
 
     @Autowired
     public OrderService(final OrderRepository orderRepository, final ProductService productService) {
