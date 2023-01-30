@@ -54,7 +54,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<LineItem> lineItems = new HashSet<>();
 
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
 
     public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {

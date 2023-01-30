@@ -61,7 +61,7 @@ public class TagController {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<com.answerdigital.answerking.model.Tag> addTag(@Valid @RequestBody final TagRequest tagRequest) {
+    public ResponseEntity<TagResponse> addTag(@Valid @RequestBody final TagRequest tagRequest) {
         return new ResponseEntity<>(tagService.addTag(tagRequest), HttpStatus.CREATED);
     }
 }
