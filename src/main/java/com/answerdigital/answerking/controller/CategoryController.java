@@ -29,6 +29,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * This class is responsible for handling control logic for all incoming requests by
+ * exposing a variety of Category related REST endpoints.
+ */
 @Validated
 @Tag(name = "Inventory", description = "Manage the inventory.")
 @RestController
@@ -42,7 +46,7 @@ public class CategoryController {
     }
 
     /**
-     * Exposes an endpoint which allows API users to create new categories
+     * Exposes an endpoint which allows API users to create new Categories
      * via a POST request. This produces a HTTP status of 201 CREATED if
      * successful, otherwise a status of 400 BAD REQUEST if invalided parameters
      * are provided.
@@ -63,9 +67,9 @@ public class CategoryController {
     }
 
     /**
-     * Exposes an endpoint which allows API users to get all existing categories
-     * via a GET request. This produces a HTTP status of 200 OK if there are categories
-     * to be returned. Otherwise, a status of 204 NO CONTENT is produced when no categories
+     * Exposes an endpoint which allows API users to get all existing Categories
+     * via a GET request. This produces a HTTP status of 200 OK if there are Categories
+     * to be returned. Otherwise, a status of 204 NO CONTENT is produced when no Categories
      * are available.
      *
      * @return A ResponseEntity with a collection of {@link com.answerdigital.answerking.response.CategoryResponse}.
@@ -82,9 +86,9 @@ public class CategoryController {
     }
 
     /**
-     * Exposes an endpoint which allows API users to get an existing category via a GET request.
-     * This produces a HTTP status of 200 OK if there is a category available to be returned. Otherwise,
-     * a status of 404 NOT FOUND is produced when the category does not exist.
+     * Exposes an endpoint which allows API users to get an existing Category via a GET request.
+     * This produces a HTTP status of 200 OK if there is a Category available to be returned. Otherwise,
+     * a status of 404 NOT FOUND is produced when the Category does not exist.
      *
      * @param categoryId The ID of the Category.
      * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.CategoryResponse}.
@@ -102,9 +106,9 @@ public class CategoryController {
     }
 
     /**
-     * Exposes an endpoint which allows API users to get a list of all products within a category via a GET request.
-     * This produces a HTTP status of 200 OK if there are or are not products within the category to be returned.
-     * Otherwise, a status of 404 NOT FOUND is produced when the category does not exist.
+     * Exposes an endpoint which allows API users to get a list of all products within a Category via a GET request.
+     * This produces a HTTP status of 200 OK if there are or are not products within the Category to be returned.
+     * Otherwise, a status of 404 NOT FOUND is produced when the Category does not exist.
      *
      * @param categoryId The ID of the Category.
      * @return A ResponseEntity with a collection of {@link com.answerdigital.answerking.response.ProductResponse}.
@@ -122,7 +126,7 @@ public class CategoryController {
     }
 
     /**
-     * Exposes an endpoint which allows API users to update a category via a PUT request. This produces a HTTP status
+     * Exposes an endpoint which allows API users to update a Category via a PUT request. This produces a HTTP status
      * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided and 404 NOT FOUND
      * if the Category could not be found.
      *
@@ -146,7 +150,7 @@ public class CategoryController {
     }
 
     /**
-     * Exposes an endpoint which allows API users to retire a category via a DELETE request. This produces a HTTP status
+     * Exposes an endpoint which allows API users to retire a Category via a DELETE request. This produces a HTTP status
      * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided, 404 NOT FOUND
      * if the Category could not be found and 410 GONE if the category is already retired.
      *

@@ -27,6 +27,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * This class is responsible for handling control logic for all incoming requests by
+ * exposing a variety of Order related REST endpoints.
+ */
 @RestController
 @RequestMapping(path = "/orders")
 @Tag(name = "Orders", description = "Create and manage customer orders.")
@@ -126,7 +130,7 @@ public class OrderController {
     /**
      * Exposes an endpoint which allows API users to cancel an Order via a DELETE request. This produces a HTTP status
      * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided, 404 NOT FOUND
-     * if the Order could not be found and 410 GONE if the category is already retired.
+     * if the Order could not be found and 410 GONE if the Order is already retired.
      *
      * @param orderId The ID of the Order.
      * @return A ResponseEntity of type {@link java.lang.Void}.
