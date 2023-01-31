@@ -41,6 +41,15 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    /**
+     * Exposes an endpoint which allows API users to create new categories
+     * via a POST request. This produces a HTTP status of 201 CREATED if
+     * successful, otherwise a status of 400 BAD REQUEST if invalided parameters
+     * are provided.
+     *
+     * @param categoryRequest An instance of {@link com.answerdigital.answerking.request.CategoryRequest}.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.CategoryResponse}.
+     */
     @Operation(summary = "Create a new category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "When the category has been created.",
@@ -53,6 +62,14 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.addCategory(categoryRequest), HttpStatus.CREATED);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get all existing categories
+     * via a GET request. This produces a HTTP status of 200 OK if there are categories
+     * to be returned. Otherwise, a status of 204 NO CONTENT is produced when no categories
+     * are available.
+     *
+     * @return A ResponseEntity with a collection of {@link com.answerdigital.answerking.response.CategoryResponse}.
+     */
     @Operation(summary = "Get all categories.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Found the list of categories.",
@@ -64,6 +81,14 @@ public class CategoryController {
         return new ResponseEntity<>(categories, categories.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get an existing category via a GET request.
+     * This produces a HTTP status of 200 OK if there is a category available to be returned. Otherwise,
+     * a status of 404 NOT FOUND is produced when the category does not exist.
+     *
+     * @param categoryId The ID of the Category.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.CategoryResponse}.
+     */
     @Operation(summary = "Get a single category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the category with the provided id has been found.",
@@ -76,6 +101,14 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.findByIdResponse(categoryId), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get a list of all products within a category via a GET request.
+     * This produces a HTTP status of 200 OK if there are or are not products within the category to be returned.
+     * Otherwise, a status of 404 NOT FOUND is produced when the category does not exist.
+     *
+     * @param categoryId The ID of the Category.
+     * @return A ResponseEntity with a collection of {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     @Operation(summary = "Get all products in a category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
@@ -88,6 +121,15 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to update a category via a PUT request. This produces a HTTP status
+     * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided and 404 NOT FOUND
+     * if the Category could not be found.
+     *
+     * @param categoryRequest An instance of {@link com.answerdigital.answerking.request.CategoryRequest}.
+     * @param categoryId The ID of the Category.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.CategoryResponse}.
+     */
     @Operation(summary = "Update an existing category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the category has been updated.",
@@ -103,6 +145,14 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.updateCategory(categoryRequest, categoryId), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to retire a category via a DELETE request. This produces a HTTP status
+     * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided, 404 NOT FOUND
+     * if the Category could not be found and 410 GONE if the category is already retired.
+     *
+     * @param categoryId The ID of the Category.
+     * @return A ResponseEntity of type {@link java.lang.Void}.
+     */
     @Operation(summary = "Retire an existing category.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the category has been retired.",
