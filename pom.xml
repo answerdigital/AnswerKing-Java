@@ -120,7 +120,7 @@
 		<dependency>
             <groupId>io.github.origin-energy</groupId>
             <artifactId>java-snapshot-testing-plugin-jackson</artifactId>
-            <version>4.0.2</version>
+            <version>4.0.3</version>
         </dependency>
 
 		<dependency>
