@@ -100,7 +100,8 @@ public class OrderController {
         @ApiResponse(responseCode = "404", description = "When the order with the given id does not exist.",
             content = {@Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable @NotNull final Long orderId) {
-        return new ResponseEntity<>(orderService.cancelOrder(orderId), HttpStatus.OK);
+    public ResponseEntity<Void> cancelOrder(@PathVariable @NotNull final Long orderId) {
+        orderService.cancelOrder(orderId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

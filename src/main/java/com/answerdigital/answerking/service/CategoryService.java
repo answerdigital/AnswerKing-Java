@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_DO_NOT_EXIST;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_PRODUCTS_ALREADY_PRESENT;
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_PRODUCTS_NOT_FOUND;
+
+// import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_PRODUCTS_ALREADY_PRESENT;
+// import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_PRODUCTS_NOT_FOUND;
+
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
@@ -142,42 +144,42 @@ public class CategoryService {
         return productService.findProductsByCategoryId(categoryId);
     }
 
-    /**
-     * Adds a Product to a Category.
-     * @param categoryId The ID of the Category.
-     * @param productId The ID of the Product.
-     * @return The newly persisted Category, in the form of a CategoryResponse.
-     */
-    @Transactional(propagation = Propagation.REQUIRED)
-    public CategoryResponse addProductToCategory(final Long categoryId, final Long productId) {
-        final Category category = findById(categoryId);
-        final Product product = productService.findById(productId);
+//     /**
+//      * Adds a Product to a Category.
+//      * @param categoryId The ID of the Category.
+//      * @param productId The ID of the Product.
+//      * @return The newly persisted Category, in the form of a CategoryResponse.
+//      */
+//     @Transactional(propagation = Propagation.REQUIRED)
+//     public CategoryResponse addProductToCategory(final Long categoryId, final Long productId) {
+//         final Category category = findById(categoryId);
+//         final Product product = productService.findById(productId);
 
-        if (category.getProducts().contains(product)) {
-            throw getCustomException(CATEGORIES_PRODUCTS_ALREADY_PRESENT, productId);
-        }
+//         if (category.getProducts().contains(product)) {
+//             throw getCustomException(CATEGORIES_PRODUCTS_ALREADY_PRESENT, productId);
+//         }
 
-        category.addProduct(product);
-        return categoryToResponse(categoryRepository.save(category));
-    }
+//         category.addProduct(product);
+//         return categoryToResponse(categoryRepository.save(category));
+//     }
 
-    /**
-     * Removes a product from a Category.
-     * @param categoryId The ID of the Category.
-     * @param productId The ID of the Product.
-     * @return The newly persisted Category, in the form of a CategoryResponse.
-     */
-    public CategoryResponse removeProductFromCategory(final Long categoryId, final Long productId) {
-        final Category category = findById(categoryId);
-        final Product product = productService.findById(productId);
+//     /**
+//      * Removes a product from a Category.
+//      * @param categoryId The ID of the Category.
+//      * @param productId The ID of the Product.
+//      * @return The newly persisted Category, in the form of a CategoryResponse.
+//      */
+//     public CategoryResponse removeProductFromCategory(final Long categoryId, final Long productId) {
+//         final Category category = findById(categoryId);
+//         final Product product = productService.findById(productId);
 
-        if (!category.getProducts().contains(product)) {
-            throw getCustomException(CATEGORIES_PRODUCTS_NOT_FOUND, productId);
-        }
+//         if (!category.getProducts().contains(product)) {
+//             throw getCustomException(CATEGORIES_PRODUCTS_NOT_FOUND, productId);
+//         }
 
-        category.removeProduct(product);
-        return categoryToResponse(categoryRepository.save(category));
-    }
+//         category.removeProduct(product);
+//         return categoryToResponse(categoryRepository.save(category));
+//     }
 
     /**
      * Adds a list of products to a given category.

@@ -20,5 +20,4 @@ public interface ProductMapper {
     @Mapping(source = "category.id", target = "category")
     @Mapping(target = "tagIds", expression = "java(MapperExpressionUtility.mapTagIdsFromProduct(product))")
     ProductResponse convertProductEntityToProductResponse(Product product);
-
 }
