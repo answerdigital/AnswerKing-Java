@@ -15,19 +15,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static com.answerdigital.answerking.utility.MappingUtility.allTagsToResponse;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
@@ -148,10 +145,10 @@ class TagServiceTest {
         final Tag tagTwo = new TagTestBuilder()
             .withDefaultValues()
             .withId(2L)
-            .withName("fff")
-            .withDescription("fff")
+            .withName("Low Calorie")
+            .withDescription("This product is low in calories.")
             .build();
-        final Set<Tag> tags = new HashSet<>(Stream.of(tagOne, tagTwo).toList());
+        final Set<Tag> tags = Set.of(tagOne, tagTwo);
 
         // when
         doReturn(tags)
@@ -162,8 +159,7 @@ class TagServiceTest {
 
         // then
         assertEquals(2, response.size());
-        assertTagVsTagResponseEquality(tagTwo, response.get(0));
-        assertTagVsTagResponseEquality(tagOne, response.get(1));
+        assertTrue(response.containsAll(allTagsToResponse(tagOne, tagTwo)));
         verify(tagRepository).findAll();
     }
 
