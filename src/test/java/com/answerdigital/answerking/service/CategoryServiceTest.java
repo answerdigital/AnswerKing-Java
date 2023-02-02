@@ -4,7 +4,6 @@ import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
 import com.answerdigital.answerking.builder.CategoryTestBuilder;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
-import com.answerdigital.answerking.exception.custom.ProductAlreadyPresentException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Category;
