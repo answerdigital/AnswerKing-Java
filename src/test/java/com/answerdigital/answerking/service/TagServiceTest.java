@@ -3,6 +3,7 @@ package com.answerdigital.answerking.service;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.builder.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.TagTestBuilder;
+import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
 import com.answerdigital.answerking.repository.TagRepository;
@@ -15,12 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
@@ -56,7 +57,26 @@ class TagServiceTest {
 
     @Test
     void addTagWithoutProductReturnsTagObject() {
+        // given
+        final TagRequest tagRequest = tagRequestTestBuilder.withDefaultValues()
+            .withDefaultValues()
+            .build();
+        final Tag expectedResponse = tagTestBuilder
+            .withDefaultValues()
+            .build();
 
+        // when
+        doReturn(List.of())
+            .when(productService)
+            .findAllProductsInListOfIds(anyList());
+        doReturn(expectedResponse)
+            .when(tagRepository)
+            .save(any(Tag.class));
+
+        final TagResponse tagResponse = tagService.addTag(tagRequest);
+
+        // then
+        assertTagVsTagResponseEquality(expectedResponse, tagResponse);
     }
 
     @Test
@@ -69,12 +89,34 @@ class TagServiceTest {
         final Tag expectedResponse = tagTestBuilder.withDefaultValues().withProduct(product).build();
 
         // when
-        when(productService.findAllProductsInListOfIds(anyList())).thenReturn(List.of(product));
-        when(tagRepository.save(any(Tag.class))).thenReturn(expectedResponse);
+        doReturn(List.of(product))
+            .when(productService)
+            .findAllProductsInListOfIds(anyList());
+        doReturn(expectedResponse)
+            .when(tagRepository)
+            .save(any(Tag.class));
+
         final TagResponse tagResponse = tagService.addTag(tagRequest);
 
         // then
         assertTagVsTagResponseEquality(expectedResponse, tagResponse);
+    }
+
+    @Test
+    void addTagWithNonExistentProductThrowsNotFoundException() {
+        // given
+        final TagRequest tagRequest = tagRequestTestBuilder
+            .withDefaultValues()
+            .withProductId(NONEXISTENT_PRODUCT_ID)
+            .build();
+
+        // when
+        doThrow(NotFoundException.class)
+            .when(productService)
+            .findAllProductsInListOfIds(anyList());
+
+        // then
+        assertThrows(NotFoundException.class, () -> tagService.addTag(tagRequest));
     }
 
     /**
