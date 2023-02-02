@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class MappingUtility {
-    private static final TagMapper tagMapper = Mappers.getMapper(TagMapper.class);
+    private static final TagMapper TAG_MAPPER = Mappers.getMapper(TagMapper.class);
 
-    public static List<TagResponse> allTagsToResponse(Tag ...tags) {
+    public static List<TagResponse> allTagsToResponse(final Tag ...tags) {
         return Arrays.stream(tags)
-            .map(tagMapper::convertTagEntityToTagResponse)
+            .map(TAG_MAPPER::convertTagEntityToTagResponse)
             .toList();
     }
 }
