@@ -15,15 +15,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
@@ -119,6 +121,48 @@ class TagServiceTest {
 
         // then
         assertThrows(NotFoundException.class, () -> tagService.addTag(tagRequest));
+    }
+
+    @Test
+    void findAllTagsWithNoTagsReturnEmptyList() {
+        // when
+        doReturn(Set.of())
+            .when(tagRepository)
+            .findAll();
+
+        final List<TagResponse> response = tagService.findAll();
+
+        // then
+        assertEquals(0, response.size());
+        verify(tagRepository).findAll();
+    }
+
+    @Test
+    void findAllTagsReturnListOfTags() {
+        // given
+        final Tag tagOne = new TagTestBuilder()
+            .withDefaultValues()
+            .build();
+        final Tag tagTwo = new TagTestBuilder()
+            .withDefaultValues()
+            .withId(2L)
+            .withName("fff")
+            .withDescription("fff")
+            .build();
+        final Set<Tag> tags = new HashSet<>(Stream.of(tagOne, tagTwo).toList());
+
+        // when
+        doReturn(tags)
+            .when(tagRepository)
+            .findAll();
+
+        final List<TagResponse> response = tagService.findAll();
+
+        // then
+        assertEquals(2, response.size());
+        assertTagVsTagResponseEquality(tagTwo, response.get(0));
+        assertTagVsTagResponseEquality(tagOne, response.get(1));
+        verify(tagRepository).findAll();
     }
 
     /**
