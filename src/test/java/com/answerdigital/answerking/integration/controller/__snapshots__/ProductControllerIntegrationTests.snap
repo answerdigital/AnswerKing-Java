@@ -1,0 +1,53 @@
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.deleteProductByIDInvalidTest=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.deleteProductByIDNotFoundTest=[
+  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"One or more Products do not exist with ID(s) or name(s) [10000].\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\",\"errorMessageId\":\"PRODUCTS_DO_NOT_EXIST\"}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getAllProductsTest=[
+  "[{\"id\":1,\"name\":\"Burger\",\"description\":\"300g Beef\",\"price\":6.69,\"category\":1,\"retired\":false,\"tags\":[]},{\"id\":2,\"name\":\"Cola\",\"description\":\"500ml\",\"price\":2.99,\"category\":2,\"retired\":false,\"tags\":[]},{\"id\":3,\"name\":\"Fries\",\"description\":\"Large Fries\",\"price\":2.99,\"category\":1,\"retired\":false,\"tags\":[]}]"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDInvalidTest=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDNotFoundTest=[
+  "{\"type\":\"https://www.rfc-editor.org/rfc/rfc7231\",\"title\":\"Not Found Exception\",\"status\":404,\"detail\":\"One or more Products do not exist with ID(s) or name(s) [10000].\",\"instance\":\"/products/10000\",\"traceId\":\"{ Sanitised }\",\"errorMessageId\":\"PRODUCTS_DO_NOT_EXIST\"}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.getProductByIDTest=[
+  "{\"id\":1,\"name\":\"Burger\",\"description\":\"300g Beef\",\"price\":6.69,\"category\":1,\"retired\":false,\"tags\":[]}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.postProductTest=[
+  "{\"id\":4,\"name\":\"Kabab\",\"description\":\"Product 1 desc\",\"price\":10.34,\"category\":1,\"retired\":false,\"tags\":[]}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.postProductTestInvalidBody=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.putProductByIDInvalidTest=[
+  ""
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.putProductTest=[
+  "{\"id\":2,\"name\":\"Kabab\",\"description\":\"Product 1 desc\",\"price\":10.34,\"category\":2,\"retired\":false,\"tags\":[]}"
+]
+
+
+com.answerdigital.answerking.integration.controller.ProductControllerIntegrationTests.putProductTestInvalidBody=[
+  ""
+]
