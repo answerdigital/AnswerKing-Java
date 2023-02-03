@@ -5,7 +5,8 @@ import com.answerdigital.answerking.builder.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.TagTestBuilder;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
-import com.answerdigital.answerking.repository.TagRepository;
+import com.answerdigital.answerking.request.TagRequest;
+import com.answerdigital.answerking.response.TagResponse;
 import com.answerdigital.answerking.service.TagService;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static com.answerdigital.answerking.utility.MappingUtility.tagToResponse;
+import static org.mockito.Mockito.verify;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -38,14 +43,8 @@ class TagControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
     private TagService tagService;
-
-    @MockBean
-    private TagRepository tagRepository;
 
     private static final TagTestBuilder TAG_TEST_BUILDER;
 
@@ -112,5 +111,63 @@ class TagControllerTest {
                 jsonNodeResponse.get(1).get("products").get(0).get("name").asText()
             )
         );
+
+        verify(tagService).findAll();
+    }
+
+    @Test
+    void getAllTagsReturnEmptyList() throws Exception {
+        // when
+        doReturn(List.of())
+            .when(tagService)
+            .findAll();
+
+        final RequestBuilder request = MockMvcRequestBuilders.get(TAGS_ENDPOINT);
+        final MockHttpServletResponse servletResponse = mvc.perform(request).andReturn().getResponse();
+        final JsonNode jsonNodeResponse = OBJECT_MAPPER.readTree(servletResponse.getContentAsString());
+
+        // then
+        assertEquals(HttpStatus.OK.value(), servletResponse.getStatus());
+        assertFalse(servletResponse.getContentAsString().isEmpty());
+        assertEquals("[]", jsonNodeResponse.toString());
+
+        verify(tagService).findAll();
+    }
+
+    @Test
+    void addTagWithValidProductReturnsTagResponse() throws Exception {
+        // given
+        final Product product = PRODUCT_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+        final Tag tag = TAG_TEST_BUILDER
+            .withDefaultValues()
+            .withProduct(product)
+            .build();
+        final TagResponse tagResponse = tagToResponse(tag);
+
+        // when
+        final String json = "{\"name\": \"Vegan\", \"description\": \"This is suitable for Vegans.\", \"products\": [1]}";
+
+        doReturn(tagResponse)
+            .when(tagService)
+            .addTag(any(TagRequest.class));
+
+        final RequestBuilder request = MockMvcRequestBuilders
+            .post(TAGS_ENDPOINT)
+            .content(json)
+            .contentType(MediaType.APPLICATION_JSON);
+        final MockHttpServletResponse servletResponse = mvc.perform(request).andReturn().getResponse();
+        final JsonNode jsonNodeResponse = OBJECT_MAPPER.readTree(servletResponse.getContentAsString());
+
+        // then
+        assertEquals(HttpStatus.CREATED.value(), servletResponse.getStatus());
+        assertFalse(servletResponse.getContentAsString().isEmpty());
+        assertEquals(tagResponse.getId(), jsonNodeResponse.get("id").asLong());
+        assertEquals(tagResponse.getName(), jsonNodeResponse.get("name").asText());
+        assertEquals(tagResponse.getDescription(), jsonNodeResponse.get("description").asText());
+        assertEquals(tagResponse.getProductIds().get(0), jsonNodeResponse.get("products").get(0).asLong());
+
+        verify(tagService).addTag(any(TagRequest.class));
     }
 }

@@ -17,6 +17,15 @@ public final class MappingUtility {
     private static final OrderMapper ORDER_MAPPER = Mappers.getMapper(OrderMapper.class);
 
     /**
+     * Takes a Tag and converts it to an TagResponse.
+     * @param tag An instance of an {@link com.answerdigital.answerking.model.Tag}.
+     * @return A {@link com.answerdigital.answerking.response.TagResponse}.
+     */
+    public static TagResponse tagToResponse(final Tag tag) {
+        return TAG_MAPPER.convertTagEntityToTagResponse(tag);
+    }
+
+    /**
      * Takes <i>n</i> arguments of type Tag and converts them to a TagResponse.
      * @param tags A Collection of type {@link com.answerdigital.answerking.model.Tag}.
      * @return A List of type {@link com.answerdigital.answerking.response.TagResponse}.
@@ -28,7 +37,7 @@ public final class MappingUtility {
     }
 
     /**
-     * Takes an Order and converts it to and OrderResponse.
+     * Takes an Order and converts it to an OrderResponse.
      * @param order An instance of an {@link com.answerdigital.answerking.model.Order}.
      * @return An {@link com.answerdigital.answerking.response.OrderResponse}.
      */
