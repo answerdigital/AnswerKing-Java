@@ -29,8 +29,8 @@ public final class MappingUtility {
 
     /**
      * Takes an Order and converts it to and OrderResponse.
-     * @param order
-     * @return
+     * @param order An instance of an {@link com.answerdigital.answerking.model.Order}.
+     * @return An {@link com.answerdigital.answerking.response.OrderResponse}.
      */
     public static OrderResponse orderToResponse(final Order order) {
         return ORDER_MAPPER.orderToOrderResponse(order);
