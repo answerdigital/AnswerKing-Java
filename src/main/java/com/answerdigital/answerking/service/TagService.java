@@ -23,7 +23,7 @@ public class TagService {
     private final TagMapper tagMapper = Mappers.getMapper(TagMapper.class);
 
     private final ProductService productService;
-    
+
     @Autowired
     public TagService(final TagRepository tagRepository, final ProductService productService) {
         this.tagRepository = tagRepository;
@@ -43,17 +43,12 @@ public class TagService {
         final Tag savedTag = tagRepository.save(newTag);
         return tagMapper.convertTagEntityToTagResponse(savedTag);
     }
-    
+
     public List<TagResponse> findAll() {
         final Set<Tag> tagsList = tagRepository.findAll();
-        
-        return tagsList
-                .stream()
-                .map(tagMapper::convertTagEntityToTagResponse)
-                .toList();
-    }
 
-    public Set<Tag> findAllTagsInListOfIds(final Set<Long> tagIds) {
-        return tagRepository.findAllByIdIn(tagIds);
+        return tagsList.stream()
+            .map(tagMapper::convertTagEntityToTagResponse)
+            .toList();
     }
 }
