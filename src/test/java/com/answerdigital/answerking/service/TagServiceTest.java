@@ -3,7 +3,7 @@ package com.answerdigital.answerking.service;
 import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.builder.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.TagTestBuilder;
-import com.answerdigital.answerking.exception.generic.NotFoundException;
+import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
 import com.answerdigital.answerking.repository.TagRepository;
@@ -18,14 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static com.answerdigital.answerking.utility.MappingUtility.allTagsToResponse;
 
@@ -54,13 +49,6 @@ class TagServiceTest {
         productTestBuilder = new ProductTestBuilder();
     }
 
-    /* TODO
-        Add tag without product returns product object successfully
-        Add tag with product returns product object successfully
-        Add tag with nonexistent product throws Exception
-        Get all tags returns set of tags
-     */
-
     @Test
     void addTagWithoutProductReturnsTagObject() {
         // given
@@ -82,7 +70,7 @@ class TagServiceTest {
         final TagResponse tagResponse = tagService.addTag(tagRequest);
 
         // then
-        assertTagVsTagResponseEquality(expectedResponse, tagResponse);
+        assertTagVsResponseEquality(expectedResponse, tagResponse);
     }
 
     @Test
@@ -105,24 +93,28 @@ class TagServiceTest {
         final TagResponse tagResponse = tagService.addTag(tagRequest);
 
         // then
-        assertTagVsTagResponseEquality(expectedResponse, tagResponse);
+        assertTagVsResponseEquality(expectedResponse, tagResponse);
     }
 
     @Test
-    void addTagWithNonExistentProductThrowsNotFoundException() {
+    void addTagWhenTagAlreadyExistsThrowsNameUnavailableException() {
         // given
+        final Product product = productTestBuilder
+            .withDefaultValues()
+            .build();
         final TagRequest tagRequest = tagRequestTestBuilder
             .withDefaultValues()
-            .withProductId(NONEXISTENT_PRODUCT_ID)
+            .withProductId(product.getId())
             .build();
 
         // when
-        doThrow(NotFoundException.class)
-            .when(productService)
-            .findAllProductsInListOfIds(anyList());
+        doReturn(true)
+            .when(tagRepository)
+            .existsByName(anyString());
 
         // then
-        assertThrows(NotFoundException.class, () -> tagService.addTag(tagRequest));
+        assertThrows(NameUnavailableException.class, () -> tagService.addTag(tagRequest));
+        verify(tagRepository).existsByName(anyString());
     }
 
     @Test
@@ -171,7 +163,7 @@ class TagServiceTest {
      * @param tag The Tag to compare.
      * @param response The TagResponse to compare.
      */
-    private void assertTagVsTagResponseEquality(final Tag tag, final TagResponse response) {
+    private void assertTagVsResponseEquality(final Tag tag, final TagResponse response) {
         assertAll("Tag vs TagResponse Equality",
                 () -> assertEquals(tag.getId(), response.getId()),
                 () -> assertEquals(tag.getName(), response.getName()),
