@@ -67,7 +67,7 @@ class TagControllerTest {
     }
 
     @Test
-    void () throws Exception {
+    void getAllTagsReturnListOfTagResponses() throws Exception {
         // given
         final Product product = PRODUCT_TEST_BUILDER
             .withDefaultValues()
