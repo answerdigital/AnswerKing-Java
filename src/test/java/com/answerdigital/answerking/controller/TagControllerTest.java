@@ -1,11 +1,13 @@
 package com.answerdigital.answerking.controller;
 
+import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.builder.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.TagTestBuilder;
+import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
 import com.answerdigital.answerking.repository.TagRepository;
-import com.answerdigital.answerking.request.TagRequest;
 import com.answerdigital.answerking.service.TagService;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,6 +51,8 @@ class TagControllerTest {
 
     private static final TagRequestTestBuilder TAG_REQUEST_TEST_BUILDER;
 
+    private static final ProductTestBuilder PRODUCT_TEST_BUILDER;
+
     private static final ObjectMapper OBJECT_MAPPER;
 
     private static final String TAGS_ENDPOINT = "/tags";
@@ -54,23 +60,30 @@ class TagControllerTest {
     static {
         TAG_TEST_BUILDER = new TagTestBuilder();
         TAG_REQUEST_TEST_BUILDER = new TagRequestTestBuilder();
+        PRODUCT_TEST_BUILDER = new ProductTestBuilder();
         OBJECT_MAPPER = new ObjectMapper();
+
+        OBJECT_MAPPER.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
     }
 
     @Test
-    void getAllTagsReturnListOfTagResponses() throws Exception {
+    void () throws Exception {
         // given
-        final Tag tagOne = TAG_TEST_BUILDER
+        final Product product = PRODUCT_TEST_BUILDER
             .withDefaultValues()
             .build();
-        final Tag tagTwo = TAG_TEST_BUILDER
+        final Tag veganTag = TAG_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+        final Tag glutenFreeTag = TAG_TEST_BUILDER
             .withId(2L)
-            .withName("")
-            .withDescription("")
+            .withName("Gluten Free")
+            .withDescription("This is gluten free.")
+            .withProduct(product)
             .build();
 
         // when
-        doReturn(List.of(tagOne, tagTwo))
+        doReturn(List.of(veganTag, glutenFreeTag))
             .when(tagService)
             .findAll();
 
@@ -81,6 +94,23 @@ class TagControllerTest {
         // then
         assertEquals(HttpStatus.OK.value(), servletResponse.getStatus());
         assertFalse(servletResponse.getContentAsString().isEmpty());
-        assertEquals(tagOne.getId(), jsonNodeResponse.get(0).get("id").asLong());
+
+        assertAll("veganTag json response equality",
+            () -> assertEquals(veganTag.getId(), jsonNodeResponse.get(0).get("id").asLong()),
+            () -> assertEquals(veganTag.getName(), jsonNodeResponse.get(0).get("name").asText()),
+            () -> assertEquals(veganTag.getDescription(), jsonNodeResponse.get(0).get("description").asText())
+        );
+
+        assertAll("glutenFreeTag json response equality",
+            () -> assertEquals(glutenFreeTag.getId(), jsonNodeResponse.get(1).get("id").asLong()),
+            () -> assertEquals(glutenFreeTag.getName(), jsonNodeResponse.get(1).get("name").asText()),
+            () -> assertEquals(glutenFreeTag.getDescription(), jsonNodeResponse.get(1).get("description").asText()),
+            () -> assertTrue(jsonNodeResponse.get(1).get("products").isArray()),
+            () -> assertFalse(jsonNodeResponse.get(1).get("products").isEmpty()),
+            () -> assertEquals(
+                glutenFreeTag.getProducts().get(0).getName(),
+                jsonNodeResponse.get(1).get("products").get(0).get("name").asText()
+            )
+        );
     }
 }
