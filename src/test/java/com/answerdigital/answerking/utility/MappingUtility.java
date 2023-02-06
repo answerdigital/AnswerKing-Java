@@ -11,19 +11,13 @@ import org.mapstruct.factory.Mappers;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A selection of utility methods to aid in the mapping process.
+ */
 public final class MappingUtility {
     private static final TagMapper TAG_MAPPER = Mappers.getMapper(TagMapper.class);
 
     private static final OrderMapper ORDER_MAPPER = Mappers.getMapper(OrderMapper.class);
-
-    /**
-     * Takes a Tag and converts it to an TagResponse.
-     * @param tag An instance of an {@link com.answerdigital.answerking.model.Tag}.
-     * @return A {@link com.answerdigital.answerking.response.TagResponse}.
-     */
-    public static TagResponse tagToResponse(final Tag tag) {
-        return TAG_MAPPER.convertTagEntityToTagResponse(tag);
-    }
 
     /**
      * Takes <i>n</i> arguments of type Tag and converts them to a TagResponse.
@@ -34,6 +28,15 @@ public final class MappingUtility {
         return Arrays.stream(tags)
             .map(TAG_MAPPER::convertTagEntityToTagResponse)
             .toList();
+    }
+
+    /**
+     * Takes a Tag and converts it to an TagResponse.
+     * @param tag An instance of a {@link com.answerdigital.answerking.model.Tag}.
+     * @return A {@link com.answerdigital.answerking.response.TagResponse}.
+     */
+    public static TagResponse tagToResponse(final Tag tag) {
+        return TAG_MAPPER.convertTagEntityToTagResponse(tag);
     }
 
     /**
