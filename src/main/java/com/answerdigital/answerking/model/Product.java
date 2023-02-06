@@ -56,13 +56,6 @@ public class Product {
     @ManyToMany(mappedBy = "products", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
 
-    public Product(final String name, final String description, final BigDecimal price, final boolean isRetired) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.retired = isRetired;
-    }
-
     @PreRemove
     private void removeProductsFromCategories() {
         category.removeProduct(this);
