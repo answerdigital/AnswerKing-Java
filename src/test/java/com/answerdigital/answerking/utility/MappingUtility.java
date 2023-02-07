@@ -9,7 +9,6 @@ import com.answerdigital.answerking.response.TagResponse;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
