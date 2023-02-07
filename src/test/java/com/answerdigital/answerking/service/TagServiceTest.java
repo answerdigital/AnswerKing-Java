@@ -76,6 +76,8 @@ class TagServiceTest {
 
         // then
         assertTagVsResponseEquality(expectedResponse, tagResponse);
+        verify(productService).findAllProductsInListOfIds(anyList());
+        verify(tagRepository).save(any(Tag.class));
     }
 
     @Test
@@ -99,6 +101,8 @@ class TagServiceTest {
 
         // then
         assertTagVsResponseEquality(expectedResponse, tagResponse);
+        verify(productService).findAllProductsInListOfIds(anyList());
+        verify(tagRepository).save(any(Tag.class));
     }
 
     @Test
