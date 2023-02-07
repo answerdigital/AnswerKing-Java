@@ -1,9 +1,7 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.builder.LineItemResponseTestBuilder;
-import com.answerdigital.answerking.builder.OrderRequestTestBuilder;
 import com.answerdigital.answerking.builder.OrderTestBuilder;
-import com.answerdigital.answerking.mapper.OrderMapper;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
 import com.answerdigital.answerking.request.OrderRequest;
@@ -14,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -43,6 +40,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.answerdigital.answerking.utility.MappingUtility.orderToResponse;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -60,31 +58,26 @@ class OrderControllerTest {
     @MockBean
     OrderRepository orderRepository;
 
-    private final OrderTestBuilder orderTestBuilder;
+    private static final OrderTestBuilder ORDER_TEST_BUILDER;
 
-    private final OrderRequestTestBuilder orderRequestTestBuilder;
+    private static final LineItemResponseTestBuilder LINE_ITEM_RESPONSE_TEST_BUILDER;
 
-    private final LineItemResponseTestBuilder lineItemResponseTestBuilder;
-
-    private final OrderMapper orderMapper;
-
-    public OrderControllerTest() {
-        orderTestBuilder = new OrderTestBuilder();
-        orderRequestTestBuilder = new OrderRequestTestBuilder();
-        orderMapper = Mappers.getMapper(OrderMapper.class);
-        lineItemResponseTestBuilder = new LineItemResponseTestBuilder();
+    static {
+        ORDER_TEST_BUILDER = new OrderTestBuilder();
+        LINE_ITEM_RESPONSE_TEST_BUILDER = new LineItemResponseTestBuilder();
     }
 
     @Test
     void getAllOrdersReturnListOfOrderObjects() throws Exception {
         //given
-        final Order order = orderTestBuilder.withDefaultValues().build();
-        final OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+        final Order order = ORDER_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+        final OrderResponse orderResponse = orderToResponse(order);
         given(orderService.findAll()).willReturn(List.of(orderResponse));
 
         //when
         final RequestBuilder request = MockMvcRequestBuilders.get("/orders");
-
         final MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 
         //then
@@ -101,11 +94,13 @@ class OrderControllerTest {
     @Test
     void addOrderTest() throws Exception {
         // given
-        final LineItemResponse lineItemResponse = lineItemResponseTestBuilder.withDefaultValues().build();
-        final Order order = orderTestBuilder
+        final LineItemResponse lineItemResponse = LINE_ITEM_RESPONSE_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+        final Order order = ORDER_TEST_BUILDER
                 .withDefaultValues()
                 .build();
-        final OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+        final OrderResponse orderResponse = orderToResponse(order);
         orderResponse.getLineItems().add(lineItemResponse);
 
         //when
@@ -130,13 +125,18 @@ class OrderControllerTest {
     @Test
     void getOrderByIdReturnsOkStatusIfExist() throws Exception {
         //given
-        final Order order = orderTestBuilder.withDefaultValues().build();
-        final OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
-        when(orderService.getOrderResponseById(1L)).thenReturn(orderResponse);
+        final Order order = ORDER_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+        final OrderResponse orderResponse = orderToResponse(order);
+
         //when
+        when(orderService.getOrderResponseById(1L)).thenReturn(orderResponse);
+
         final ResultActions actualPerformResult = mvc.perform(get("/orders/{orderId}", 1L))
                 .andExpect(status().isOk());
         final ObjectMapper mapper = new ObjectMapper();
+
         //then
         assertEquals(orderResponse.getId(), mapper.readTree(actualPerformResult.andReturn()
                 .getResponse().getContentAsString()).get("id").asLong());
@@ -145,11 +145,13 @@ class OrderControllerTest {
     @Test
     void updateOrderTest() throws Exception {
         // given
-        final LineItemResponse lineItemResponse = lineItemResponseTestBuilder.withDefaultValues().build();
-        final Order order = orderTestBuilder
+        final LineItemResponse lineItemResponse = LINE_ITEM_RESPONSE_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+        final Order order = ORDER_TEST_BUILDER
                 .withDefaultValues()
                 .build();
-        final OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+        final OrderResponse orderResponse = orderToResponse(order);
         orderResponse.getLineItems().add(lineItemResponse);
 
         //when
