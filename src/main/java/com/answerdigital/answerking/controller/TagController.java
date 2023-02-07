@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Validated
 @RestController
 @RequestMapping(path = "/tags")
 @Tag(name = "Tags", description = "Create and manage tags.")
@@ -47,8 +46,7 @@ public class TagController {
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TagResponse>> getAllTags() {
-        final List<TagResponse> tags = tagService.findAll();
-        return new ResponseEntity<>(tags, HttpStatus.OK);
+        return new ResponseEntity<>(tagService.findAll(), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a new tag.")
