@@ -34,10 +34,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-final class
-
-
-ProductServiceTest {
+final class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
