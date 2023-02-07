@@ -10,6 +10,8 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A selection of utility methods to aid in the mapping process.
@@ -26,10 +28,10 @@ public final class MappingUtility {
      * @param tags A Collection of type {@link com.answerdigital.answerking.model.Tag}.
      * @return A List of type {@link com.answerdigital.answerking.response.TagResponse}.
      */
-    public static List<TagResponse> allTagsToResponse(final Tag ...tags) {
+    public static Set<TagResponse> allTagsToResponse(final Tag ...tags) {
         return Arrays.stream(tags)
             .map(TAG_MAPPER::convertTagEntityToTagResponse)
-            .toList();
+            .collect(Collectors.toSet());
     }
 
     /**
