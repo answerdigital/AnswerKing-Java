@@ -15,6 +15,8 @@ import java.util.List;
  * A selection of utility methods to aid in the mapping process.
  */
 public final class MappingUtility {
+    private MappingUtility() { }
+
     private static final TagMapper TAG_MAPPER = Mappers.getMapper(TagMapper.class);
 
     private static final OrderMapper ORDER_MAPPER = Mappers.getMapper(OrderMapper.class);
