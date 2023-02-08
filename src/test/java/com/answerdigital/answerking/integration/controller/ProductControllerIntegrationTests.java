@@ -59,7 +59,7 @@ class ProductControllerIntegrationTests extends AbstractContainerBaseTest {
     void getAllProductsEmptyTest() throws Exception {
 
         final var response = mvc.perform(get("/products"))
-            .andExpect(status().isNoContent())
+            .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
