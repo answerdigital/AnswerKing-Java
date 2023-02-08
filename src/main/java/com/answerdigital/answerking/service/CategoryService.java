@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_DO_NOT_EXIST;
+
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
@@ -37,11 +38,12 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.get
  */
 @Service
 public class CategoryService {
-    private final ProductService productService;
 
     private final CategoryRepository categoryRepository;
 
     private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
+
+    private final ProductService productService;
 
     @Autowired
     public CategoryService(final ProductService productService,

@@ -2,6 +2,8 @@ package com.answerdigital.answerking.builder;
 
 import com.answerdigital.answerking.response.ProductResponse;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProductResponseTestBuilder {
     private Long id;
@@ -16,6 +18,8 @@ public class ProductResponseTestBuilder {
 
     private boolean retired;
 
+    private Set<Long> tags;
+
     public ProductResponseTestBuilder withDefaultValues() {
         this.id = 1L;
         this.name = "Example Product Response";
@@ -23,6 +27,7 @@ public class ProductResponseTestBuilder {
         this.price = new BigDecimal("12.99");
         this.category = 1L;
         this.retired = false;
+        this.tags = new HashSet<>();
 
         return this;
     }
@@ -57,7 +62,12 @@ public class ProductResponseTestBuilder {
         return this;
     }
 
+    public ProductResponseTestBuilder withTags(final Set<Long> tags) {
+        this.tags = tags;
+        return this;
+    }
+
     public ProductResponse build() {
-        return new ProductResponse(id, name, description, price, category, retired);
+        return new ProductResponse(id, name, description, price, category, retired, tags);
     }
 }

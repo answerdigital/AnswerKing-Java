@@ -22,7 +22,6 @@ public record ProductRequest(
         @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
                 message = "Product description can only contain letters, numbers, spaces and !?-.,' punctuation")
         String description,
-
         @Digits(integer = 12, fraction = 2, message = "Product price is invalid")
         @DecimalMin(value = "0.0", inclusive = false, message = "Product price cannot be less than 0")
         @NotNull

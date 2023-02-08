@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - v1.1.0-preview.6
+
     types:
       - completed
 jobs:
