@@ -20,6 +20,13 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRO
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_DO_NOT_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
+/**
+ * The class ProductService is the service layer for Products {@link com.answerdigital.answerking.model.Product}.
+ * It services requests from
+ * ProductController {@link com.answerdigital.answerking.controller.ProductController} and
+ * interacts with ProductRepository {@link com.answerdigital.answerking.repository.ProductRepository}
+ * to connect with the database.
+ */
 @Service
 public class ProductService {
     private final ProductRepository productRepository;

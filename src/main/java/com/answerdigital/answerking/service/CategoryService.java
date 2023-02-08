@@ -28,6 +28,13 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CAT
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
+/**
+ * The class CategoryService is the service layer for Categories {@link com.answerdigital.answerking.model.Category}.
+ * It services requests from
+ * CategoryController {@link com.answerdigital.answerking.controller.CategoryController} and
+ * interacts with CategoryRepository {@link com.answerdigital.answerking.repository.CategoryRepository}
+ * to connect with the database.
+ */
 @Service
 public class CategoryService {
     private final ProductService productService;

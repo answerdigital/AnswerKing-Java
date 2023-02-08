@@ -26,6 +26,13 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRO
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_DO_NOT_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
+/**
+ * The class OrderService is the service layer for Orders {@link com.answerdigital.answerking.model.Order}.
+ * It services requests from
+ * OrderController {@link com.answerdigital.answerking.controller.OrderController} and
+ * interacts with OrderRepository {@link com.answerdigital.answerking.repository.OrderRepository}
+ * to connect with the database.
+ */
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
