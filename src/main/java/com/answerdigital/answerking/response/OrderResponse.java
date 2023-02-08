@@ -27,6 +27,11 @@ public class OrderResponse {
 
     private Set<LineItemResponse> lineItems;
 
+    /**
+     * This method calculates the total price of the Order
+     * {@link com.answerdigital.answerking.model.Order}.
+     * @return The total price of the Order {@link com.answerdigital.answerking.model.Order}.
+     */
     @JsonInclude
     public BigDecimal getOrderTotal() {
         return lineItems.stream()
