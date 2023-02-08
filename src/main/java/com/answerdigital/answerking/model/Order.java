@@ -21,6 +21,11 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class Order represents a menu order which consists of
+ * Products {@link com.answerdigital.answerking.model.Product}
+ * within Categories {@link com.answerdigital.answerking.model.Category}.
+ */
 @Entity
 @Getter
 @Setter

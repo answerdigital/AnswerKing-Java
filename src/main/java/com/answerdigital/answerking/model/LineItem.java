@@ -18,6 +18,10 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * The class LineItem consists of Order {@link com.answerdigital.answerking.model.Order} ID,
+ * Product {@link com.answerdigital.answerking.model.Product} ID and quantity.
+ */
 @Entity
 @Table(name = "order_product")
 @Getter

@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class Category represents a group of Products with similar traits.
+ */
 @Entity
 @Getter
 @Setter

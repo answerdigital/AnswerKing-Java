@@ -23,6 +23,9 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class Product represents an item in a menu.
+ */
 @Entity
 @Table(name = "product")
 @Getter
