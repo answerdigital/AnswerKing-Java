@@ -2,6 +2,9 @@ package com.answerdigital.answerking.exception.custom;
 
 import com.answerdigital.answerking.exception.AnswerKingException;
 import org.springframework.http.HttpStatus;
+/**
+ * The class RetirementException represents an exception when an entity is retired.
+ */
 
 public class RetirementException extends AnswerKingException {
 
