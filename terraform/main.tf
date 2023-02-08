@@ -108,6 +108,7 @@ resource "aws_instance" "answer_king_java" {
                 EOF
 
   user_data_replace_on_change = true
+  
   tags = {
     Name = "answer-king-java"
   }
@@ -127,7 +128,6 @@ resource "aws_db_instance" "answer_king_database" {
   username = var.db_username
   password = var.db_password
 }
-
 
 resource "aws_security_group" "answer_king_api_sg" {
   name        = "answer_king_api_sg"
