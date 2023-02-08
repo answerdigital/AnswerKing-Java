@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,18 @@ public class TagController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TagResponse>> getAllTags() {
         return new ResponseEntity<>(tagService.findAll(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get a single tag.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tag with the provided id has been found.",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = TagResponse.class))}),
+        @ApiResponse(responseCode = "404", description = "Tag with the given id does not exist.",
+            content = {@Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+    public ResponseEntity<TagResponse> getTagById(@Valid @PathVariable final Long id) {
+        return new ResponseEntity<>(tagService.findByIdResponse(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a new tag.")
