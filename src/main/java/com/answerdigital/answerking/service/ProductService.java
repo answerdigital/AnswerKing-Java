@@ -1,5 +1,7 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.ProductMapper;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
@@ -32,6 +34,15 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
+    /**
+     * Creates a Product {@link com.answerdigital.answerking.model.Product}
+     * and adds it to a Category {@link com.answerdigital.answerking.model.Category}.
+     * @param productRequest The ProductRequest {@link com.answerdigital.answerking.request.ProductRequest}.
+     * @return The newly persisted Product {@link com.answerdigital.answerking.model.Product},
+     * in the form of a ProductResponse {@link com.answerdigital.answerking.response.ProductResponse}.
+     * @throws NameUnavailableException When the Product {@link com.answerdigital.answerking.model.Product}
+     * name already exists.
+     */
     public ProductResponse addNewProduct(final ProductRequest productRequest) {
         if (productRepository.existsByName(productRequest.name())) {
             throw getCustomException(PRODUCTS_ALREADY_EXIST, productRequest.name());
@@ -45,11 +56,25 @@ public class ProductService {
         return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
 
+    /**
+     * Finds a Product {@link com.answerdigital.answerking.model.Product} by an ID.
+     * @param productId The ID of the Product {@link com.answerdigital.answerking.model.Product}.
+     * @return The found Product {@link com.answerdigital.answerking.model.Product}.
+     * @throws NotFoundException When the product {@link com.answerdigital.answerking.model.Product}
+     * cannot be found.
+     */
     public Product findById(final Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> getCustomException(PRODUCTS_DO_NOT_EXIST, productId));
     }
 
+    /**
+     * Finds a Product {@link com.answerdigital.answerking.model.Product} by ID
+     * and maps it to a ProductResponse {@link com.answerdigital.answerking.response.ProductResponse} object.
+     * @param productId The ID of the Product {@link com.answerdigital.answerking.model.Product}.
+     * @return The mapped ProductResponse {@link com.answerdigital.answerking.response.ProductResponse}.
+     * @throws NotFoundException When the Product {@link com.answerdigital.answerking.model.Product} cannot be found.
+     */
     public ProductResponse findByIdResponse(final Long productId) {
         final Product product = productRepository.findById(productId)
                 .orElseThrow(() -> getCustomException(PRODUCTS_DO_NOT_EXIST, productId));
@@ -57,6 +82,10 @@ public class ProductService {
         return productMapper.convertProductEntityToProductResponse(product);
     }
 
+    /**
+     * Finds all the Products {@link com.answerdigital.answerking.model.Product} within the database.
+     * @return A List of ProductResponses {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     public List<ProductResponse> findAll() {
         final List<Product> productsList = productRepository.findAll();
         return productsList
@@ -65,6 +94,14 @@ public class ProductService {
                 .toList();
     }
 
+    /**
+     * Updates a Product {@link com.answerdigital.answerking.model.Product}.
+     * @param productRequest The ProductRequest object {@link com.answerdigital.answerking.request.ProductRequest}.
+     * @param productId The ID of the Product {@link com.answerdigital.answerking.model.Product} to update.
+     * @return The updated Product {@link com.answerdigital.answerking.model.Product},
+     * in the form of a ProductResponse {@link com.answerdigital.answerking.response.ProductResponse}.
+     * @throws NameUnavailableException When the Product {@link com.answerdigital.answerking.model.Product} name already exists.
+     */
     public ProductResponse updateProduct(final Long productId, final ProductRequest productRequest) {
         final Product product = findById(productId);
 
@@ -78,6 +115,10 @@ public class ProductService {
         );
     }
 
+    /**
+     * Retires a Product {@link com.answerdigital.answerking.model.Product}.
+     * @param productId The Product ID to retire.
+     */
     public void retireProduct(final Long productId) {
         final Product product = findById(productId);
 
@@ -89,6 +130,12 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    /**
+     * Finds a List of all the Products {@link com.answerdigital.answerking.model.Product}
+     * within a Category {@link com.answerdigital.answerking.model.Category}.
+     * @param categoryId The ID of the Category {@link com.answerdigital.answerking.model.Category}.
+     * @return A List of ProductResponses {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productRepository.findProductsByCategoryId(categoryId)
                                 .stream()
@@ -96,6 +143,13 @@ public class ProductService {
                                 .toList();
     }
 
+    /**
+     * Finds a List of Products {@link com.answerdigital.answerking.model.Product}
+     * matching the provided Product IDs.
+     * @param productIds A List of Product IDs.
+     * @return A List of Products {@link com.answerdigital.answerking.model.Product}
+     * matching the provided Product IDs.
+     */
     public List<Product> findAllProductsInListOfIds(final List<Long> productIds) {
         return productRepository.findAllByIdIn(productIds);
     }

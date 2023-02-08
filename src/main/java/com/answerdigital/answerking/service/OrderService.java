@@ -41,9 +41,10 @@ public class OrderService {
     }
 
     /**
-     * Creates an order *
-     * @param orderRequest The Order Request
-     * @return The created Order
+     * Creates an Order {@link com.answerdigital.answerking.model.Order}.
+     * @param orderRequest The OrderRequest {@link com.answerdigital.answerking.request.OrderRequest} object.
+     * @return The newly persisted Order {@link com.answerdigital.answerking.model.Order},
+     * in the form of an OrderResponse {@link com.answerdigital.answerking.response.OrderResponse}.
      */
     @Transactional
     public OrderResponse addOrder(final OrderRequest orderRequest) {
@@ -52,17 +53,18 @@ public class OrderService {
     }
 
     /**
-     * Finds an Order by a given ID and maps it to an Order Response *
-     * @param orderId The Order ID
-     * @return The found Order Response
+     * Finds an Order {@link com.answerdigital.answerking.model.Order} by a given ID
+     * and maps it to an OrderResponse {@link com.answerdigital.answerking.response.OrderResponse}.
+     * @param orderId The Order {@link com.answerdigital.answerking.model.Order} ID.
+     * @return The found OrderResponse {@link com.answerdigital.answerking.response.OrderResponse}.
      */
     public OrderResponse getOrderResponseById(final Long orderId) {
         return convertToResponse(getOrderById(orderId));
     }
 
     /**
-     * Finds all the orders within the database *
-     * @return A list of all found Orders
+     * Finds all the Orders {@link com.answerdigital.answerking.model.Order} within the database.
+     * @return A List of all found Orders {@link com.answerdigital.answerking.model.Order}.
      */
     public List<OrderResponse> findAll() {
         return orderRepository.findAll().stream()
@@ -71,10 +73,10 @@ public class OrderService {
     }
 
     /**
-     * Updates an order *
-     * @param orderId The ID of the Order
-     * @param orderRequest The Order Request
-     * @return The updated Order
+     * Updates an Order {@link com.answerdigital.answerking.model.Order}.
+     * @param orderId The ID of the Order {@link com.answerdigital.answerking.model.Order}.
+     * @param orderRequest The OrderRequest {@link com.answerdigital.answerking.request.OrderRequest} object
+     * @return The updated Order {@link com.answerdigital.answerking.model.Order}.
      */
     @Transactional
     public OrderResponse updateOrder(final Long orderId, final OrderRequest orderRequest) {
@@ -88,6 +90,16 @@ public class OrderService {
         return convertToResponse(orderRepository.save(order));
     }
 
+    /**
+     * Adds a List of LineItem {@link com.answerdigital.answerking.model.LineItem}
+     * to an Order {@link com.answerdigital.answerking.model.Order}.
+     * @param order The Order {@link com.answerdigital.answerking.model.Order}
+     * to add a List of LineItems {@link com.answerdigital.answerking.model.LineItem} to.
+     * @param lineItemRequests A List of
+     * LineItemRequest {@link com.answerdigital.answerking.request.LineItemRequest} objects.
+     * @return The updated Order {@link com.answerdigital.answerking.model.Order}
+     * with added LineItems {@link com.answerdigital.answerking.model.LineItem}.
+     */
     private Order addLineItemsToOrder(final Order order, final List<LineItemRequest> lineItemRequests) {
         // get line items id list
         final List<Long> lineItemProductIds = lineItemRequests.stream()
@@ -106,6 +118,12 @@ public class OrderService {
         return order;
     }
 
+    /**
+     * Gets a List of all unretired Products {@link com.answerdigital.answerking.model.Product}
+     * from the database.
+     * @param productIdsList The List of ProductIDs.
+     * @return The Products {@link com.answerdigital.answerking.model.Product} found.
+     */
     private List<Product> getUnRetiredProductsListFromDatabase(final List<Long> productIdsList){
         // get all products from line Item list from database
         final List<Product> products = productService.findAllProductsInListOfIds(
@@ -136,6 +154,15 @@ public class OrderService {
         return products;
     }
 
+    /**
+     * Converts the List of Products {@link com.answerdigital.answerking.model.Product}
+     * to map with quantity of Products {@link com.answerdigital.answerking.model.Product}.
+     * @param products The List of Products {@link com.answerdigital.answerking.model.Product}.
+     * @param lineItemRequests A list of
+     * LineItemRequest {@link com.answerdigital.answerking.request.LineItemRequest} objects.
+     * @return A Map of Product {@link com.answerdigital.answerking.model.Product} IDs
+     * and Product {@link com.answerdigital.answerking.model.Product} quantities.
+     */
     private Map<Product, Integer> convertProductsListToMapWithQuantity(final List<Product> products,
                                                                        final List<LineItemRequest> lineItemRequests) {
         // create helper map of product ids and products
@@ -151,9 +178,9 @@ public class OrderService {
     }
 
     /**
-     * Marks an Order as cancelled *
-     * @param orderId The ID of the Order to cancel
-     * @return The order with the status as cancelled
+     * Marks an Order {@link com.answerdigital.answerking.model.Order} as cancelled.
+     * @param orderId The ID of the Order {@link com.answerdigital.answerking.model.Order} to cancel.
+     * @return The Order {@link com.answerdigital.answerking.model.Order} with the status as cancelled.
      */
     public void cancelOrder(final Long orderId) {
         final Order order = getOrderById(orderId);
@@ -167,18 +194,19 @@ public class OrderService {
     }
 
     /**
-     * Helper method which converts an Order to an Order Response *
-     * @param order The Order instance to convert
-     * @return The mapped Order Response
+     * Helper method which converts an Order {@link com.answerdigital.answerking.model.Order}
+     * to an OrderResponse {@link com.answerdigital.answerking.response.OrderResponse}.
+     * @param order The Order {@link com.answerdigital.answerking.model.Order} object to convert.
+     * @return The mapped OrderResponse {@link com.answerdigital.answerking.response.OrderResponse}.
      */
     private OrderResponse convertToResponse(final Order order) {
         return orderMapper.orderToOrderResponse(order);
     }
 
     /**
-     * Helper method which gets a raw Order by an ID *
-     * @param orderId The ID of the Order
-     * @return The found Order
+     * Helper method which gets a raw Order {@link com.answerdigital.answerking.model.Order} by an ID.
+     * @param orderId The ID of the Order {@link com.answerdigital.answerking.model.Order}.
+     * @return The found Order {@link com.answerdigital.answerking.model.Order}.
      */
     private Order getOrderById(final Long orderId) {
         return this.orderRepository

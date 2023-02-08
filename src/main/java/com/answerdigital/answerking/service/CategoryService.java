@@ -44,10 +44,12 @@ public class CategoryService {
     }
 
     /**
-     * Creates a Category.
-     * @param categoryRequest The CategoryRequest.
-     * @return The newly persisted Category, in the form of a CategoryResponse.
-     * @throws NameUnavailableException When the Category name already exists.
+     * Creates a Category {@link com.answerdigital.answerking.model.Category}.
+     * @param categoryRequest The CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest} object.
+     * @return The newly persisted Category {@link com.answerdigital.answerking.model.Category},
+     * in the form of a CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse}.
+     * @throws NameUnavailableException When the Category {@link com.answerdigital.answerking.model.Category}
+     * name already exists.
      */
     @Transactional
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
@@ -64,10 +66,11 @@ public class CategoryService {
     }
 
     /**
-     * Finds a Category by an ID.
-     * @param categoryId The ID of the category.
-     * @return The found Category.
-     * @throws NotFoundException When the category cannot be found.
+     * Finds a Category {@link com.answerdigital.answerking.model.Category} by an ID.
+     * @param categoryId The ID of the Category {@link com.answerdigital.answerking.model.Category}.
+     * @return The found Category {@link com.answerdigital.answerking.model.Category}.
+     * @throws NotFoundException When the Category {@link com.answerdigital.answerking.model.Category}
+     * cannot be found.
      */
     public Category findById(final Long categoryId) {
         return categoryRepository.findById(categoryId)
@@ -75,11 +78,12 @@ public class CategoryService {
     }
 
     /**
-     * Finds a Category by ID and maps it to a CategoryResponse object. If
-     * no category
-     * @param categoryId The ID of the Category.
-     * @return The mapped CategoryResponse.
-     * @throws NotFoundException When the category cannot be found.
+     * Finds a Category {@link com.answerdigital.answerking.model.Category} by ID and maps it to
+     * a CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse} object.
+     * @param categoryId The ID of the Category {@link com.answerdigital.answerking.model.Category}.
+     * @return The mapped CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse}.
+     * @throws NotFoundException When the Category {@link com.answerdigital.answerking.model.Category}
+     * cannot be found.
      */
     public CategoryResponse findByIdResponse(final Long categoryId) {
         final Category category = findById(categoryId);
@@ -87,8 +91,8 @@ public class CategoryService {
     }
 
     /**
-     * Finds all the Categories within the database.
-     * @return A List of CategoryResponses.
+     * Finds all the Categories {@link com.answerdigital.answerking.model.Category} within the database.
+     * @return A List of CategoryResponses {@link com.answerdigital.answerking.response.CategoryResponse}.
      */
     public Set<CategoryResponse> findAll() {
         return categoryRepository.findAll()
@@ -98,11 +102,13 @@ public class CategoryService {
     }
 
     /**
-     * Updates a Category
-     * @param categoryRequest The CategoryRequest object.
-     * @param id The ID of the Category to update.
-     * @return The updated Category, in the form of a CategoryResponse.
-     * @throws NameUnavailableException When the Category name already exists.
+     * Updates a Category {@link com.answerdigital.answerking.model.Category}.
+     * @param categoryRequest The CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest} object.
+     * @param id The ID of the Category {@link com.answerdigital.answerking.model.Category} to update.
+     * @return The updated Category {@link com.answerdigital.answerking.model.Category},
+     * in the form of a CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse}.
+     * @throws NameUnavailableException When the Category {@link com.answerdigital.answerking.model.Category}
+     * name already exists.
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
@@ -116,8 +122,8 @@ public class CategoryService {
     }
 
     /**
-     * Retires a Category.
-     * @param categoryId The Category ID to retire.
+     * Retires a Category {@link com.answerdigital.answerking.model.Category}.
+     * @param categoryId The Category {@link com.answerdigital.answerking.model.Category} ID to retire.
      */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
@@ -131,18 +137,21 @@ public class CategoryService {
     }
 
     /**
-     * Finds a List of all the Products within a Category.
-     * @param categoryId The ID of the Category.
-     * @return A List of ProductResponses.
+     * Finds a List of all the Products {@link com.answerdigital.answerking.model.Product}
+     * within a Category {@link com.answerdigital.answerking.model.Category}.
+     * @param categoryId The ID of the Category {@link com.answerdigital.answerking.model.Category}.
+     * @return A List of ProductResponses {@link com.answerdigital.answerking.response.ProductResponse}.
      */
     public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productService.findProductsByCategoryId(categoryId);
     }
 
     /**
-     * Adds a list of products to a given category.
-     * @param category The Category entity to add the products to.
-     * @param productIds The List of Product Ids.
+     * Adds a List of Products {@link com.answerdigital.answerking.model.Product}
+     * to a given Category {@link com.answerdigital.answerking.model.Category}.
+     * @param category The Category {@link com.answerdigital.answerking.model.Category} object
+     * to add the Products {@link com.answerdigital.answerking.model.Product} to.
+     * @param productIds The List of Product {@link com.answerdigital.answerking.model.Product} IDs.
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public void addProductsToCategory(final Category category, final List<Long> productIds) {
@@ -153,9 +162,10 @@ public class CategoryService {
     }
 
     /**
-     * Checks if any products within a Set are retired.
-     * @param products The Set of Products to check.
-     * @throws RetirementException When a product is retired.
+     * Checks if any Products {@link com.answerdigital.answerking.model.Product}
+     * within a Set are retired.
+     * @param products The Set of Products {@link com.answerdigital.answerking.model.Product} to check.
+     * @throws RetirementException When a Product {@link com.answerdigital.answerking.model.Product} is retired.
      */
     private void validateNoProductsAreRetired(final Set<Product> products) {
         final List<Long> retiredProducts = products
@@ -170,9 +180,10 @@ public class CategoryService {
     }
 
     /**
-     * To be used when validating that the category name does not exist
-     * when creating a new category.
-     * @param categoryName The Category name to check.
+     * To be used when validating that the Category {@link com.answerdigital.answerking.model.Category}
+     * name does not exist when creating a new category.
+     * @param categoryName The Category {@link com.answerdigital.answerking.model.Category}
+     * name to check.
      */
     private void validateCategoryNameDoesNotExistWhenCreating(final String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
@@ -181,10 +192,10 @@ public class CategoryService {
     }
 
     /**
-     * To be used when validating that the category name does not exist
-     * when renaming an existing category.
-     * @param categoryName The Category Name to check.
-     * @param id The ID of the existing category.
+     * To be used when validating that the Category {@link com.answerdigital.answerking.model.Category}
+     * name does not exist when renaming an existing Category {@link com.answerdigital.answerking.model.Category}.
+     * @param categoryName The Category {@link com.answerdigital.answerking.model.Category} name to check.
+     * @param id The ID of the existing Category {@link com.answerdigital.answerking.model.Category}.
      */
     private void validateCategoryNameDoesNotExistWhenUpdating(final String categoryName, final Long id) {
         if (categoryRepository.existsByNameAndIdIsNot(categoryName, id)) {
@@ -193,28 +204,33 @@ public class CategoryService {
     }
 
     /**
-     * Updates a Category against a CategoryRequest.
-     * @param category The Category to update.
-     * @param categoryRequest The CategoryRequest to map.
-     * @return The updated Category.
+     * Updates a Category {@link com.answerdigital.answerking.model.Category}
+     * against a CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest}.
+     * @param category The Category {@link com.answerdigital.answerking.model.Category} to update.
+     * @param categoryRequest The CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest}
+     * to map.
+     * @return The updated Category {@link com.answerdigital.answerking.model.Category}.
      */
     private Category updateRequestToCategory(final Category category, final CategoryRequest categoryRequest) {
         return categoryMapper.updateRequestToCategory(category, categoryRequest);
     }
 
     /**
-     * Map a Category entity model to a CategoryResponse.
-     * @param category The Category entity model to map.
-     * @return The mapped CategoryResponse.
+     * Map a Category {@link com.answerdigital.answerking.model.Category}
+     * to a CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse}.
+     * @param category The Category {@link com.answerdigital.answerking.model.Category} to map.
+     * @return The mapped CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse}.
      */
     private CategoryResponse categoryToResponse(final Category category) {
         return categoryMapper.convertCategoryEntityToCategoryResponse(category);
     }
 
     /**
-     * Map a CategoryRequest to a Category entity model.
-     * @param categoryRequest The CategoryRequest to map.
-     * @return The mapped Category entity model.
+     * Map a CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest}
+     * to a Category {@link com.answerdigital.answerking.model.Category}
+     * @param categoryRequest The CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest}
+     * to map.
+     * @return The mapped Category {@link com.answerdigital.answerking.model.Category}.
      */
     private Category requestToCategory(final CategoryRequest categoryRequest) {
         return categoryMapper.addRequestToCategory(categoryRequest);
