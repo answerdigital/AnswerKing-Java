@@ -39,7 +39,12 @@ public enum GlobalErrorMessage {
             ProductAlreadyPresentException.class),
     CATEGORIES_PRODUCTS_NOT_FOUND(
             "One or more Products could not be found within this Category with ID(s) or name(s) [%s]",
-            NotFoundException.class);
+            NotFoundException.class),
+
+    // TAG
+    TAGS_ALREADY_EXIST("One or more Tags already exist with ID(s) or name(s) [%s].",
+            NameUnavailableException.class)
+    ;
 
     final String errorMessageString;
     final Class<? extends AnswerKingException> exception;

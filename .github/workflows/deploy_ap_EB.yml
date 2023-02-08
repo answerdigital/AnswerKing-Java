@@ -4,7 +4,8 @@ on:
     workflows: ["Integration and code analysis"]
     branches:
       - main
-      - v1.1.0-preview.5
+      - v1.1.0-preview.6
+
     types:
       - completed
 jobs:
