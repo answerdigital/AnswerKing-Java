@@ -51,11 +51,18 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<LineItem> lineItems = new HashSet<>();
 
+    /**
+     * This method removes a Product from a Category {@link com.answerdigital.answerking.model.Category}.
+     */
     @PreRemove
     private void removeProductsFromCategories() {
         category.removeProduct(this);
     }
 
+    /**
+     * This method returns the price of the Product.
+     * @return Price of Product.
+     */
     public BigDecimal getPrice() {
         return price.setScale(2, RoundingMode.DOWN);
     }

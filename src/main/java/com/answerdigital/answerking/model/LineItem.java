@@ -47,6 +47,11 @@ public class LineItem {
         this.quantity = quantity;
     }
 
+    /**
+     * This method checks if the LineItem is the exact same as the selected object
+     * (normally Product {@link com.answerdigital.answerking.model.LineItem} object).
+     * @return A boolean verifying whether the objects are the same or not.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -58,6 +63,10 @@ public class LineItem {
             && Objects.equals(quantity, lineItem.quantity));
     }
 
+    /**
+     * This method returns a hash of the LineItem.
+     * @return A Hash value for an Order ID, Product ID and Product Quantity.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(order, product, quantity);
