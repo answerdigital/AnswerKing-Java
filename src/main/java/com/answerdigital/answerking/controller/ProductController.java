@@ -28,6 +28,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * This class is responsible for handling control logic for all incoming requests by
+ * exposing a variety of Product related REST endpoints.
+ */
 @Validated
 @Tag(name = "Inventory", description = "Manage the inventory.")
 @RestController
@@ -40,6 +44,13 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get all existing Products
+     * via a GET request. This produces a HTTP status of 200 OK if there are
+     * or are not Orders to be returned.
+     *
+     * @return A ResponseEntity with a list of {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     @Operation(summary = "Get all products.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When all the products have been returned.",
@@ -51,6 +62,14 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get an existing Product via a GET request.
+     * This produces a HTTP status of 200 OK if there is a Product available to be returned. Otherwise,
+     * a status of 404 NOT FOUND is produced when the Product does not exist.
+     *
+     * @param id The ID of the Product.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     @Operation(summary = "Get a single product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product with the provided id has been found.",
@@ -64,6 +83,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.findByIdResponse(id), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to create new Products
+     * via a POST request. This produces a HTTP status of 201 CREATED if
+     * successful, otherwise a status of 400 BAD REQUEST if invalided parameters
+     * are provided.
+     *
+     * @param productRequest An instance of {@link com.answerdigital.answerking.request.ProductRequest}.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     @Operation(summary = "Create a new product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "When the product has been created.",
@@ -77,6 +105,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.addNewProduct(productRequest), HttpStatus.CREATED);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to update a Product via a PUT request. This produces a HTTP status
+     * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided and 404 NOT FOUND
+     * if the Product could not be found.
+     *
+     * @param id The ID of the Product.
+     * @param productRequest An instance of {@link com.answerdigital.answerking.request.ProductRequest}.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.ProductResponse}.
+     */
     @Operation(summary = "Update an existing product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product has been updated.",
@@ -94,6 +131,14 @@ public class ProductController {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to retire a Product via a DELETE request. This produces a HTTP status
+     * of 200 OK if the update was successful, 410 GONE if the Product is already retired and 404 NOT FOUND
+     * if the Product could not be found.
+     *
+     * @param id The ID of the Product.
+     * @return A ResponseEntity of type {@link java.lang.Void}.
+     */
     @Operation(summary = "Retire an existing product.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "When the product has been retired.",

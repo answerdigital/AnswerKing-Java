@@ -27,6 +27,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * This class is responsible for handling control logic for all incoming requests by
+ * exposing a variety of Order related REST endpoints.
+ */
 @RestController
 @RequestMapping(path = "/orders")
 @Tag(name = "Orders", description = "Create and manage customer orders.")
@@ -38,6 +42,13 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get all existing Orders
+     * via a GET request. This produces a HTTP status of 200 OK if there are
+     * or are not Orders to be returned.
+     *
+     * @return A ResponseEntity with a list of {@link com.answerdigital.answerking.response.OrderResponse}.
+     */
     @GetMapping
     @Operation(summary = "Get all orders.")
     @ApiResponses(value = {
@@ -51,6 +62,15 @@ public class OrderController {
         return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to create new Orders
+     * via a POST request. This produces a HTTP status of 201 CREATED if
+     * successful, otherwise a status of 400 BAD REQUEST if invalided parameters
+     * are provided.
+     *
+     * @param orderRequest An instance of {@link com.answerdigital.answerking.request.OrderRequest}.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.OrderResponse}.
+     */
     @PostMapping
     @Operation(summary = "Create a new order.")
     @ApiResponses(value = {
@@ -63,6 +83,14 @@ public class OrderController {
         return new ResponseEntity<>(orderService.addOrder(orderRequest), HttpStatus.CREATED);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to get an existing Order via a GET request.
+     * This produces a HTTP status of 200 OK if there is an order available to be returned. Otherwise,
+     * a status of 404 NOT FOUND is produced when the order does not exist.
+     *
+     * @param orderId The ID of the Order.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.OrderResponse}.
+     */
     @GetMapping(path = "/{orderId}")
     @Operation(summary = "Get a single order.")
     @ApiResponses(value = {
@@ -75,6 +103,15 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderResponseById(orderId), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to update an Order via a PUT request. This produces a HTTP status
+     * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided and 404 NOT FOUND
+     * if the Order could not be found.
+     *
+     * @param orderId The ID of the Order.
+     * @param orderRequest An instance of {@link com.answerdigital.answerking.request.OrderRequest}.
+     * @return A ResponseEntity of type {@link com.answerdigital.answerking.response.OrderResponse}.
+     */
     @PutMapping("/{orderId}")
     @Operation(summary = "Update an existing order.")
     @ApiResponses(value = {
@@ -90,6 +127,14 @@ public class OrderController {
         return new ResponseEntity<>(orderService.updateOrder(orderId, orderRequest), HttpStatus.OK);
     }
 
+    /**
+     * Exposes an endpoint which allows API users to cancel an Order via a DELETE request. This produces a HTTP status
+     * of 200 OK if the update was successful, 400 BAD REQUEST if invalid parameters were provided, 404 NOT FOUND
+     * if the Order could not be found and 410 GONE if the Order is already retired.
+     *
+     * @param orderId The ID of the Order.
+     * @return A ResponseEntity of type {@link java.lang.Void}.
+     */
     @DeleteMapping(path = "/{orderId}")
     @Operation(summary = "Cancel an existing order.")
     @ApiResponses(value = {
