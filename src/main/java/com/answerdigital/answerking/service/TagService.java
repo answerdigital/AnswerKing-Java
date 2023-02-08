@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.ORDERS_DO_NOT_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
@@ -20,9 +21,9 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.get
 public class TagService {
     private final TagRepository tagRepository;
 
-    private final TagMapper tagMapper = Mappers.getMapper(TagMapper.class);
-
     private final ProductService productService;
+
+    private final TagMapper tagMapper = Mappers.getMapper(TagMapper.class);
 
     @Autowired
     public TagService(final TagRepository tagRepository, final ProductService productService) {
@@ -50,5 +51,35 @@ public class TagService {
         return tagsList.stream()
             .map(tagMapper::convertTagEntityToTagResponse)
             .toList();
+    }
+
+    /**
+     * <p>Finds a {@link com.answerdigital.answerking.model.Tag} based on its ID, or else if
+     * no {@link com.answerdigital.answerking.model.Tag} is found - a
+     * {@link com.answerdigital.answerking.exception.generic.NotFoundException} is thrown.</p>
+     *
+     * <p>This method is to be used internally within the TagService hence why it's access
+     * modifier is Private.</p>
+     *
+     * @param id The ID of the {@link com.answerdigital.answerking.model.Tag}.
+     * @return The found {@link com.answerdigital.answerking.model.Tag}.
+     */
+    private Tag findById(final Long id) {
+        return tagRepository.findById(id)
+            .orElseThrow(() -> getCustomException(ORDERS_DO_NOT_EXIST, id.toString()));
+    }
+
+    /**
+     * <p>Finds a {@link com.answerdigital.answerking.model.Tag} based on its ID, or else if
+     * no {@link com.answerdigital.answerking.model.Tag} is found - a
+     * {@link com.answerdigital.answerking.exception.generic.NotFoundException} is thrown. If
+     * a {@link com.answerdigital.answerking.model.Tag} is found</p>
+     *
+     * @param id The ID of the {@link com.answerdigital.answerking.model.Tag}.
+     * @return The found {@link com.answerdigital.answerking.model.Tag}, converted
+     * into a {@link com.answerdigital.answerking.response.TagResponse}.
+     */
+    public TagResponse findByIdResponse(final Long id) {
+        return tagMapper.convertTagEntityToTagResponse(findById(id));
     }
 }
