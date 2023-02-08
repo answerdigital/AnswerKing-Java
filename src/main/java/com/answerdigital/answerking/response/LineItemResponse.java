@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * The class LineItemResponse represents the LineItem {@link com.answerdigital.answerking.model.LineItem}
+ * to be returned, after the end-user has sent an API endpoint request.
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * The class ProductResponse represents the Product {@link com.answerdigital.answerking.model.Product}
+ * to be returned, after the end-user has sent an API endpoint request.
+ */
 @Data
 @Builder
 @NoArgsConstructor
