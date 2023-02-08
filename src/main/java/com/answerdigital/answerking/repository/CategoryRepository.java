@@ -6,6 +6,12 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Set;
 
+/**
+ * The class CategoryRepository is the repository layer for Categories {@link com.answerdigital.answerking.model.Category}.
+ * It services requests from
+ * CategoryService {@link com.answerdigital.answerking.service.CategoryService}
+ * by interacting with the database and performing requested actions.
+ */
 @Repository
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Long>, CrudRepository<Category, Long> {
     boolean existsByName(String name);
