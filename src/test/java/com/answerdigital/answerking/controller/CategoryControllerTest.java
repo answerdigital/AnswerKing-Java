@@ -132,7 +132,7 @@ class CategoryControllerTest {
                 .withDescription(simpleCategoryResponse.getDescription())
                 .withCategory(simpleCategoryResponse.getId())
                 .build();
-
+      
         doReturn(List.of(productResponse)).when(categoryService).findProductsByCategoryId(anyLong());
         final var response = mvc.perform(get("/categories//{categoryId}/products", 1L)).andExpect(status().isOk());
 
