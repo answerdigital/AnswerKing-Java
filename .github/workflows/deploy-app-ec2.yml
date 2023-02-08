@@ -6,7 +6,8 @@ on:
       - main
       - master
       - develop
-      - v1.1.0-preview.5
+      - v1.1.0-preview.6
+
     types: [opened, synchronize, reopened, completed]
 
 env:
@@ -55,7 +56,6 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        #if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
 

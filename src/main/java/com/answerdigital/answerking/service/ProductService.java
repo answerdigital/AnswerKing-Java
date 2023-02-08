@@ -22,12 +22,15 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.get
 public class ProductService {
     private final ProductRepository productRepository;
 
-    private final CategoryService categoryService;
-
     private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
+    private final CategoryService categoryService;
+
     @Autowired
-    public ProductService(final ProductRepository productRepository, @Lazy final CategoryService categoryService) {
+    public ProductService(
+            final ProductRepository productRepository,
+            @Lazy final CategoryService categoryService
+    ) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
     }
@@ -41,6 +44,7 @@ public class ProductService {
 
         final Product newProduct = productMapper.addRequestToProduct(productRequest);
         newProduct.setCategory(category);
+
         final Product savedProduct = productRepository.save(newProduct);
         return productMapper.convertProductEntityToProductResponse(savedProduct);
     }
