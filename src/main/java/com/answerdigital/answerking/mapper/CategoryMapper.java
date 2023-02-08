@@ -11,6 +11,11 @@ import org.mapstruct.MappingTarget;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+/**
+ * The class CategoryMapper is the mapping layer for Categories {@link com.answerdigital.answerking.model.Category}.
+ * It handles interactions with CategoryRequest {@link com.answerdigital.answerking.request.CategoryRequest}
+ * and CategoryResponse {@link com.answerdigital.answerking.response.CategoryResponse}.
+ */
 @Mapper(componentModel = "spring",
         imports = {Collectors.class, Collections.class})
 public interface CategoryMapper {
