@@ -9,6 +9,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+/**
+ * The class ProductRequest represents the Product {@link com.answerdigital.answerking.model.Product}
+ * received from API endpoint requests.
+ */
 public record ProductRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z\s-]*",
