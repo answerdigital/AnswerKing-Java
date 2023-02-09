@@ -7,6 +7,10 @@ import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
 
+/**
+ * The class CategoryRequest represents the Category {@link com.answerdigital.answerking.model.Category}
+ * received from API endpoint requests.
+ */
 @JsonPropertyOrder({"name", "description", "products"})
 public record CategoryRequest(
         @NotBlank

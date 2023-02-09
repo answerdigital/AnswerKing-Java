@@ -25,6 +25,9 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class Product represents an item in a menu.
+ */
 @Entity
 @Table(name = "product")
 @Getter
@@ -56,11 +59,18 @@ public class Product {
     @ManyToMany(mappedBy = "products", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
 
+    /**
+     * This method removes a Product from a Category {@link com.answerdigital.answerking.model.Category}.
+     */
     @PreRemove
     private void removeProductsFromCategories() {
         category.removeProduct(this);
     }
 
+    /**
+     * This method returns the price of the Product.
+     * @return Price of Product.
+     */
     public BigDecimal getPrice() {
         return price.setScale(2, RoundingMode.DOWN);
     }

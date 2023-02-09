@@ -12,6 +12,10 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * The class OrderResponse represents the Order {@link com.answerdigital.answerking.model.Order}
+ * to be returned, after the end-user has sent an API endpoint request.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,6 +31,11 @@ public class OrderResponse {
 
     private Set<LineItemResponse> lineItems;
 
+    /**
+     * This method calculates the total price of the Order
+     * {@link com.answerdigital.answerking.model.Order}.
+     * @return The total price of the Order {@link com.answerdigital.answerking.model.Order}.
+     */
     @JsonInclude
     public BigDecimal getOrderTotal() {
         return lineItems.stream()

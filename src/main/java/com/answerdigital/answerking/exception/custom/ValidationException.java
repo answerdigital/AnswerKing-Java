@@ -6,6 +6,9 @@ import lombok.Getter;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * The class ValidationException represents an exception when one or more validation exceptions occur.
+ */
 @Getter
 public class ValidationException extends BadRequestException {
 

@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class Category represents a group of Products with similar traits.
+ */
 @Entity
 @Getter
 @Setter
@@ -56,10 +59,18 @@ public class Category {
     @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
     private Set<Product> products = new HashSet<>();
 
+    /**
+     * This method adds a Product {@link com.answerdigital.answerking.model.Product}
+     * to the Category.
+     */
     public void addProduct(final Product product) {
         products.add(product);
     }
 
+    /**
+     * This method removes a Product {@link com.answerdigital.answerking.model.Product}
+     * from the Category.
+     */
     public void removeProduct(final Product product) {
         products.remove(product);
     }

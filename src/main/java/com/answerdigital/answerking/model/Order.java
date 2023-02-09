@@ -21,6 +21,11 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class Order represents a menu order which consists of
+ * Products {@link com.answerdigital.answerking.model.Product}
+ * within Categories {@link com.answerdigital.answerking.model.Category}.
+ */
 @Entity
 @Getter
 @Setter
@@ -52,10 +57,18 @@ public class Order {
         this.orderStatus = OrderStatus.CREATED;
     }
 
+    /**
+     * This method adds a LineItem {@link com.answerdigital.answerking.model.LineItem}
+     * to the Order.
+     */
     public void addLineItem(final LineItem lineItem) {
         lineItems.add(lineItem);
     }
 
+    /**
+     * This method removes LineItems {@link com.answerdigital.answerking.model.LineItem}
+     * from the Order.
+     */
     public void clearLineItems() {
         lineItems.clear();
     }
