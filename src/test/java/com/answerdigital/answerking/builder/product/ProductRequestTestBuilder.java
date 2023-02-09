@@ -1,4 +1,4 @@
-package com.answerdigital.answerking.builder;
+package com.answerdigital.answerking.builder.product;
 
 import com.answerdigital.answerking.request.ProductRequest;
 

@@ -1,4 +1,4 @@
-package com.answerdigital.answerking.builder;
+package com.answerdigital.answerking.builder.category;
 
 import com.answerdigital.answerking.request.CategoryRequest;
 

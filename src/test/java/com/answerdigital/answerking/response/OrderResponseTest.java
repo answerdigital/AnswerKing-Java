@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.response;
 
 import com.answerdigital.answerking.builder.LineItemResponseTestBuilder;
-import com.answerdigital.answerking.builder.ProductResponseTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductResponseTestBuilder;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

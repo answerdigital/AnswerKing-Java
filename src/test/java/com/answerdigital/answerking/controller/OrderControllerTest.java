@@ -1,7 +1,7 @@
 package com.answerdigital.answerking.controller;
 
 import com.answerdigital.answerking.builder.LineItemResponseTestBuilder;
-import com.answerdigital.answerking.builder.OrderTestBuilder;
+import com.answerdigital.answerking.builder.order.OrderTestBuilder;
 import com.answerdigital.answerking.model.Order;
 import com.answerdigital.answerking.repository.OrderRepository;
 import com.answerdigital.answerking.request.OrderRequest;

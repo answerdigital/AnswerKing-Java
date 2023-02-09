@@ -1,8 +1,8 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.builder.ProductTestBuilder;
-import com.answerdigital.answerking.builder.TagRequestTestBuilder;
-import com.answerdigital.answerking.builder.TagTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductTestBuilder;
+import com.answerdigital.answerking.builder.tag.TagRequestTestBuilder;
+import com.answerdigital.answerking.builder.tag.TagTestBuilder;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
 import com.answerdigital.answerking.request.TagRequest;

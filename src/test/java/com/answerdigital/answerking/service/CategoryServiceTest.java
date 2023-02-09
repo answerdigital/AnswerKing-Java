@@ -1,8 +1,8 @@
 package com.answerdigital.answerking.service;
 
-import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
-import com.answerdigital.answerking.builder.CategoryTestBuilder;
-import com.answerdigital.answerking.builder.ProductTestBuilder;
+import com.answerdigital.answerking.builder.category.CategoryRequestTestBuilder;
+import com.answerdigital.answerking.builder.category.CategoryTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
@@ -11,7 +11,7 @@ import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
-import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.response.SimpleProductResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -322,21 +322,21 @@ final class CategoryServiceTest {
     }
 
     @Test
-    void findProductsByCategoryIdWithValidIdReturnsListOfProductResponses() {
+    void findProductsByCategoryIdWithValidIdReturnsListOfSimpleProductResponses() {
         // given
         final Category category = categoryTestBuilder
             .withDefaultValues()
             .build();
-        final List<ProductResponse> productResponses = new ArrayList<>();
+        final List<SimpleProductResponse> simpleProductResponses = new ArrayList<>();
 
         // when
         when(productService.findProductsByCategoryId(category.getId()))
-            .thenReturn(productResponses);
+            .thenReturn(simpleProductResponses);
 
-        final List<ProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
+        final List<SimpleProductResponse> response = categoryService.findProductsByCategoryId(category.getId());
 
         // then
-        assertEquals(productResponses, response);
+        assertEquals(simpleProductResponses, response);
         verify(productService).findProductsByCategoryId(category.getId());
     }
 }

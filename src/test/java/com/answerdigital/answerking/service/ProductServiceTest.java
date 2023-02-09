@@ -1,8 +1,8 @@
 package com.answerdigital.answerking.service;
 
-import com.answerdigital.answerking.builder.CategoryTestBuilder;
-import com.answerdigital.answerking.builder.ProductRequestTestBuilder;
-import com.answerdigital.answerking.builder.ProductTestBuilder;
+import com.answerdigital.answerking.builder.category.CategoryTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductRequestTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
@@ -11,6 +11,7 @@ import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.ProductRequest;
 import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.response.SimpleProductResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -328,7 +329,7 @@ final class ProductServiceTest {
             .when(productRepository)
             .findProductsByCategoryId(anyLong());
 
-        final List<ProductResponse> response = productService.findProductsByCategoryId(category.getId());
+        final List<SimpleProductResponse> response = productService.findProductsByCategoryId(category.getId());
 
         // then
         assertAll("All should be equal",

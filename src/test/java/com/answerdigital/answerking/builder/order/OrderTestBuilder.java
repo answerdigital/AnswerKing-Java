@@ -1,4 +1,4 @@
-package com.answerdigital.answerking.builder;
+package com.answerdigital.answerking.builder.order;
 
 import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.Order;

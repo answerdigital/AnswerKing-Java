@@ -3,6 +3,7 @@ package com.answerdigital.answerking.mapper;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.request.ProductRequest;
 import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.response.SimpleProductResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -24,4 +25,7 @@ public interface ProductMapper {
     @Mapping(source = "category.id", target = "category")
     @Mapping(target = "tagIds", expression = "java(MapperExpressionUtility.mapTagIdsFromProduct(product))")
     ProductResponse convertProductEntityToProductResponse(Product product);
+
+    @Mapping(target = "tagIds", expression = "java(MapperExpressionUtility.mapTagIdsFromProduct(product))")
+    SimpleProductResponse convertProductEntityToSimpleProductResponse(Product product);
 }

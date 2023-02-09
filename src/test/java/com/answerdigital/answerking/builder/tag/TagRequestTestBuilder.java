@@ -1,4 +1,4 @@
-package com.answerdigital.answerking.builder;
+package com.answerdigital.answerking.builder.tag;
 
 import com.answerdigital.answerking.request.TagRequest;
 

@@ -1,8 +1,8 @@
 package com.answerdigital.answerking.service;
 
-import com.answerdigital.answerking.builder.OrderRequestTestBuilder;
-import com.answerdigital.answerking.builder.OrderTestBuilder;
-import com.answerdigital.answerking.builder.ProductTestBuilder;
+import com.answerdigital.answerking.builder.order.OrderRequestTestBuilder;
+import com.answerdigital.answerking.builder.order.OrderTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductTestBuilder;
 import com.answerdigital.answerking.exception.custom.OrderCancelledException;
 import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
