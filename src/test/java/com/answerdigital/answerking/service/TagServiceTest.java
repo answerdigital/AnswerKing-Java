@@ -4,6 +4,7 @@ import com.answerdigital.answerking.builder.ProductTestBuilder;
 import com.answerdigital.answerking.builder.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.TagTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
 import com.answerdigital.answerking.repository.TagRepository;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -40,27 +43,27 @@ class TagServiceTest {
     @Mock
     private ProductService productService;
 
-    private final TagTestBuilder tagTestBuilder;
+    private static final TagTestBuilder TAG_TEST_BUILDER;
 
-    private final TagRequestTestBuilder tagRequestTestBuilder;
+    private static final TagRequestTestBuilder TAG_REQUEST_TEST_BUILDER;
 
-    private final ProductTestBuilder productTestBuilder;
+    private static final ProductTestBuilder PRODUCT_TEST_BUILDER;
 
     private static final Long NONEXISTENT_PRODUCT_ID = 2L;
 
-    public TagServiceTest() {
-        tagTestBuilder = new TagTestBuilder();
-        tagRequestTestBuilder = new TagRequestTestBuilder();
-        productTestBuilder = new ProductTestBuilder();
+    static {
+        TAG_TEST_BUILDER = new TagTestBuilder();
+        TAG_REQUEST_TEST_BUILDER = new TagRequestTestBuilder();
+        PRODUCT_TEST_BUILDER = new ProductTestBuilder();
     }
 
     @Test
     void addTagWithoutProductReturnsTagObject() {
         // given
-        final TagRequest tagRequest = tagRequestTestBuilder.withDefaultValues()
+        final TagRequest tagRequest = TAG_REQUEST_TEST_BUILDER.withDefaultValues()
             .withDefaultValues()
             .build();
-        final Tag expectedResponse = tagTestBuilder
+        final Tag expectedResponse = TAG_TEST_BUILDER
             .withDefaultValues()
             .build();
 
@@ -83,11 +86,11 @@ class TagServiceTest {
     @Test
     void addTagWithProductReturnsTagObject() {
         // given
-        final Product product = productTestBuilder.withDefaultValues().build();
-        final TagRequest tagRequest = tagRequestTestBuilder.withDefaultValues()
+        final Product product = PRODUCT_TEST_BUILDER.withDefaultValues().build();
+        final TagRequest tagRequest = TAG_REQUEST_TEST_BUILDER.withDefaultValues()
                 .withProductId(product.getId())
                 .build();
-        final Tag expectedResponse = tagTestBuilder.withDefaultValues().withProduct(product).build();
+        final Tag expectedResponse = TAG_TEST_BUILDER.withDefaultValues().withProduct(product).build();
 
         // when
         doReturn(List.of(product))
@@ -108,10 +111,10 @@ class TagServiceTest {
     @Test
     void addTagWhenTagAlreadyExistsThrowsNameUnavailableException() {
         // given
-        final Product product = productTestBuilder
+        final Product product = PRODUCT_TEST_BUILDER
             .withDefaultValues()
             .build();
-        final TagRequest tagRequest = tagRequestTestBuilder
+        final TagRequest tagRequest = TAG_REQUEST_TEST_BUILDER
             .withDefaultValues()
             .withProductId(product.getId())
             .build();
@@ -165,6 +168,37 @@ class TagServiceTest {
         assertEquals(2, response.size());
         assertTrue(response.containsAll(allTagsToResponse(tagOne, tagTwo)));
         verify(tagRepository).findAll();
+    }
+
+    @Test
+    void findByIdResponseWithValidIdReturnsValidResponse() {
+        // given
+        final Tag tag = TAG_TEST_BUILDER
+            .withDefaultValues()
+            .build();
+
+        // when
+        doReturn(Optional.of(tag))
+            .when(tagRepository)
+            .findById(anyLong());
+
+        final TagResponse response = tagService.findByIdResponse(tag.getId());
+
+        // then
+        assertTagVsResponseEquality(tag, response);
+        verify(tagRepository).findById(anyLong());
+    }
+
+    @Test
+    void findByIdResponseWithInvalidIdThrowsNotFoundException() {
+        // when
+        doReturn(Optional.empty())
+            .when(tagRepository)
+            .findById(anyLong());
+
+        // then
+        assertThrows(NotFoundException.class, () -> tagService.findByIdResponse(NONEXISTENT_PRODUCT_ID));
+        verify(tagRepository).findById(anyLong());
     }
 
     /**
