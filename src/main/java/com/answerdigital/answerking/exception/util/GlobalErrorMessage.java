@@ -44,7 +44,7 @@ public enum GlobalErrorMessage {
     // TAG
     TAGS_ALREADY_EXIST("One or more Tags already exist with ID(s) or name(s) [%s].",
             NameUnavailableException.class),
-    TAGS_DO_NOT_EXIST("One or more Tags could not be found within this Category with ID(s) or name(s) [%s]",
+    TAGS_DO_NOT_EXIST("One or more Tags could not be found with ID(s) or name(s) [%s].",
             NotFoundException.class);
 
     final String errorMessageString;

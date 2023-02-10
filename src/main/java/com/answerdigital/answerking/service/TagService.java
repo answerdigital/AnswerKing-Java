@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_ALREADY_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_DO_NOT_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
 @Service
@@ -65,7 +66,7 @@ public class TagService {
      */
     private Tag findById(final Long id) {
         return tagRepository.findById(id)
-            .orElseThrow(() -> getCustomException(TAGS_ALREADY_EXIST, id));
+            .orElseThrow(() -> getCustomException(TAGS_DO_NOT_EXIST, id));
     }
 
     /**
