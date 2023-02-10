@@ -3,7 +3,7 @@ package com.answerdigital.answerking.controller;
 import com.answerdigital.answerking.exception.util.ErrorResponse;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
-import com.answerdigital.answerking.response.ProductResponse;
+import com.answerdigital.answerking.response.SimpleProductResponse;
 import com.answerdigital.answerking.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -121,7 +121,9 @@ public class CategoryController {
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) })
     })
     @GetMapping("/{categoryId}/products")
-    public ResponseEntity<Collection<ProductResponse>> fetchProductsByCategory(@PathVariable @NotNull final Long categoryId) {
+    public ResponseEntity<Collection<SimpleProductResponse>> fetchProductsByCategory(
+            @PathVariable @NotNull final Long categoryId
+    ) {
         return new ResponseEntity<>(categoryService.findProductsByCategoryId(categoryId), HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
-package com.answerdigital.answerking.builder;
+package com.answerdigital.answerking.builder.product;
 
+import com.answerdigital.answerking.builder.category.CategoryTestBuilder;
 import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.LineItem;
 import com.answerdigital.answerking.model.Product;

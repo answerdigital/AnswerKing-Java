@@ -1,6 +1,6 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
+import com.answerdigital.answerking.builder.category.CategoryRequestTestBuilder;
 import com.answerdigital.answerking.request.CategoryRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

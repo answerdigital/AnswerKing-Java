@@ -1,9 +1,9 @@
 package com.answerdigital.answerking.controller;
 
-import com.answerdigital.answerking.builder.CategoryRequestTestBuilder;
-import com.answerdigital.answerking.builder.CategoryResponseTestBuilder;
-import com.answerdigital.answerking.builder.ProductResponseTestBuilder;
-import com.answerdigital.answerking.builder.SimpleCategoryResponseTestBuilder;
+import com.answerdigital.answerking.builder.category.CategoryRequestTestBuilder;
+import com.answerdigital.answerking.builder.category.CategoryResponseTestBuilder;
+import com.answerdigital.answerking.builder.product.ProductResponseTestBuilder;
+import com.answerdigital.answerking.builder.category.SimpleCategoryResponseTestBuilder;
 import com.answerdigital.answerking.repository.ProductRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;

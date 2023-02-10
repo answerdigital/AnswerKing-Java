@@ -9,8 +9,8 @@ import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.repository.CategoryRepository;
 import com.answerdigital.answerking.request.CategoryRequest;
 import com.answerdigital.answerking.response.CategoryResponse;
-import com.answerdigital.answerking.response.ProductResponse;
 
+import com.answerdigital.answerking.response.SimpleProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -151,7 +151,7 @@ public class CategoryService {
      * @param categoryId The ID of the Category {@link com.answerdigital.answerking.model.Category}.
      * @return A List of ProductResponses {@link com.answerdigital.answerking.response.ProductResponse}.
      */
-    public List<ProductResponse> findProductsByCategoryId(final Long categoryId) {
+    public List<SimpleProductResponse> findProductsByCategoryId(final Long categoryId) {
         return productService.findProductsByCategoryId(categoryId);
     }
 
