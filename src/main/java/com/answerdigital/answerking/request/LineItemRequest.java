@@ -7,9 +7,9 @@ import jakarta.validation.constraints.Positive;
  * received from API endpoint requests.
  */
 public record LineItemRequest(
-        @Positive(message = "The product ID must be a positive number")
+        @Positive(message = "{line-item-request.invalid-id}")
         Long productId,
-        @Positive(message = "The quantity must be a positive number")
+        @Positive(message = "{line-item-request.invalid-quantity}")
         Integer quantity
 ) {
 }
