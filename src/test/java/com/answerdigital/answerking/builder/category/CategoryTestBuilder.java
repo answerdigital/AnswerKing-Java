@@ -4,8 +4,8 @@ import com.answerdigital.answerking.model.Category;
 import com.answerdigital.answerking.model.Product;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryTestBuilder {
 
@@ -21,7 +21,7 @@ public class CategoryTestBuilder {
 
     private boolean retired;
 
-    private Set<Product> products;
+    private List<Product> products;
 
     public CategoryTestBuilder withDefaultValues() {
         this.id = 1L;
@@ -30,7 +30,7 @@ public class CategoryTestBuilder {
         this.createdOn = LocalDateTime.of(2022, 1, 1, 0, 0);
         this.lastUpdated = LocalDateTime.of(2022, 1, 1, 0, 0);
         this.retired = false;
-        this.products = new HashSet<>();
+        this.products = new ArrayList<>();
         return this;
     }
 
@@ -64,7 +64,7 @@ public class CategoryTestBuilder {
         return this;
     }
 
-    public CategoryTestBuilder withProducts(final Set<Product> products) {
+    public CategoryTestBuilder withProducts(final List<Product> products) {
         this.products = products;
         return this;
     }
