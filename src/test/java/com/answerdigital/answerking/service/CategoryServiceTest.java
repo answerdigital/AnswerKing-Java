@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -33,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,8 +55,6 @@ final class CategoryServiceTest {
     private final ProductTestBuilder productTestBuilder;
 
     private static final Long NONEXISTENT_CATEGORY_ID = 10L;
-
-    private static final Long NONEXISTENT_PRODUCT_ID = 10L;
 
     private CategoryServiceTest() {
         categoryTestBuilder = new CategoryTestBuilder();
@@ -169,7 +166,7 @@ final class CategoryServiceTest {
             () -> assertEquals(expectedResponse.getDescription(), categoryResponse.getDescription())
         );
         verify(categoryRepository).existsByName(anyString());
-        verify(categoryRepository, atLeast(2)).save(any(Category.class));
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
@@ -191,7 +188,6 @@ final class CategoryServiceTest {
     void testAddCategoryContainsRetiredProductThrowsRetirementException() {
         // given
         final Product product = productTestBuilder
-            .withId(1L)
             .withDefaultValues()
             .withRetired(true)
             .build();
@@ -199,17 +195,16 @@ final class CategoryServiceTest {
             .withDefaultValues()
             .build();
         final CategoryRequest categoryRequest = categoryRequestTestBuilder
+            .withDefaultValues()
             .withProductIds(List.of(product.getId()))
             .build();
 
         // when
-        when(categoryRepository.save(any(Category.class))).thenReturn(category);
-        when(productService.findAllProductsInListOfIds(Mockito.<Long>anyList())).thenReturn(List.of(product));
+        when(categoryRepository.existsByName(category.getName())).thenReturn(false);
+        doThrow(RetirementException.class).when(productService).getProductsFromProductIds(categoryRequest.productIds());
 
         // then
         assertThrows(RetirementException.class, () -> categoryService.addCategory(categoryRequest));
-        verify(categoryRepository).save(any(Category.class));
-        verify(productService).findAllProductsInListOfIds(Mockito.<Long>anyList());
     }
 
     @Test
@@ -238,7 +233,7 @@ final class CategoryServiceTest {
         assertEquals(expectedResponse.getName(), response.getName());
         verify(categoryRepository).existsByNameAndIdIsNot(anyString(), anyLong());
         verify(categoryRepository).findById(anyLong());
-        verify(categoryRepository, atLeast(2)).save(any(Category.class));
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test

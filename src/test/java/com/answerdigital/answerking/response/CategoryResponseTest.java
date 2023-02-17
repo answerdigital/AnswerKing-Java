@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +43,7 @@ class CategoryResponseTest {
                                               .name(categoryName)
                                               .description(categoryDesc)
                                               .id(CATEGORY_ID)
-                                              .products(new HashSet<>())
+                                              .products(new ArrayList<>())
                                               .build();
         category.addProduct(product);
 
