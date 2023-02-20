@@ -11,7 +11,7 @@ import java.util.Set;
 public interface TagRepository extends PagingAndSortingRepository<Tag, Long>, CrudRepository<Tag, Long> {
     boolean existsByName(String name);
 
-    Set<Tag> findAll();
+    boolean existsByNameAndIdIsNot(String name, Long id);
 
-    Set<Tag> findAllByIdIn(Set<Long> ids);
+    Set<Tag> findAll();
 }

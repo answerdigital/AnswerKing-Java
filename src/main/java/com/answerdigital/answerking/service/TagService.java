@@ -1,5 +1,6 @@
 package com.answerdigital.answerking.service;
 
+import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.mapper.TagMapper;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
@@ -81,5 +82,40 @@ public class TagService {
      */
     public TagResponse findByIdResponse(final Long id) {
         return tagMapper.convertTagEntityToTagResponse(findById(id));
+    }
+
+    /**
+     * Updates a Tag {@link com.answerdigital.answerking.model.Tag}.
+     * @param id The ID of the Tag {@link com.answerdigital.answerking.model.Tag} to update.
+     * @param tagRequest The TagRequest object {@link com.answerdigital.answerking.request.TagRequest}.
+     * @return The updated Tag {@link com.answerdigital.answerking.model.Tag},
+     * in the form of a TagResponse {@link com.answerdigital.answerking.response.TagResponse}.
+     * @throws NameUnavailableException When the Tag {@link com.answerdigital.answerking.model.Tag} name already exists.
+     */
+    public TagResponse updateTag(final Long id, final TagRequest tagRequest) {
+        if (tagRepository.existsByNameAndIdIsNot(tagRequest.name(), id)) {
+            throw getCustomException(TAGS_ALREADY_EXIST, tagRequest.name());
+        }
+
+        final Tag tag = findById(id);
+        // TODO BENCH-402 verify that the tag is not retired once tag retirement has been added
+
+        final Tag updatedTag = tagMapper.updateRequestToTag(tag, tagRequest);
+        addProductsToTag(updatedTag, tagRequest.productIds());
+
+        return tagMapper.convertTagEntityToTagResponse(tagRepository.save(updatedTag));
+    }
+
+    /**
+     * Adds a List of Products {@link com.answerdigital.answerking.model.Product}
+     * to a given Tag {@link com.answerdigital.answerking.model.Tag}.
+     * @param tag The Tag {@link com.answerdigital.answerking.model.Tag} object
+     * to add the Products {@link com.answerdigital.answerking.model.Product} to.
+     * @param productIds The List of Product {@link com.answerdigital.answerking.model.Product} IDs.
+     */
+    private void addProductsToTag(final Tag tag, final List<Long> productIds) {
+        final List<Product> products = productService.findAllProductsInListOfIds(productIds);
+        productService.validateProductsAreNotRetired(products);
+        tag.setProducts(products);
     }
 }
