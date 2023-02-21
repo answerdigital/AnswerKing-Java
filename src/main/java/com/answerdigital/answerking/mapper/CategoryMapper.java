@@ -18,7 +18,7 @@ import java.util.Collections;
 @Mapper(componentModel = "spring", imports = {Collections.class})
 public interface CategoryMapper {
 
-    @Mapping(target = "products", expression = "java(Collections.EMPTY_SET)")
+    @Mapping(target = "products", expression = "java(Collections.EMPTY_LIST)")
     Category addRequestToCategory(CategoryRequest addCategoryRequest);
 
     Category updateRequestToCategory(@MappingTarget Category category, CategoryRequest updateCategoryRequest);

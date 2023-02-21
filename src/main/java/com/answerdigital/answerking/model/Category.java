@@ -19,8 +19,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The class Category represents a group of Products with similar traits.
@@ -57,7 +57,7 @@ public class Category {
     private boolean retired;
 
     @OneToMany(mappedBy="category", fetch = FetchType.EAGER)
-    private Set<Product> products = new HashSet<>();
+    private List<Product> products = new ArrayList<>();
 
     /**
      * This method adds a Product {@link com.answerdigital.answerking.model.Product}

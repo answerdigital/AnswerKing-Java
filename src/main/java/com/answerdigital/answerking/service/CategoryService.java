@@ -14,10 +14,7 @@ import com.answerdigital.answerking.response.SimpleProductResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +23,6 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CAT
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.CATEGORIES_DO_NOT_EXIST;
 
-import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.PRODUCTS_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
 /**
@@ -60,18 +56,15 @@ public class CategoryService {
      * @throws NameUnavailableException When the Category {@link com.answerdigital.answerking.model.Category}
      * name already exists.
      */
-    @Transactional
     public CategoryResponse addCategory(final CategoryRequest categoryRequest) {
-        validateCategoryNameDoesNotExistWhenCreating(categoryRequest.name());
+        if (categoryRepository.existsByName(categoryRequest.name())) {
+            throw getCustomException(CATEGORIES_ALREADY_EXIST, categoryRequest.name());
+        }
 
-        // Create a new category from the Request and persist the initial category.
-        Category category = requestToCategory(categoryRequest);
-        category =  categoryRepository.save(category);
-
-        // Add the products to the category.
+        final Category category = requestToCategory(categoryRequest);
         addProductsToCategory(category, categoryRequest.productIds());
 
-        return categoryToResponse(category);
+        return categoryToResponse(categoryRepository.save(category));
     }
 
     /**
@@ -119,11 +112,14 @@ public class CategoryService {
      * @throws NameUnavailableException When the Category {@link com.answerdigital.answerking.model.Category}
      * name already exists.
      */
-    @Transactional(propagation = Propagation.REQUIRED)
     public CategoryResponse updateCategory(final CategoryRequest categoryRequest, final Long id) {
-        validateCategoryNameDoesNotExistWhenUpdating(categoryRequest.name(), id);
+        if (categoryRepository.existsByNameAndIdIsNot(categoryRequest.name(), id)) {
+            throw getCustomException(CATEGORIES_ALREADY_EXIST, categoryRequest.name());
+        }
 
         final Category category = findById(id);
+        validateCategoryIsNotRetired(category);
+
         final Category updatedCategory = updateRequestToCategory(category, categoryRequest);
         addProductsToCategory(updatedCategory, categoryRequest.productIds());
 
@@ -136,11 +132,7 @@ public class CategoryService {
      */
     public void retireCategory(final Long categoryId) {
         final Category category = findById(categoryId);
-
-        if(category.isRetired()) {
-            throw getCustomException(CATEGORIES_ARE_RETIRED, categoryId);
-        }
-
+        validateCategoryIsNotRetired(category);
         category.setRetired(true);
         categoryRepository.save(category);
     }
@@ -156,60 +148,26 @@ public class CategoryService {
     }
 
     /**
+     * Checks if a category is retired {@link com.answerdigital.answerking.model.Category}
+     * @param category the Category to validate the retirement of {@link com.answerdigital.answerking.model.Category}.
+     * @throws RetirementException When a Category {@link com.answerdigital.answerking.model.Category} is retired.
+     */
+    private void validateCategoryIsNotRetired(final Category category) {
+        if (category.isRetired()) {
+            throw getCustomException(CATEGORIES_ARE_RETIRED, category.getId());
+        }
+    }
+
+    /**
      * Adds a List of Products {@link com.answerdigital.answerking.model.Product}
      * to a given Category {@link com.answerdigital.answerking.model.Category}.
      * @param category The Category {@link com.answerdigital.answerking.model.Category} object
      * to add the Products {@link com.answerdigital.answerking.model.Product} to.
      * @param productIds The List of Product {@link com.answerdigital.answerking.model.Product} IDs.
      */
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void addProductsToCategory(final Category category, final List<Long> productIds) {
-        final Set<Product> products = new HashSet<>(productService.findAllProductsInListOfIds(productIds));
-        validateNoProductsAreRetired(products);
+    private void addProductsToCategory(final Category category, final List<Long> productIds) {
+        final List<Product> products = productService.getProductsFromProductIds(productIds);
         category.setProducts(products);
-        categoryRepository.save(category);
-    }
-
-    /**
-     * Checks if any Products {@link com.answerdigital.answerking.model.Product}
-     * within a Set are retired.
-     * @param products The Set of Products {@link com.answerdigital.answerking.model.Product} to check.
-     * @throws RetirementException When a Product {@link com.answerdigital.answerking.model.Product} is retired.
-     */
-    private void validateNoProductsAreRetired(final Set<Product> products) {
-        final List<Long> retiredProducts = products
-            .stream()
-            .filter(Product::isRetired)
-            .map(Product::getId)
-            .toList();
-
-        if(!retiredProducts.isEmpty()) {
-            throw getCustomException(PRODUCTS_ARE_RETIRED, retiredProducts);
-        }
-    }
-
-    /**
-     * To be used when validating that the Category {@link com.answerdigital.answerking.model.Category}
-     * name does not exist when creating a new category.
-     * @param categoryName The Category {@link com.answerdigital.answerking.model.Category}
-     * name to check.
-     */
-    private void validateCategoryNameDoesNotExistWhenCreating(final String categoryName) {
-        if (categoryRepository.existsByName(categoryName)) {
-            throw getCustomException(CATEGORIES_ALREADY_EXIST, categoryName);
-        }
-    }
-
-    /**
-     * To be used when validating that the Category {@link com.answerdigital.answerking.model.Category}
-     * name does not exist when renaming an existing Category {@link com.answerdigital.answerking.model.Category}.
-     * @param categoryName The Category {@link com.answerdigital.answerking.model.Category} name to check.
-     * @param id The ID of the existing Category {@link com.answerdigital.answerking.model.Category}.
-     */
-    private void validateCategoryNameDoesNotExistWhenUpdating(final String categoryName, final Long id) {
-        if (categoryRepository.existsByNameAndIdIsNot(categoryName, id)) {
-            throw getCustomException(CATEGORIES_ALREADY_EXIST, categoryName);
-        }
     }
 
     /**

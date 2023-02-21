@@ -1,6 +1,7 @@
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.mapper.ProductMapper;
 import com.answerdigital.answerking.model.Category;
@@ -133,11 +134,7 @@ public class ProductService {
      */
     public void retireProduct(final Long productId) {
         final Product product = findById(productId);
-
-        if (product.isRetired()) {
-            throw getCustomException(PRODUCTS_ARE_RETIRED, productId);
-        }
-
+        validateProductIsNotRetired(product);
         product.setRetired(true);
         productRepository.save(product);
     }
@@ -164,5 +161,44 @@ public class ProductService {
      */
     public List<Product> findAllProductsInListOfIds(final List<Long> productIds) {
         return productRepository.findAllByIdIn(productIds);
+    }
+
+    /**
+     * Returns a list of Products {@link com.answerdigital.answerking.model.Product}
+     * from a given list of ProductIds
+     * @param productIds The List of Product {@link com.answerdigital.answerking.model.Product} IDs.
+     */
+    public List<Product> getProductsFromProductIds(final List<Long> productIds) {
+        final List<Product> products = findAllProductsInListOfIds(productIds);
+        validateProductsAreNotRetired(products);
+        return products;
+    }
+
+    /**
+     * Checks if a product is retired {@link com.answerdigital.answerking.model.Product}
+     * @param product the Product to validate the retirement of {@link com.answerdigital.answerking.model.Product}.
+     * @throws RetirementException When a Category {@link com.answerdigital.answerking.model.Product} is retired.
+     */
+    private void validateProductIsNotRetired(final Product product) {
+        if (product.isRetired()) {
+            throw getCustomException(PRODUCTS_ARE_RETIRED, product.getId());
+        }
+    }
+
+    /**
+     * Checks if any Products {@link com.answerdigital.answerking.model.Product} within a List are retired.
+     * @param products The List of Products {@link com.answerdigital.answerking.model.Product} to check.
+     * @throws RetirementException When a Product {@link com.answerdigital.answerking.model.Product} is retired.
+     */
+    public void validateProductsAreNotRetired(final List<Product> products) {
+        final List<Long> retiredProducts = products
+                .stream()
+                .filter(Product::isRetired)
+                .map(Product::getId)
+                .toList();
+
+        if (!retiredProducts.isEmpty()) {
+            throw getCustomException(PRODUCTS_ARE_RETIRED, retiredProducts);
+        }
     }
 }

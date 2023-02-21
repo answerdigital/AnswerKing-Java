@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifact
-          path: target/answer-king-rest-api-1.1.0.jar
+          path: target/answer-king-rest-api-1.2.0.jar
   deploy-jar:
     needs: upload-jar
     name: Deploy
@@ -58,4 +58,4 @@ jobs:
           environment_name: Answerkingjava-env
           version_label: ${{github.SHA}}
           region: eu-west-2
-          deployment_package: answer-king-rest-api-1.1.0.jar
+          deployment_package: answer-king-rest-api-1.2.0.jar

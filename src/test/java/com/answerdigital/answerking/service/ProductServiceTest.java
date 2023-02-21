@@ -20,9 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,6 +33,7 @@ import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 final class ProductServiceTest {
@@ -321,7 +322,7 @@ final class ProductServiceTest {
             .build();
         final Category category = categoryTestBuilder
             .withDefaultValues()
-            .withProducts(Set.of(product, productTwo))
+            .withProducts(List.of(product, productTwo))
             .build();
 
         // when
@@ -368,6 +369,77 @@ final class ProductServiceTest {
             () -> assertEquals(response.get(1).getName(), productTwo.getName())
         );
         verify(productRepository).findAllByIdIn(anyList());
+    }
+
+    @Test
+    void getProductsFromProductIdsReturnsListOfProducts() {
+        // given
+        final Product productOne = productTestBuilder
+                .withDefaultValues()
+                .build();
+        final Product productTwo = productTestBuilder
+                .withDefaultValues()
+                .withId(2L)
+                .build();
+        final Product productThree = productTestBuilder
+                .withDefaultValues()
+                .withId(3L)
+                .build();
+
+        final List<Long> productIds = List.of(productOne.getId(), productTwo.getId(), productThree.getId());
+        final List<Product> expectedResponse = List.of(productOne, productTwo, productThree);
+
+        // when
+        when(productRepository.findAllByIdIn(productIds)).thenReturn(expectedResponse);
+        final List<Product> response = productService.getProductsFromProductIds(productIds);
+
+        // then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void validateProductsAreNotRetiredDoesNotThrowWhenNoProductsAreRetired() {
+        // given
+        final Product product = productTestBuilder
+                .withDefaultValues()
+                .build();
+        final Product productTwo = productTestBuilder
+                .withDefaultValues()
+                .withId(2L)
+                .build();
+
+        // then
+        assertDoesNotThrow(() -> productService.validateProductsAreNotRetired((List.of(product, productTwo))));
+    }
+
+    @Test
+    void validateProductsAreNotRetiredDoesThrowsWhenProductsAreRetired() {
+        // given
+        final Product product = productTestBuilder
+                .withDefaultValues()
+                .build();
+        final Product retiredProductOne = productTestBuilder
+                .withDefaultValues()
+                .withId(2L)
+                .withRetired(true)
+                .build();
+        final Product retiredProductTwo = productTestBuilder
+                .withDefaultValues()
+                .withId(3L)
+                .withRetired(true)
+                .build();
+        final List<Product> productList = List.of(product, retiredProductOne, retiredProductTwo);
+
+        // then
+        final RetirementException exception = assertThrows(
+                RetirementException.class,
+                () -> productService.validateProductsAreNotRetired(productList)
+        );
+
+        // the exception message should contain the IDs of the retired products, not the unretired product
+        assertFalse(exception.getDetail().contains(product.getId().toString()));
+        assertTrue(exception.getDetail().contains(retiredProductOne.getId().toString()));
+        assertTrue(exception.getDetail().contains(retiredProductTwo.getId().toString()));
     }
 
     /**
