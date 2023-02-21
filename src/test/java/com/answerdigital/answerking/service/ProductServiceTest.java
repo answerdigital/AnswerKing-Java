@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -430,7 +429,6 @@ final class ProductServiceTest {
                 .withRetired(true)
                 .build();
         final List<Product> productList = List.of(product, retiredProductOne, retiredProductTwo);
-
 
         // then
         final RetirementException exception = assertThrows(
