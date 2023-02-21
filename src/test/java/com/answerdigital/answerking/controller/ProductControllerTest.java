@@ -123,7 +123,7 @@ class ProductControllerTest {
                         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                         .andReturn().getResolvedException().getMessage();
 
-        assertTrue(error.contains("Product name must only contain letters, spaces and dashes"));
+        assertTrue(error.contains("The product name must only contain letters, spaces and dashes."));
     }
 
     @WithMockUser("paul")
@@ -158,7 +158,7 @@ class ProductControllerTest {
                         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                         .andReturn().getResolvedException().getMessage();
 
-        assertTrue(error.contains("Product price is invalid"));
+        assertTrue(error.contains("The product price is invalid."));
     }
 
     @WithMockUser("paul")

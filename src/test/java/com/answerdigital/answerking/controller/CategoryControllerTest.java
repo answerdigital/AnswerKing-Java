@@ -155,7 +155,7 @@ class CategoryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andReturn().getResolvedException()).getMessage();
 
-        assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
+        assertTrue(error.contains("The category name must only contain letters, spaces and dashes."));
     }
 
     @Test
@@ -169,7 +169,9 @@ class CategoryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andReturn().getResolvedException()).getMessage();
 
-        assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
+        assertTrue(error.contains(
+                "The category description must only contain letters, numbers, spaces and ! ? - . , ' punctuation."
+        ));
     }
 
     @Test
@@ -227,7 +229,7 @@ class CategoryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andReturn().getResolvedException()).getMessage();
 
-        assertTrue(error.contains("Category name must only contain letters, spaces and dashes"));
+        assertTrue(error.contains("The category name must only contain letters, spaces and dashes."));
     }
 
     @Test
@@ -241,7 +243,9 @@ class CategoryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andReturn().getResolvedException()).getMessage();
 
-        assertTrue(error.contains("Category description can only contain letters, numbers, spaces and !?-.,' punctuation"));
+        assertTrue(error.contains(
+                "The category description must only contain letters, numbers, spaces and ! ? - . , ' punctuation."
+        ));
     }
 
     @Test
