@@ -65,15 +65,35 @@ public class TagController {
 
     @Operation(summary = "Create a new tag.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "When the tag has been created.",
+        @ApiResponse(responseCode = "201", description = "The tag has been created.",
                     content = {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = TagResponse.class))}),
-        @ApiResponse(responseCode = "400", description = "When invalid parameters are provided.",
+        @ApiResponse(responseCode = "400", description = "Invalid parameters are provided.",
                     content = {
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+                        @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagResponse> addTag(@Valid @RequestBody final TagRequest tagRequest) {
         return new ResponseEntity<>(tagService.addTag(tagRequest), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update an existing tag.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "The Tag has been updated.",
+                content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = TagResponse.class))}),
+        @ApiResponse(responseCode = "400", description = "Invalid parameters are provided.",
+                content = {
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))}),
+        @ApiResponse(responseCode = "404", description = "Tag with the given id does not exist.",
+                content = {
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @PostMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TagResponse> updateTag(
+            @Valid @PathVariable final Long id,
+            @Valid @RequestBody final TagRequest tagRequest
+    ) {
+        return new ResponseEntity<>(tagService.updateTag(id, tagRequest), HttpStatus.OK);
     }
 }

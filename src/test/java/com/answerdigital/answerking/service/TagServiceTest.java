@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_ALREADY_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_DO_NOT_EXIST;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static com.answerdigital.answerking.utility.MappingUtility.allTagsToResponse;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
@@ -49,7 +52,7 @@ class TagServiceTest {
 
     private static final ProductTestBuilder PRODUCT_TEST_BUILDER;
 
-    private static final Long NONEXISTENT_PRODUCT_ID = 2L;
+    private static final Long NONEXISTENT_TAG_ID = 10L;
 
     static {
         TAG_TEST_BUILDER = new TagTestBuilder();
@@ -152,8 +155,6 @@ class TagServiceTest {
         final Tag tagTwo = new TagTestBuilder()
             .withDefaultValues()
             .withId(2L)
-            .withName("Low Calorie")
-            .withDescription("This product is low in calories.")
             .build();
         final Set<Tag> tags = Set.of(tagOne, tagTwo);
 
@@ -197,8 +198,113 @@ class TagServiceTest {
             .findById(anyLong());
 
         // then
-        assertThrows(NotFoundException.class, () -> tagService.findByIdResponse(NONEXISTENT_PRODUCT_ID));
+        assertThrows(NotFoundException.class, () -> tagService.findByIdResponse(NONEXISTENT_TAG_ID));
         verify(tagRepository).findById(anyLong());
+    }
+
+    @Test
+    void updateTagWithNoProductReturnsTagObjectSuccessfully() {
+        // given
+        final Tag existingTag = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .build();
+        final TagRequest updateTagRequest = TAG_REQUEST_TEST_BUILDER
+                .withDefaultValues()
+                .build();
+        final Tag expectedResponse = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .withName(updateTagRequest.name())
+                .withDescription(updateTagRequest.description())
+                .build();
+
+        // when
+        when(tagRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(false);
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(existingTag));
+        when(tagRepository.save(any(Tag.class))).thenReturn(expectedResponse);
+
+        final TagResponse response = tagService.updateTag(existingTag.getId(), updateTagRequest);
+
+        // then
+        assertTagVsResponseEquality(expectedResponse, response);
+        verify(tagRepository).existsByNameAndIdIsNot(anyString(), anyLong());
+        verify(tagRepository).findById(anyLong());
+        verify(tagRepository).save(any(Tag.class));
+    }
+
+    @Test
+    void updateTagWithProductReturnsTagObjectSuccessfully() {
+        // given
+        final Tag existingTag = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .withProduct(PRODUCT_TEST_BUILDER.withDefaultValues().build())
+                .build();
+        final Product newProduct = PRODUCT_TEST_BUILDER.withDefaultValues()
+                .withId(2L)
+                .build();
+        final TagRequest updateTagRequest = TAG_REQUEST_TEST_BUILDER
+                .withDefaultValues()
+                .withProductId(newProduct.getId())
+                .build();
+        final Tag expectedResponse = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .withName(updateTagRequest.name())
+                .withDescription(updateTagRequest.description())
+                .withProduct(newProduct)
+                .build();
+
+        // when
+        when(tagRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(false);
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(existingTag));
+        when(tagRepository.save(any(Tag.class))).thenReturn(expectedResponse);
+
+        when(productService.findAllProductsInListOfIds(anyList())).thenReturn(List.of(newProduct));
+
+        final TagResponse response = tagService.updateTag(existingTag.getId(), updateTagRequest);
+
+        // then
+        assertTagVsResponseEquality(expectedResponse, response);
+        verify(tagRepository).existsByNameAndIdIsNot(anyString(), anyLong());
+        verify(tagRepository).findById(anyLong());
+        verify(tagRepository).save(any(Tag.class));
+        verify(productService).findAllProductsInListOfIds(anyList());
+    }
+
+    @Test
+    void testUpdateTagThatDoesNotExist() {
+        // given
+        final TagRequest updateTagRequest = TAG_REQUEST_TEST_BUILDER.withDefaultValues().build();
+
+        // when
+        when(tagRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(false);
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> tagService.updateTag(NONEXISTENT_TAG_ID, updateTagRequest));
+
+        // then
+        assertEquals(TAGS_DO_NOT_EXIST.name(), exception.getErrorMessageId());
+        verify(tagRepository).existsByNameAndIdIsNot(anyString(), anyLong());
+        verify(tagRepository).findById(anyLong());
+    }
+
+    @Test
+    void testUpdateTagNameToTagThatAlreadyExists() {
+        // given
+        final Tag existingTag = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .build();
+        final Long existingTagId = existingTag.getId();
+        final TagRequest updateTagRequest = TAG_REQUEST_TEST_BUILDER
+                .withDefaultValues()
+                .build();
+
+        // when
+        when(tagRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
+        final NameUnavailableException exception = assertThrows(NameUnavailableException.class,
+                () -> tagService.updateTag(existingTagId, updateTagRequest));
+
+        // then
+        assertEquals(TAGS_ALREADY_EXIST.name(), exception.getErrorMessageId());
+        verify(tagRepository).existsByNameAndIdIsNot(anyString(), anyLong());
     }
 
     /**
