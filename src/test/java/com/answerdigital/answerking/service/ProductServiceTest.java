@@ -428,11 +428,12 @@ final class ProductServiceTest {
                 .withId(3L)
                 .withRetired(true)
                 .build();
+        final List<Product> productList = List.of(product, retiredProductOne, retiredProductTwo);
 
         // then
         final RetirementException exception = assertThrows(
                 RetirementException.class,
-                () -> productService.validateProductsAreNotRetired((List.of(product, retiredProductOne, retiredProductTwo)))
+                () -> productService.validateProductsAreNotRetired(productList)
         );
 
         // the exception message should contain the IDs of the retired products, not the unretired product

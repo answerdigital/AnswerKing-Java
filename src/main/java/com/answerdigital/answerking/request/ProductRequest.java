@@ -15,15 +15,15 @@ import java.math.BigDecimal;
  */
 public record ProductRequest(
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z\s-]*",
-                message = "Product name must only contain letters, spaces and dashes")
+        @Pattern(regexp = "^[a-zA-Z\\s-]*",
+                message = "{product-request.invalid-name}")
         String name,
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
-                message = "Product description can only contain letters, numbers, spaces and !?-.,' punctuation")
+        @Pattern(regexp = "^[a-zA-Z\\s.,!?0-9-']*",
+                message = "{product-request.invalid-description}")
         String description,
-        @Digits(integer = 12, fraction = 2, message = "Product price is invalid")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Product price cannot be less than 0")
+        @Digits(integer = 12, fraction = 2, message = "{product-request.invalid-price-digits}")
+        @DecimalMin(value = "0.0", inclusive = false, message = "{product-request.invalid-price-min}")
         @NotNull
         BigDecimal price,
         @NotNull
@@ -31,5 +31,6 @@ public record ProductRequest(
 ) {
     @Builder
     public ProductRequest {
+
     }
 }

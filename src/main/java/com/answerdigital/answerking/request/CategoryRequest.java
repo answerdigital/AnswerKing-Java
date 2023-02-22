@@ -14,12 +14,12 @@ import java.util.List;
 @JsonPropertyOrder({"name", "description", "products"})
 public record CategoryRequest(
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z\s-]*",
-                message = "Category name must only contain letters, spaces and dashes")
+        @Pattern(regexp = "^[a-zA-Z\\s-]*",
+                message = "{category-request.invalid-name}")
         String name,
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z\s.,!?0-9-']*",
-                message = "Category description can only contain letters, numbers, spaces and !?-.,' punctuation")
+        @Pattern(regexp = "^[a-zA-Z\\s.,!?0-9-']*",
+                message = "{category-request.invalid-description}")
         String description,
         @JsonProperty("products")
         List<Long> productIds
