@@ -292,6 +292,7 @@ class TagServiceTest {
         final Tag existingTag = TAG_TEST_BUILDER
                 .withDefaultValues()
                 .build();
+        final Long existingTagId = existingTag.getId();
         final TagRequest updateTagRequest = TAG_REQUEST_TEST_BUILDER
                 .withDefaultValues()
                 .build();
@@ -299,7 +300,7 @@ class TagServiceTest {
         // when
         when(tagRepository.existsByNameAndIdIsNot(anyString(), anyLong())).thenReturn(true);
         final NameUnavailableException exception = assertThrows(NameUnavailableException.class,
-                () -> tagService.updateTag(existingTag.getId(), updateTagRequest));
+                () -> tagService.updateTag(existingTagId, updateTagRequest));
 
         // then
         assertEquals(TAGS_ALREADY_EXIST.name(), exception.getErrorMessageId());
