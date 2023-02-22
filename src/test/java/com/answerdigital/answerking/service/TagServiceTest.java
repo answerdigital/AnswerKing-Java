@@ -5,7 +5,6 @@ import com.answerdigital.answerking.builder.tag.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.tag.TagTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
-import com.answerdigital.answerking.exception.util.GlobalErrorMessage;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
 import com.answerdigital.answerking.repository.TagRepository;
@@ -25,7 +24,6 @@ import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAG
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_DO_NOT_EXIST;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

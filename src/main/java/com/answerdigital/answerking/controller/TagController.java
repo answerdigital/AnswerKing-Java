@@ -70,7 +70,7 @@ public class TagController {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = TagResponse.class))}),
         @ApiResponse(responseCode = "400", description = "Invalid parameters are provided.",
                     content = {
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+                        @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagResponse> addTag(@Valid @RequestBody final TagRequest tagRequest) {
@@ -84,10 +84,10 @@ public class TagController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = TagResponse.class))}),
         @ApiResponse(responseCode = "400", description = "Invalid parameters are provided.",
                 content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))}),
         @ApiResponse(responseCode = "404", description = "Tag with the given id does not exist.",
                 content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagResponse> updateTag(
