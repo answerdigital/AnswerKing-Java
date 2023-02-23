@@ -32,6 +32,8 @@ public class Tag {
 
     private String description;
 
+    private boolean retired;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
             name = "tag_product",
@@ -40,9 +42,4 @@ public class Tag {
     )
     private List<Product> products;
 
-    public Tag(final String name, final String description, final List<Product> products) {
-        this.name = name;
-        this.description = description;
-        this.products = products;
-    }
 }

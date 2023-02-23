@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -89,11 +91,32 @@ public class TagController {
                 content = {
                     @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PostMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagResponse> updateTag(
             @Valid @PathVariable final Long id,
             @Valid @RequestBody final TagRequest tagRequest
     ) {
         return new ResponseEntity<>(tagService.updateTag(id, tagRequest), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retire an existing tag.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "No Content.",
+                content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = TagResponse.class))}),
+        @ApiResponse(responseCode = "400", description = "Invalid parameters are provided.",
+                content = {
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))}),
+        @ApiResponse(responseCode = "404", description = "Tag with the given id does not exist.",
+                content = {
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))}),
+        @ApiResponse(responseCode = "410", description = "Tag with the given id is already retired.",
+                content = {
+                    @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+    public ResponseEntity<TagResponse> retireTagById(@Valid @PathVariable final Long id) {
+        tagService.retireTag(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

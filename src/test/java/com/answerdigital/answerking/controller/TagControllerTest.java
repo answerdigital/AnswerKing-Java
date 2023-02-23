@@ -35,6 +35,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static com.answerdigital.answerking.utility.MappingUtility.tagToResponse;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -169,5 +171,11 @@ class TagControllerTest {
         assertEquals(tagResponse.getProductIds().get(0), jsonNodeResponse.get("products").get(0).asLong());
 
         verify(tagService).addTag(any(TagRequest.class));
+    }
+
+    @Test
+    void retireTagReturnsNoContent() throws Exception {
+        mvc.perform(delete("/tags/{tagId}", 1L))
+                .andExpect(status().isNoContent());
     }
 }

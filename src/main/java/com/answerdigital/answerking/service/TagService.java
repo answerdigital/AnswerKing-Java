@@ -1,6 +1,7 @@
 package com.answerdigital.answerking.service;
 
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.mapper.TagMapper;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_DO_NOT_EXIST;
+import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_ARE_RETIRED;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.getCustomException;
 
 @Service
@@ -98,7 +100,7 @@ public class TagService {
         }
 
         final Tag tag = findById(id);
-        // TODO BENCH-402 verify that the tag is not retired once tag retirement has been added
+        validateTagIsNotRetired(tag);
 
         final Tag updatedTag = tagMapper.updateRequestToTag(tag, tagRequest);
         addProductsToTag(updatedTag, tagRequest.productIds());
@@ -118,4 +120,27 @@ public class TagService {
         productService.validateProductsAreNotRetired(products);
         tag.setProducts(products);
     }
+
+    /**
+     * Retires a Tag {@link com.answerdigital.answerking.model.Tag}.
+     * @param id The Tag ID to retire.
+     */
+    public void retireTag(final Long id) {
+        final Tag tag = findById(id);
+        validateTagIsNotRetired(tag);
+        tag.setRetired(true);
+        tagRepository.save(tag);
+    }
+
+    /**
+     * Checks if a tag is retired {@link com.answerdigital.answerking.model.Tag}
+     * @param tag the Tag to validate the retirement of {@link com.answerdigital.answerking.model.Tag}.
+     * @throws RetirementException When a Tag {@link com.answerdigital.answerking.model.Tag} is retired.
+     */
+    private void validateTagIsNotRetired(final Tag tag) {
+        if (tag.isRetired()) {
+            throw getCustomException(TAGS_ARE_RETIRED, tag.getId());
+        }
+    }
+
 }
