@@ -16,11 +16,14 @@ public class TagTestBuilder {
 
     private List<Product> products;
 
+    private boolean retired;
+
     public TagTestBuilder withDefaultValues() {
         this.id = 1L;
         this.name = "Vegan";
         this.description = "This is suitable for Vegans.";
         this.products = new ArrayList<>();
+        this.retired = false;
         return this;
     }
 
@@ -49,7 +52,12 @@ public class TagTestBuilder {
         return this;
     }
 
+    public TagTestBuilder withRetired(final boolean retired) {
+        this.retired = retired;
+        return this;
+    }
+
     public Tag build() {
-        return new Tag(id, name, description, products);
+        return new Tag(id, name, description, retired, products);
     }
 }

@@ -17,6 +17,8 @@ public class TagResponse {
 
     private String description;
 
+    private boolean retired;
+
     @JsonProperty("products")
     private List<Long> productIds;
 }
