@@ -99,7 +99,7 @@ public class TagController {
         return new ResponseEntity<>(tagService.updateTag(id, tagRequest), HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete an existing tag.")
+    @Operation(summary = "Retire an existing tag.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "No Content.",
                 content = {

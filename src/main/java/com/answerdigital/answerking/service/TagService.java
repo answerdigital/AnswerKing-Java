@@ -100,7 +100,7 @@ public class TagService {
         }
 
         final Tag tag = findById(id);
-        // TODO BENCH-402 verify that the tag is not retired once tag retirement has been added
+        validateTagIsNotRetired(tag);
 
         final Tag updatedTag = tagMapper.updateRequestToTag(tag, tagRequest);
         addProductsToTag(updatedTag, tagRequest.productIds());
@@ -123,10 +123,10 @@ public class TagService {
 
     /**
      * Retires a Tag {@link com.answerdigital.answerking.model.Tag}.
-     * @param tagId The Tag ID to retire.
+     * @param id The Tag ID to retire.
      */
-    public void retireTag(final Long tagId) {
-        final Tag tag = findById(tagId);
+    public void retireTag(final Long id) {
+        final Tag tag = findById(id);
         validateTagIsNotRetired(tag);
         tag.setRetired(true);
         tagRepository.save(tag);
