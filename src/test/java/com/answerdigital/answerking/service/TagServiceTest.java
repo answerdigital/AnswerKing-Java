@@ -4,6 +4,7 @@ import com.answerdigital.answerking.builder.product.ProductTestBuilder;
 import com.answerdigital.answerking.builder.tag.TagRequestTestBuilder;
 import com.answerdigital.answerking.builder.tag.TagTestBuilder;
 import com.answerdigital.answerking.exception.custom.NameUnavailableException;
+import com.answerdigital.answerking.exception.custom.RetirementException;
 import com.answerdigital.answerking.exception.generic.NotFoundException;
 import com.answerdigital.answerking.model.Product;
 import com.answerdigital.answerking.model.Tag;
@@ -22,10 +23,11 @@ import java.util.Set;
 
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_ALREADY_EXIST;
 import static com.answerdigital.answerking.exception.util.GlobalErrorMessage.TAGS_DO_NOT_EXIST;
-import static org.junit.jupiter.api.Assertions.assertAll;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -325,5 +327,60 @@ class TagServiceTest {
                     assertEquals(tagIds, response.getProductIds());
                 }
         );
+    }
+
+    @Test
+    void testRetireTag() {
+        // given
+        final Tag tag = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .build();
+
+        // when
+        doReturn(Optional.of(tag))
+                .when(tagRepository)
+                .findById(anyLong());
+        doReturn(tag)
+                .when(tagRepository)
+                .save(any(Tag.class));
+
+        tagService.retireTag(tag.getId());
+        tag.setRetired(true);
+
+        // then
+        assertTrue(tag.isRetired());
+        verify(tagRepository).findById(anyLong());
+        verify(tagRepository).save(tag);
+    }
+
+    @Test
+    void testRetireTagAlreadyRetiredThrowsRetirementException() {
+        // given
+        final Tag tag = TAG_TEST_BUILDER
+                .withDefaultValues()
+                .withRetired(true)
+                .build();
+        final long tagId = tag.getId();
+
+        // when
+        doReturn(Optional.of(tag))
+                .when(tagRepository)
+                .findById(anyLong());
+
+        // then
+        assertThrows(RetirementException.class, () -> tagService.retireTag(tagId));
+        verify(tagRepository).findById(anyLong());
+    }
+
+    @Test
+    void testRetireTagDoesNotExistThrowsNotFoundException() {
+        // when
+        doReturn(Optional.empty())
+                .when(tagRepository)
+                .findById(anyLong());
+
+        // then
+        assertThrows(NotFoundException.class, () -> tagService.retireTag(NONEXISTENT_TAG_ID));
+        verify(tagRepository).findById(anyLong());
     }
 }
