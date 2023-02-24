@@ -11,7 +11,7 @@ on:
     types: [opened, synchronize, reopened, completed]
 
 env:
-  REGISTRY: ghcr.io/answerconsulting/answerking-java
+  REGISTRY: ghcr.io/answerdigital/answerking-java
   IMAGE_NAME: answer-king-rest-api_app #${{ github.repository }}
   MYSQLDB_ROOT_PASSWORD: ${{ secrets.MYSQLDB_ROOT_PASSWORD }}
   MYSQLDB_PASSWORD: ${{ secrets.MYSQLDB_PASSWORD }}
@@ -69,7 +69,7 @@ jobs:
       #  run: docker-compose push #--ignore-push-failures
 
       - name: Tag docker image
-        run: docker tag answer-king-rest-api_app ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
+        run: docker tag answer-king-rest-api_app ghcr.io/answerdigital/answerking-java/answer-king-rest-api_app:latest
 
       - name: Push images
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest

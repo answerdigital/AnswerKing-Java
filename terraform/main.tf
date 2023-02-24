@@ -104,7 +104,7 @@ resource "aws_instance" "answer_king_java" {
                 # Allow the ec2-user to run docker commands without sudo
                 usermod -a -G docker ec2-user
                 # Run application at start
-                docker container run --name answer-king-rest-api-container  --restart=always --name answer-king-rest-api-container -e "RDS_USERNAME=${var.db_username}" -e "RDS_PASSWORD=${var.db_password}" -e "RDS_HOSTNAME=${aws_db_instance.answer_king_database.address}" -e "RDS_PORT=${var.db_port}" -e "RDS_DB_NAME=${var.db_name}" -e "SPRING_PROFILES_ACTIVE=${var.spring_profile}" -e "MYSQLDB_PASSWORD=${var.db_password}" -e "MYSQLDB_USER=${var.db_username}" -e "MYSQL_URL=jdbc:mysql://${aws_db_instance.answer_king_database.address}:${var.db_port}/${var.db_name}" -p ${var.http_server_port}:${var.http_server_port} -d ghcr.io/answerconsulting/answerking-java/answer-king-rest-api_app:latest
+                docker container run --name answer-king-rest-api-container  --restart=always --name answer-king-rest-api-container -e "RDS_USERNAME=${var.db_username}" -e "RDS_PASSWORD=${var.db_password}" -e "RDS_HOSTNAME=${aws_db_instance.answer_king_database.address}" -e "RDS_PORT=${var.db_port}" -e "RDS_DB_NAME=${var.db_name}" -e "SPRING_PROFILES_ACTIVE=${var.spring_profile}" -e "MYSQLDB_PASSWORD=${var.db_password}" -e "MYSQLDB_USER=${var.db_username}" -e "MYSQL_URL=jdbc:mysql://${aws_db_instance.answer_king_database.address}:${var.db_port}/${var.db_name}" -p ${var.http_server_port}:${var.http_server_port} -d ghcr.io/answerdigital/answerking-java/answer-king-rest-api_app:latest
                 EOF
 
   user_data_replace_on_change = true

@@ -11,7 +11,7 @@ on:
     types: [opened, synchronize, reopened, completed]
 
 env:
-  REGISTRY: ghcr.io/answerconsulting/answerking-java
+  REGISTRY: ghcr.io/answerdigital/answerking-java
   IMAGE_NAME: answer-king-rest-api_app
 
 jobs:
