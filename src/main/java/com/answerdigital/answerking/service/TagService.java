@@ -11,6 +11,7 @@ import com.answerdigital.answerking.response.TagResponse;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -94,6 +95,7 @@ public class TagService {
      * in the form of a TagResponse {@link com.answerdigital.answerking.response.TagResponse}.
      * @throws NameUnavailableException When the Tag {@link com.answerdigital.answerking.model.Tag} name already exists.
      */
+    @Transactional
     public TagResponse updateTag(final Long id, final TagRequest tagRequest) {
         if (tagRepository.existsByNameAndIdIsNot(tagRequest.name(), id)) {
             throw getCustomException(TAGS_ALREADY_EXIST, tagRequest.name());
